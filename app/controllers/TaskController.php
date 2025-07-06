@@ -15,24 +15,16 @@ class TaskController extends ApplicationController{
     {
         
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
-            $this->crearTarea();
-        }
-    }
-
-    //Como tenemos funciones generales para el funcionamiento de las rutas, y las tareas
-    //sólo tiene que conocerlas TaskController, hacemos funciones privadas para los métodos CRUD.
-
-    private function crearTarea(): void
-    {
-        $taskModel = new TaskModel();
-            //como nos refermios a un modelo de tareas, usamos una variable $data
-            //para obtener los parámetros del JSON
             $data = [
                 'titulo' => $this->_getParam('titulo'),
                 'descripcion' => $this->_getParam('descripcion')
             ];
+            $taskModel = new TaskModel();
             $taskModel->crearTarea($data);
+        }
     }
+
+    
 }
 
 ?>

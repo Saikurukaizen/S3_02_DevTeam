@@ -28,7 +28,6 @@ Atributos:
 - `id`: Número entero, clave primaria, autoincremental.
 - `name`: Cadena de texto, máximo 100 caracteres, obligatorio.
 - `email`: Cadena de texto, máximo 100 caracteres, obligatorio y único.
-- `password`: Cadena de texto, máximo 255 caracteres, obligatorio.
 - `created`: Fecha y hora de creación del registro, obligatorio.
 
 Decisión:  

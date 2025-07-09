@@ -14,11 +14,11 @@ class TaskController extends ApplicationController{
         $this->view->tasks = $tasks;
     }
 
-    /*Método para instanciar el TaskModel con los $data al createTask()
+
     public function createAction(): void
     {
         /*Acción asociada a la creación de un nuevo elemento
-        Procesa el guardado de la nueva tarea si es POST
+        Procesa el guardado de la nueva tarea si es POST*/
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
             $data = [
                 'titulo' => $this->_getParam('titulo'),
@@ -28,18 +28,15 @@ class TaskController extends ApplicationController{
             $taskModel = new TaskModel();
             $taskModel->createTask($data);
         }
-    }*/
+    }
 
-    public function updateStatusAction(): void
+    /* public function updateStatusAction(): void
     {
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
             $data = json_decode(file_get_contents('php://input'), true);
         }
     }
-
-    
-
-    
+ */  
 }
 
 ?>

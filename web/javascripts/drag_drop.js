@@ -10,7 +10,7 @@ function drag(ev){
     ev.dataTransfer.setData("text", ev.target.id);
 }
 
-function drop(ev){
+function dropDelete(ev){
     //obtener data
     var data = ev.dataTransfer.getData("text");
     var taskDiv = document.getElementById(data);
@@ -47,6 +47,24 @@ function deleteTask(data){
             //Borrado con exito: ver si hace aqui un div alert
         } else{
             //Error al borrar: ver si hace aqui un div alert
+        }
+    });
+}
+
+function dropUpdate(ev)
+
+function updateTask(id, newStatus){
+    fetch('/task/update', {
+        method: 'POST',
+        body: JSON.stringify({ taskId: id, status: newStatus}),
+        headers: { 'Content-Type': 'application/json'}
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success){
+            //Actualizacion con éxito: ver si hacer un div alert
+        } else {
+            //Error al actualizar: ver si hacer un div alert
         }
     });
 }

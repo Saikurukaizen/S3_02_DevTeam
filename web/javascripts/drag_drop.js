@@ -51,7 +51,19 @@ function deleteTask(data){
     });
 }
 
-function dropUpdate(ev)
+function dropUpdate(ev, newStatus){
+    ev.preventDefault();
+
+    var data = ev.dataTransfer.getData("text");
+    var taskDiv = document.getElementById(data);
+    var realId = taskDiv.getAttribute('data-task-id');
+    var stDiv = ev.target;
+
+    if(taskId && stDiv){
+        stDiv.appendChild(taskDiv);
+        updateTask(realId, newStatus); 
+    }
+}
 
 function updateTask(id, newStatus){
     fetch('/task/update', {

@@ -11,10 +11,10 @@ class TaskModel{
         Lógica para leer el JSON, crearTarea y guardar el archivo
     } */
 
-    public function updateStatusTask(int $id, string $newStatus): void
+    /* public function updateStatusTask(int $id, string $newStatus): void
     {
-        
-    }
+
+    } */
 }
 
 ?>

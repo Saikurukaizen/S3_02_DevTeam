@@ -9,10 +9,8 @@ class TaskController extends ApplicationController{
     {
         /*Acción asociada a la ruta principal del recurso (/task o /task/index)
         Muestra un listado de todas las tareas.
-        Aquí instancias el modelo, obtienes todas las tareas y las pasas a la vista.
-        Muestra el listado por GET*/
-        $taskModel = new TaskModel();
-        $tasks = $taskModel->getAll();
+       */
+        $tasks = $this->model->getAll();
         $this->view->tasks = $tasks;
     }
 

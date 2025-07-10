@@ -8,11 +8,17 @@ class ApplicationController extends Controller
 {
     protected $model = null;
 
+    // Declaramos la propiedad view para que todos los controladores hijos la tengan
+    public $view = null;
+
     /**
      * Método de inicialización común para todos los controladores hijos
      */
     public function init()
     {
+        // Inicializa la vista
+        $this->view = new View();
+
         // Ejemplo: cargar el modelo según el nombre del controlador
         $controllerName = strtolower(str_replace('Controller', '', get_class($this)));
         $modelClass = ucfirst($controllerName) . 'Model';

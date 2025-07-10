@@ -1,0 +1,18 @@
+<!-- READ VIEW -->
+<!-- Este archivo muestra la lista de tareas que vienen del controlador -->
+
+<h1>Lista de Tareas</h1>
+
+<!-- Iteramos todas las tareas recibidas en $this->tasks -->
+<ul>
+<?php foreach ($this->tasks as $task): ?>
+    <li>
+        <!-- Mostramos titulo, descripcion y estado -->
+        <strong>ID:</strong> <?= htmlspecialchars($task['id']) ?><br>
+        <strong>Titulo:</strong> <?= htmlspecialchars($task['titulo']) ?><br>
+        <strong>Descripcion:</strong> <?= htmlspecialchars($task['descripcion']) ?><br>
+        <strong>Estado:</strong> <?= htmlspecialchars($task['estado']) ?>
+        <hr>
+    </li>
+<?php endforeach; ?>
+</ul>

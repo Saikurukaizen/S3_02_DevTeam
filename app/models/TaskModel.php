@@ -6,7 +6,7 @@ class TaskModel{
 
     private $file = 'config/fakeTasks.json';
 
-    public function crearTarea(array $data): void
+    public function createTask(array $data): void
     {
         foreach($data as $key => $value){
             if(empty($value)){
@@ -21,6 +21,7 @@ class TaskModel{
             //Decodifica el JSON y si es true, lo guarda en un array asociativo
             $tasks = json_decode($json, true) ?? [];
         }
+        
     }
 
     /* public function updateStatusTask(int $id, string $newStatus): void

@@ -104,4 +104,5 @@ Estructura:
 
 `render()` no se invoca en `TaskController` para evitar contenido duplicado.
 `fakeTests.json` se usa como mock de prueba; en producción se cambiará a `tasks.json`.
----
+Atributos id y draggable para preparar Drag & Drop.
+Enlace Eliminar que accede a /task/delete?id= para confirmar borrado.

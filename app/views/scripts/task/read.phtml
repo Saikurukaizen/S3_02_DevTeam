@@ -1,24 +1,33 @@
-<!-- READ VIEW -->
-<!-- Este archivo muestra la lista de tareas que vienen del controlador -->
+<!--
+|--------------------------------------------------------------
+| READ VIEW
+|--------------------------------------------------------------
+| Este archivo muestra la lista de tareas que vienen del controlador.
+| Cada tarea se lista con ID, título, descripción y estado.
+| Además, cada item tiene ID único y se prepara para Drag & Drop.
+| Incluye enlace para Eliminar, que abre la vista de confirmación.
+-->
 
 <h1>Lista de Tareas</h1>
 
 <!-- Iteramos todas las tareas recibidas en $this->tasks -->
 <ul>
-<?php foreach ($this->tasks as $task): ?>
-    <li>
-        <!-- Mostramos ID, título, descripción y estado -->
+<?php foreach ($this->tasks as $task) : ?>
+    <li 
+        id="task-<?= htmlspecialchars($task['id']) ?>" 
+        draggable="true" 
+        ondragstart="drag(event)"
+    >
+        <!-- Mostramos detalles de la tarea -->
         <strong>ID:</strong> <?= htmlspecialchars($task['id']) ?><br>
-        <strong>Titulo:</strong> <?= htmlspecialchars($task['titulo']) ?><br>
-        <strong>Descripcion:</strong> <?= htmlspecialchars($task['descripcion']) ?><br>
+        <strong>Título:</strong> <?= htmlspecialchars($task['titulo']) ?><br>
+        <strong>Descripción:</strong> <?= htmlspecialchars($task['descripcion']) ?><br>
         <strong>Estado:</strong> <?= htmlspecialchars($task['estado']) ?><br>
 
-        <!-- Enlace para eliminar esta tarea -->
-        <a href="/fullstackphp-sprint3/S302/S3_02_DevTeam/web/task/delete?id=<?= urlencode($task['id']) ?>">
+        <!-- Link Eliminar: abre /task/delete?id=X -->
+        <a href="/fullstackphp-sprint3/S302/S3_02_DevTeam/web/task/delete?id=<?= htmlspecialchars($task['id']) ?>">
             Eliminar
         </a>
-
-        <hr>
     </li>
 <?php endforeach; ?>
 </ul>

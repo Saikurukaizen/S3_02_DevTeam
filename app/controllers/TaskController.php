@@ -29,13 +29,17 @@ class TaskController extends ApplicationController{
 
             try{
                 $taskModel->createTask($data);
-                $message = "Tu tarea se ha guardado correctamente.";
+                $this->setFlash('success', 'Tarea guardada correctamente.');
             }
             catch(Exception $e){
-                $message = "Error al guardar la tarea: " . $e->getMessage();
+                $this->setFlash('error', 'Error al guardar la tarea: ' . $e->getMessage());
             }
-            $this->view->message = $message;           
+            header('Location: /task/index');
+            exit();
         }
+
+        $this->view->form = 'layouts/form.phtml';
+        require 'app/views/layouts/layout.phtml';
     }
 
     /* public function updateStatusAction(): void

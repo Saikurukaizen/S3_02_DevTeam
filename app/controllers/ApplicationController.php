@@ -34,5 +34,20 @@ class ApplicationController extends Controller
         throw new Exception("Modelo no encontrado: $modelClass");
     }
 
+    protected function setFlash(string $type, string $message): void
+    {
+        $_SESSION['flash'][$type] = $message;
+    }
+
+    protected function getFlash(string $type): ?string
+    {
+        if(isset($_SESSION['flash'][$type])){
+            $msg = $_SESSION['flash'][$type];
+            unset($_SESSION['flash'][$type]);
+            return $msg;
+        }
+        return null;
+    }
+
     // Puedes añadir aquí filtros before/after si lo necesitas
 }

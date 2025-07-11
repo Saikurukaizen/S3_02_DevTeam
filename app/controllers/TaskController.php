@@ -26,7 +26,15 @@ class TaskController extends ApplicationController{
                 'estado' => $this->_getParam('estado')
             ];
             $taskModel = new TaskModel();
-            $taskModel->createTask($data);
+
+            try{
+                $taskModel->createTask($data);
+                $message = "Tu tarea se ha guardado correctamente.";
+            }
+            catch(Exception $e){
+                $message = "Error al guardar la tarea: " . $e->getMessage();
+            }
+            $this->view->message = $message;           
         }
     }
 

@@ -21,7 +21,21 @@ class TaskModel{
             //Decodifica el JSON y si es true, lo guarda en un array asociativo
             $tasks = json_decode($json, true) ?? [];
         }
-        
+
+        $lastId = 0;
+        if(!empty($tasks)){
+            $ids = array_column($tasks, 'id');
+            $lastId = max($ids);
+        }
+        $data['id'] = $lastId++; //Asigna un nuevo ID a la tarea.
+
+        $tasks[] = $data; // Añade la nueva tarea al array
+        //Codifica el array a JSON
+        $json = json_encode($tasks, JSON_PRETTY_PRINT);
+        //Guardar JSON en el archivo
+        if(file_put_contents($this->file, $json) === false){
+            throw new Exception("Hubo un fallo al guardar la tarea. ");
+        }
     }
 
     /* public function updateStatusTask(int $id, string $newStatus): void

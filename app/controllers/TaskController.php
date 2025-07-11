@@ -50,6 +50,53 @@
             $this->view->tasks = $tasks; // pasamos las tareas a la vista
             //$this->view->render("task/read.phtml"); // renderizamos la vista correspondiente
         }
+
+        // --- DELETE ---
+        // Acción para manejar la eliminación de una tarea por ID
+        // Cuando el router detecta /task/delete, ejecuta este deleteAction()
+        // Si la petición es GET, muestra confirmación; si es POST, elimina y redirige
+        public function deleteAction(): void
+        {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                // Obtiene el ID de la tarea a eliminar
+                $id = $this->_getParam('id');
+
+                // Instancia el modelo y ejecuta el borrado
+                $taskModel = new TaskModel();
+                $taskModel->deleteTask($id);
+
+                // Redirige de vuelta a la lista de tareas
+                header('Location: /fullstackphp-sprint3/S302/S3_02_DevTeam/web/task/read');
+                exit;
+
+            } elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
+                // Si es GET, muestra la vista de confirmación
+
+                // Obtiene el ID de la tarea a mostrar
+                $id = $this->_getParam('id');
+
+                // Instancia el modelo para buscar la tarea específica
+                $taskModel = new TaskModel();
+                $tasks = $taskModel->getAllTasks();
+
+                // Busca la tarea por ID
+                $task = null;
+                foreach ($tasks as $t) {
+                    if ($t['id'] == $id) {
+                        $task = $t;
+                        break;
+                    }
+                }
+
+                // Pasa la tarea a la vista para confirmar
+                $this->view->task = $task;
+
+                // El render se maneja automáticamente en el core/layout
+            } else {
+                echo "Método no permitido."; die;
+            }
+        }
+
         
     }
 

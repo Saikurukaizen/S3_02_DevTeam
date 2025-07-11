@@ -1,0 +1,38 @@
+<?php
+/*
+|--------------------------------------------------------------------------
+| confirm_delete.phtml
+|--------------------------------------------------------------------------
+| Esta vista muestra un mensaje de confirmación antes de eliminar una tarea.
+| Es llamada por el deleteAction() del TaskController cuando se accede vía GET.
+| La tarea específica se pasa como $this->task.
+| Si el usuario confirma, envía un POST a /task/delete para ejecutar el borrado.
+| Si cancela, vuelve al listado de tareas (/task/read).
+*/
+?>
+
+<h2>¿Seguro que quieres eliminar esta tarea?</h2>
+
+<?php if ($this->task): ?>
+    <!-- Información de la tarea a eliminar -->
+    <p><strong>ID:</strong> <?= htmlspecialchars($this->task['id']) ?></p>
+    <p><strong>Título:</strong> <?= htmlspecialchars($this->task['titulo']) ?></p>
+    <p><strong>Descripción:</strong> <?= htmlspecialchars($this->task['descripcion']) ?></p>
+
+    <!-- Formulario que confirma la eliminación -->
+    <form method="POST" action="/fullstackphp-sprint3/S302/S3_02_DevTeam/web/task/delete">
+        <!-- Campo oculto con el ID de la tarea -->
+        <input type="hidden" name="id" value="<?= htmlspecialchars($this->task['id']) ?>">
+
+        <!-- Botón para confirmar -->
+        <button type="submit">Sí, eliminar tarea</button>
+    </form>
+<?php else: ?>
+    <!-- Mensaje si no se encontró la tarea -->
+    <p>No se encontró la tarea solicitada.</p>
+<?php endif; ?>
+
+<!-- Enlace para cancelar y volver al listado -->
+<p>
+    <a href="/fullstackphp-sprint3/S302/S3_02_DevTeam/web/task/read">Cancelar y volver</a>
+</p>

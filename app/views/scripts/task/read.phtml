@@ -7,11 +7,17 @@
 <ul>
 <?php foreach ($this->tasks as $task): ?>
     <li>
-        <!-- Mostramos titulo, descripcion y estado -->
+        <!-- Mostramos ID, título, descripción y estado -->
         <strong>ID:</strong> <?= htmlspecialchars($task['id']) ?><br>
         <strong>Titulo:</strong> <?= htmlspecialchars($task['titulo']) ?><br>
         <strong>Descripcion:</strong> <?= htmlspecialchars($task['descripcion']) ?><br>
-        <strong>Estado:</strong> <?= htmlspecialchars($task['estado']) ?>
+        <strong>Estado:</strong> <?= htmlspecialchars($task['estado']) ?><br>
+
+        <!-- Enlace para eliminar esta tarea -->
+        <a href="/fullstackphp-sprint3/S302/S3_02_DevTeam/web/task/delete?id=<?= urlencode($task['id']) ?>">
+            Eliminar
+        </a>
+
         <hr>
     </li>
 <?php endforeach; ?>

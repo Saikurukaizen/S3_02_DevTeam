@@ -17,6 +17,7 @@
         {
 
         } */
+
         // --- GET ALL TASKS ---
         // Metodo que lee todas las tareas guardadas en el archivo JSON
         // Abre el archivo definido en $this->file
@@ -29,6 +30,26 @@
                 $tasks = json_decode($content, true); // convierte JSON a array
             }
             return $tasks; // devuelve el array de tareas
+        }
+        // --- DELETE ---
+        // Método para eliminar una tarea específica por ID
+        public function deleteTask($id)
+        {
+            if (file_exists($this->file)) {
+                $content = file_get_contents($this->file);
+                $tasks = json_decode($content, true);
+
+                // Filtra las tareas para excluir la que coincide con el ID
+                $tasks = array_filter($tasks, function ($task) use ($id) {
+                    return $task['id'] != $id;
+                });
+
+                // Reindexa el array para mantener orden limpio
+                $tasks = array_values($tasks);
+
+                // Guarda de nuevo en el archivo JSON
+                file_put_contents($this->file, json_encode($tasks, JSON_PRETTY_PRINT));
+            }
         }
 
     }

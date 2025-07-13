@@ -13,5 +13,8 @@ $routes = array(
 	'/test' => 'test#index',
 	'/user' => 'user#index',
 	'/task' => 'task#index',
-	'/task/create' => 'task#create'
+	'/task/create' => 'task#create',
+	'/task/update' => 'task#update',
+	//creo una ruta específica para el drag & drop de las tareas (puede ser opcional).
+	'/task/updateStatus' => 'task#updateStatus'
 );

@@ -42,13 +42,39 @@ class TaskController extends ApplicationController{
         require 'app/views/layouts/layout.phtml';
     }
 
-    /* public function updateStatusAction(): void
+    public function updateAction(): void
     {
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
             $data = json_decode(file_get_contents('php://input'), true);
+            $taskModel = new TaskModel();
+
+            try{
+                $taskModel->updateTask($data['id'], $data);
+                $this->setFlash('success', 'Tarea actualizada correctamente.');
+            }
+            catch(Exception $e){
+                $this->setFlash('error', 'Error al actualizar la tarea: ' . $e->getMessage());
+            }
+            header('Location: ./app/task/update');
         }
     }
- */  
+    //método para el drag & drop de las tareas. (Comprobar si puede ser opcional)
+    public function updateStatusAction(): void
+    {
+        if($_SERVER['REQUEST_METHOD'] === 'POST'){
+            $data = json_decode(file_get_contents('php://input'), true);
+
+            try{
+                $taskModel->updateStatusTask($data['id'], $data['estado']);
+                $this->setFlash('success', 'Tarea actualizada correctamente.');
+            }
+            catch(Exception $e){
+                $this->setFlash('error', 'Error al actualizar la tarea: ' . $e->getMessage());
+            }
+            header('Location: ./app/task/updateStatus');
+            exit;
+        }
+    }  
 }
 
 ?>

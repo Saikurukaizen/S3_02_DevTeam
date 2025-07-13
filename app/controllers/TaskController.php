@@ -34,8 +34,8 @@ class TaskController extends ApplicationController{
             catch(Exception $e){
                 $this->setFlash('error', 'Error al guardar la tarea: ' . $e->getMessage());
             }
-            header('Location: /task/index');
-            exit();
+            header('Location: ./app/task/create');
+            exit;
         }
 
         $this->view->form = 'layouts/form.phtml';

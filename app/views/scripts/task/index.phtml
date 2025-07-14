@@ -1,0 +1,19 @@
+<?php
+declare(strict_types=1);
+?>
+<h1>Listado de tareas</h1>
+<?php if (!empty($this->tasks)): ?>
+    <ul>
+    <?php foreach ($this->tasks as $task): ?>
+        <li>
+            <strong><?= htmlspecialchars($task['titulo']) ?></strong>
+            <br>
+            <?= htmlspecialchars($task['descripcion']) ?>
+            <br>
+            <?= htmlspecialchars($task['estado']) ?>
+        </li>
+    <?php endforeach; ?>
+    </ul>
+<?php else: ?>
+    <p>No existen tareas</p>
+<?php endif; ?>

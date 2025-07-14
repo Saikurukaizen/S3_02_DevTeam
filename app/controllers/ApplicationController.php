@@ -8,6 +8,10 @@ class ApplicationController extends Controller
 {
     protected $model = null;
 
+    public function __construct(){
+        $this->view = new view();
+    }
+
     /**
      * Método de inicialización común para todos los controladores hijos
      */

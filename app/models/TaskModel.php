@@ -4,7 +4,24 @@ declare(strict_types=1);
 //Para persistencia en SQL, esta clase extiende del modelo principal
 class TaskModel{
 
-    private $file = 'config/fakeTasks.json';
+    private $file;
+
+    public function __construct()
+    {
+        $this->file = ROOT_PATH . '/config/fakeTasks.json';
+    }
+
+    public function getAll(): array
+    {
+        
+        if(file_exists($this->file)){
+            
+            $json = file_get_contents($this->file);
+            $this->file = json_decode($json, true);
+            return $this->file ?? [];  
+          
+        }
+    }
 
     public function createTask(array $data): void
     {

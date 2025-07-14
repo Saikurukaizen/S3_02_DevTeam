@@ -12,6 +12,7 @@ class TaskController extends ApplicationController{
        */
         $tasks = $this->model->getAll();
         $this->view->tasks = $tasks;
+        $this->view->render('task/index.phtml');
     }
 
 
@@ -34,12 +35,10 @@ class TaskController extends ApplicationController{
             catch(Exception $e){
                 $this->setFlash('error', 'Error al guardar la tarea: ' . $e->getMessage());
             }
-            header('Location: ./app/task/create');
+            header('Location: /IT_Academy_2nd/Sprint_3/S3.02_DevTeam/phpInitialDemo-main/web/task/create');
             exit;
         }
-
-        $this->view->form = 'layouts/form.phtml';
-        require 'app/views/layouts/layout.phtml';
+        $this->view->render('task/form.phtml');
     }
 
     /* public function updateStatusAction(): void

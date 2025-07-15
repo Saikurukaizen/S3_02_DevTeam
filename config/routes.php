@@ -10,10 +10,13 @@
  * '/calendar' => 'calendar#index'
  */
 $routes = array(
+	'/' => 'task#read',
 	'/test' => 'test#index',
 	'/user' => 'user#index',
 	'/task' => 'task#index',
 	// Read Delete:
 	'/task/read' => 'task#read',
-	'/task/delete' => 'task#delete'
+	'/task/delete' => 'task#delete',
+	// Ruta para ver el detalle de una tarea por id
+	'/task/detalle' => 'task#detalle',
 );

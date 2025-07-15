@@ -1,33 +1,42 @@
-<!--
-|--------------------------------------------------------------
-| READ VIEW
-|--------------------------------------------------------------
-| Este archivo muestra la lista de tareas que vienen del controlador.
-| Cada tarea se lista con ID, título, descripción y estado.
-| Además, cada item tiene ID único y se prepara para Drag & Drop.
-| Incluye enlace para Eliminar, que abre la vista de confirmación.
--->
-
-<h1>Lista de Tareas</h1>
-
-<!-- Iteramos todas las tareas recibidas en $this->tasks -->
-<ul>
-<?php foreach ($this->tasks as $task) : ?>
-    <li 
-        id="task-<?= htmlspecialchars($task['id']) ?>" 
+<?php
+// Este archivo genera los elementos card de las tareas para el tablero principal
+// Cada card es draggable y clickeable para ver detalles de la tarea
+// Al hacer click, se abre /task/detalle?id=... para ver los detalles
+// No se debe mostrar el boton eliminar aqui, solo preview
+$i = 1;
+foreach ($this->tasks as $task) {
+    ?>
+    <div 
+        id="task-<?= $i ?>" 
+        class="task" 
+        data-task-id="<?= htmlspecialchars($task['id']) ?>" 
+        data-estado="<?= htmlspecialchars($task['estado']) ?>"
         draggable="true" 
         ondragstart="drag(event)"
+        onclick="window.location.href='/fullstackphp-sprint3/S302/S3_02_DevTeam/web/task/detalle?id=<?= htmlspecialchars($task['id']) ?>'"
+        style="cursor:pointer"
     >
-        <!-- Mostramos detalles de la tarea -->
-        <strong>ID:</strong> <?= htmlspecialchars($task['id']) ?><br>
-        <strong>Título:</strong> <?= htmlspecialchars($task['titulo']) ?><br>
-        <strong>Descripción:</strong> <?= htmlspecialchars($task['descripcion']) ?><br>
-        <strong>Estado:</strong> <?= htmlspecialchars($task['estado']) ?><br>
-
-        <!-- Link Eliminar: abre /task/delete?id=X -->
-        <a href="/fullstackphp-sprint3/S302/S3_02_DevTeam/web/task/delete?id=<?= htmlspecialchars($task['id']) ?>">
-            Eliminar
-        </a>
-    </li>
-<?php endforeach; ?>
-</ul>
+        <!-- Titulo de la tarea -->
+        <strong><?= htmlspecialchars($task['titulo']) ?></strong><br>
+        <!-- Descripcion de la tarea -->
+        <small><?= htmlspecialchars($task['descripcion']) ?></small>
+        <!-- No mostrar estado ni botones aqui, solo preview -->
+    </div>
+    <?php
+    $i++;
+}
+?>
+<script>
+// Script para mover las tareas a su columna por estado
+// Busca todos los elementos con clase task y los coloca en el div correspondiente
+// Los ids de columna deben coincidir con los valores de data-estado
+window.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.task').forEach(card => {
+        const estado = card.getAttribute('data-estado');
+        const columna = document.getElementById(estado);
+        if (columna) {
+            columna.appendChild(card);
+        }
+    });
+});
+</script>

@@ -52,6 +52,22 @@
             }
         }
 
+        // Metodo para obtener una tarea por su id
+        // Busca en el array de tareas y devuelve la tarea que coincide con el id
+        public function getTaskById($id) {
+            // Lee todas las tareas del archivo JSON
+            $tasks = $this->getAllTasks();
+            // Recorre el array de tareas
+            foreach ($tasks as $task) {
+                // Si el id coincide, retorna la tarea
+                if (isset($task['id']) && $task['id'] == $id) {
+                    return $task;
+                }
+            }
+            // Si no encuentra la tarea, retorna null
+            return null;
+        }
+
     }
 
 ?>

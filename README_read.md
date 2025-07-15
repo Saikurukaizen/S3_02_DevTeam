@@ -1,108 +1,38 @@
-## Read - Sprint 3 S302
-
-### Ruteo
-
-Se añadió en `routes.php`:
-
-  ```php
-  '/task/read' => 'task#read',
-  ```
-
-Este mapeo accede a `/task/read` el Router ejecuta `TaskController::readAction()`
+## Read y Detalle - Sprint 3 S302
 
 ---
 
-### Controlador
+### Ruteo y flujo general
 
-Método `readAction()` creado en `TaskController`:
-
-  ```php
-  public function readAction() {
-      $taskModel = new TaskModel();
-      $tasks = $taskModel->getAllTasks();
-      $this->view->tasks = $tasks;
-  }
-  ```
-
-El método instancia `TaskModel`.
-Ejecuta `getAllTasks()` para obtener todas las tareas.
-Asigna el resultado a `$this->view->tasks` para usar en la vista.
-No llama `$this->view->render()` directamente, el render se maneja en el core/layout para evitar duplicados.
+- La página principal del proyecto es `/web/`, donde se muestra el tablero con todas las tareas.
+- Al hacer click en una tarea, se accede a `/task/detalle?id=XX` para ver los detalles de esa tarea.
 
 ---
 
-### ApplicationController
+### Board (read)
 
-Se agregó la propiedad:
-
-  ```php
-  public $view = null;
-  ```
-Inicializada dentro de `init()`:
-
-  ```php
-  $this->view = new View();
-  ```
-
-  Así todos los controladores hijos (`TaskController`) heredan `$this->view` listo para renderizar.
+- El método `readAction` en el controlador busca todas las tareas y las pasa a la vista.
+- En la vista `read.phtml`, las tareas se muestran como cards tipo Trello, organizadas por estado (pendiente, en_proceso, hecho).
+- Cada card muestra solo el título y la descripción, y es clickeable para abrir el detalle de la tarea.
 
 ---
 
-### TaskModel
+### Detalle de tarea
 
-Configurado con persistencia en archivo JSON:
-
-  ```php
-  private $file = __DIR__ . '/../../config/fakeTests.json';
-  ```
-
-`__DIR__` garantiza ruta absoluta para evitar errores de localización.
-
-Método `getAllTasks()`:
-
-  ```php
-  public function getAllTasks() {
-      $tasks = [];
-      if (file_exists($this->file)) {
-          $content = file_get_contents($this->file);
-          $tasks = json_decode($content, true);
-      }
-      return $tasks;
-  }
-  ```
-
-Lee el archivo JSON, decodifica y devuelve un array.
-Ruta ajustada para entorno local.
+- El método `detalleAction` busca la tarea por id y la pasa a la vista de detalle.
+- En la vista de detalle (`detalle.phtml`), se muestra el título, la descripción, el estado y los botones de update (U) y delete (D).  Los botones todavía no tienen funcionalidad, son solo para visualizar la interfaz.
+- El CSS de la pantalla de detalle es temporal, solo para tener una idea visual y facilitar los próximos ajustes.
+- Si la tarea no existe, se muestra un mensaje de error centrado.
 
 ---
 
-### Views
+### Decisiones y lógica (guía del flujo)
 
-Archivo `read.phtml` ubicado en:
-  ```
-  app/views/scripts/task/read.phtml
-  ```
-
-Estructura:
-
-    ```php
-    <ul>
-    <?php foreach ($this->tasks as $task): ?>
-        <li>
-            <strong>ID:</strong> <?= htmlspecialchars($task['id']) ?><br>
-            <strong>Titulo:</strong> <?= htmlspecialchars($task['titulo']) ?><br>
-            <strong>Descripcion:</strong> <?= htmlspecialchars($task['descripcion']) ?><br>
-            <strong>Estado:</strong> <?= htmlspecialchars($task['estado']) ?>
-            <hr>
-        </li>
-    <?php endforeach; ?>
-    </ul>
-    ```
----
-
-### PS
-
-`render()` no se invoca en `TaskController` para evitar contenido duplicado.
-`fakeTests.json` se usa como mock de prueba; en producción se cambiará a `tasks.json`.
-Atributos id y draggable para preparar Drag & Drop.
-Enlace Eliminar que accede a /task/delete?id= para confirmar borrado.
+- Cuando entras en `/web/`, el router carga la acción `readAction` del `TaskController`.
+- `readAction` pide todas las tareas al modelo y las pasa a la vista como `$this->view->tasks`.
+- La vista `read.phtml` recorre ese array y arma los cards, cada uno con un link que apunta a `/task/detalle?id=ID`.
+- Al hacer click en un card, el router llama a `detalleAction` en el controlador.
+- `detalleAction` busca la tarea por id usando el modelo, y la pasa a la vista de detalle como `$this->view->task`.
+- Antes de renderizar, desactiva el layout para que la pantalla de detalle salga sola, sin el tablero.
+- La vista `detalle.phtml` agarra la tarea desde `$this->task`, muestra los datos y los botones (que por ahora son solo visuales).
+- Si la tarea no existe, la vista muestra un mensaje de error y no sigue renderizando.

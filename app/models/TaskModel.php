@@ -47,21 +47,18 @@ class TaskModel{
         }
         if(!isset($data['id']) || $data['id'] !== $id){
             throw new Exception("El ID no coincide con el ID de la tarea a actualizar.");
-        } else {
-            $data[$key] = $value;
-        }
-
+        } 
         //Leer el archivo JSON
-        $tasks = [];
         if(file_exists($this->file)){
-            //Obtener el contenido JSON
-            $json = json_decode(file_get_contents($this->file), true);
-            //Decodifica el JSON y si es true, lo guarda en un array asociativo
-            $tasks = $json ?? [];
+            $tasks = json_decode(file_get_contents($this->file), true) ?? [];
 
-            //Busca la tarea a actualizar
-            
-            //Guarda el archivo actualizado de nuevo en el JSON.
+            //Bucle para las tareas
+            /* foreach($tasks as $task){
+                if($task['id'] === $id){
+                
+                }
+            } */
+
             $json = json_encode(file_exists($this->file) ? $tasks : [], JSON_PRETTY_PRINT);
             if(file_put_contents($this->file, $json) === false){
                 throw new Exception("Hubo un fallo al actualizar la tarea.");

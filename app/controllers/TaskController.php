@@ -40,6 +40,24 @@ class TaskController extends ApplicationController{
 
     public function updateAction(): void
     {
+        if($_SERVER['REQUEST_METHOD'] === 'GET'){
+            $taskId = (int)$this->getParam('id');
+            if(!$taskId){
+                $this->setFlash('error', 'ID de tarea no válido.');
+                header('Location: /task/');
+                exit;
+            }
+            $taskModel = new TaskModel();
+            $task = $taskModel->getTaskById($taskId);
+            if(!$task){
+                $this->setFlash('error', 'Tarea no encontrada.');
+                header('Location: /task/');
+                exit;
+            } else {
+                $this->view->task = $task;
+            }
+        }
+
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
             $data = json_decode(file_get_contents('php://input'), true);
             $taskModel = new TaskModel();

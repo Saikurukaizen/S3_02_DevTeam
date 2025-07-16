@@ -2,6 +2,12 @@
 declare(strict_types=1);
 ?>
 <h1>Listado de tareas</h1>
+<div class="task-actions" style="margin-bottom: 1em;">
+    <a href="/task/create">
+        <button class="btn btn-primary" type="button">ADD TASK</button>
+    </a>        
+</div>
+
 <?php if (!empty($this->tasks)): ?>
     <ul>
     <?php foreach ($this->tasks as $task): ?>
@@ -17,3 +23,4 @@ declare(strict_types=1);
 <?php else: ?>
     <p>No existen tareas</p>
 <?php endif; ?>
+

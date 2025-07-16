@@ -17,10 +17,10 @@ class TaskModel{
         if(file_exists($this->file)){
             
             $json = file_get_contents($this->file);
-            $this->file = json_decode($json, true);
-            return $this->file ?? [];  
-          
+            $tasks = json_decode($json, true);
+            return $tasks ?? [];           
         }
+        return [];
     }
 
     public function createTask(array $data): void
@@ -44,7 +44,7 @@ class TaskModel{
             $ids = array_column($tasks, 'id');
             $lastId = max($ids);
         }
-        $data['id'] = $lastId++; //Asigna un nuevo ID a la tarea.
+        $data['id'] = $lastId +1; //Asigna un nuevo ID a la tarea.
 
         $tasks[] = $data; // Añade la nueva tarea al array
         //Codifica el array a JSON

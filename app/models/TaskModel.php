@@ -52,12 +52,12 @@ class TaskModel{
         if(file_exists($this->file)){
             $tasks = json_decode(file_get_contents($this->file), true) ?? [];
 
-            //Bucle para las tareas
-            /* foreach($tasks as $task){
-                if($task['id'] === $id){
-                
+            //Bucle para las tareas. $task es una copia del array original. Para modificar el array original, se usa la referencia (&$task).
+            foreach($tasks as &$task){
+                if(isset($task['id']) && $task['id'] === $id){
+                    $task = array_merge($task, $data);
                 }
-            } */
+            }
 
             $json = json_encode(file_exists($this->file) ? $tasks : [], JSON_PRETTY_PRINT);
             if(file_put_contents($this->file, $json) === false){

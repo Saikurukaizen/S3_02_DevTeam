@@ -76,51 +76,41 @@
         }
 
         // --- DELETE ---
-        // Acción para manejar la eliminación de una tarea por ID
-        // Cuando el router detecta /task/delete, ejecuta este deleteAction()
-        // Si la petición es GET, muestra confirmación; si es POST, elimina y redirige o devuelve JSON (Drag & Drop)
-        public function deleteAction(): void
-        {
+        // Método unificado para eliminar una tarea por ID
+        // Soporta POST AJAX (JSON), POST tradicional (formulario) y GET para confirmación
+        public function deleteAction() {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                // Soporta JSON y POST normal
                 $data = json_decode(file_get_contents('php://input'), true);
                 $id = $data['taskId'] ?? $this->_getParam('id');
-
                 if ($id) {
                     $taskModel = new TaskModel();
-                    $taskModel->deleteTask($id);
-
-                    // Si la petición es AJAX (fetch), devuelve JSON
+                    $borrado = $taskModel->deleteTaskById($id);
                     if ($data) {
+                        // AJAX: responde JSON
                         header('Content-Type: application/json');
-                        echo json_encode(['success' => true]);
+                        echo json_encode([
+                            'success' => $borrado,
+                            'message' => $borrado ? 'Tarea eliminada correctamente.' : 'No se pudo eliminar la tarea.'
+                        ]);
                         exit;
                     }
-
-                    // Si es formulario normal, redirige
+                    // POST tradicional: redirige
                     header('Location: /fullstackphp-sprint3/S302/S3_02_DevTeam/web/task/read');
                     exit;
                 } else {
                     if ($data) {
                         header('Content-Type: application/json');
-                        echo json_encode(['success' => false, 'error' => 'ID inválido']);
+                        echo json_encode(['success' => false, 'message' => 'ID inválido']);
                         exit;
                     } else {
                         echo "ID inválido"; die;
                     }
                 }
-
             } elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 // Si es GET, muestra la vista de confirmación
-
-                // Obtiene el ID de la tarea a mostrar
                 $id = $this->_getParam('id');
-
-                // Instancia el modelo para buscar la tarea específica
                 $taskModel = new TaskModel();
                 $tasks = $taskModel->getAllTasks();
-
-                // Busca la tarea por ID
                 $task = null;
                 foreach ($tasks as $t) {
                     if ($t['id'] == $id) {
@@ -128,11 +118,7 @@
                         break;
                     }
                 }
-
-                // Pasa la tarea a la vista para confirmar
                 $this->view->task = $task;
-
-                // El render se maneja automáticamente en el core/layout
             } else {
                 echo "Método no permitido."; die;
             }

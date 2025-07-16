@@ -12,15 +12,9 @@
         "estado": "en_proceso"
     },
     {
-        "id": 3,
-        "titulo": "Revisar endpoints API",
-        "descripcion": "Tercera tarea sobre revisar endpoints",
-        "estado": "en_proceso"
-    },
-    {
         "id": 4,
-        "titulo": "Testar integración",
-        "descripcion": "Cuarta tarea sobre pruebas de integración",
+        "titulo": "Testar integraci\u00f3n",
+        "descripcion": "Cuarta tarea sobre pruebas de integraci\u00f3n",
         "estado": "en_proceso"
     },
     {
@@ -28,12 +22,6 @@
         "titulo": "Corregir bug de login",
         "descripcion": "Quinta tarea sobre bug de login",
         "estado": "en_proceso"
-    },
-    {
-        "id": 6,
-        "titulo": "Planificar funcionalidades",
-        "descripcion": "Primera tarea pendiente",
-        "estado": "pendiente"
     },
     {
         "id": 7,
@@ -49,7 +37,7 @@
     },
     {
         "id": 9,
-        "titulo": "Escribir documentación inicial",
+        "titulo": "Escribir documentaci\u00f3n inicial",
         "descripcion": "Cuarta tarea pendiente",
         "estado": "pendiente"
     },
@@ -61,14 +49,8 @@
     },
     {
         "id": 11,
-        "titulo": "Revisar el código",
+        "titulo": "Revisar el c\u00f3digo",
         "descripcion": "Primera tarea hecha",
-        "estado": "hecho"
-    },
-    {
-        "id": 12,
-        "titulo": "Deploy inicial",
-        "descripcion": "Segunda tarea hecha",
         "estado": "hecho"
     },
     {
@@ -85,7 +67,7 @@
     },
     {
         "id": 15,
-        "titulo": "Eliminar código muerto",
+        "titulo": "Eliminar c\u00f3digo muerto",
         "descripcion": "Quinta tarea hecha",
         "estado": "hecho"
     }

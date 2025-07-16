@@ -68,6 +68,32 @@
             return null;
         }
 
+        // Metodo para eliminar una tarea por su id
+        // Lee todas las tareas, busca la que coincide con el id, la borra y guarda el nuevo array en el JSON
+        // Devuelve true si borro, false si no encontro el id
+        public function deleteTaskById($id) {
+            // Lee todas las tareas
+            $tasks = $this->getAllTasks();
+            $encontro = false; // bandera para saber si borro
+            // Recorre el array y busca la tarea por id
+            foreach ($tasks as $i => $task) {
+                if (isset($task['id']) && $task['id'] == $id) {
+                    // Si encuentra, la elimina del array
+                    unset($tasks[$i]);
+                    $encontro = true;
+                    break;
+                }
+            }
+            if ($encontro) {
+                // Reindexa el array para que no queden huecos
+                $tasks = array_values($tasks);
+                // Guarda el array actualizado en el archivo JSON
+                file_put_contents($this->file, json_encode($tasks, JSON_PRETTY_PRINT));
+                return true; // borro bien
+            } else {
+                return false; // no encontro la tarea
+            }
+        }
     }
 
 ?>

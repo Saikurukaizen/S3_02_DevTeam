@@ -15,10 +15,9 @@ class TaskController extends ApplicationController{
     }
 
 
-    public function createAction(): void
+  /*   public function createAction(): void
     {
-        /*Acción asociada a la creación de un nuevo elemento
-        Procesa el guardado de la nueva tarea si es POST*/
+    
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
             $data = [
                 'titulo' => $this->_getParam('titulo'),
@@ -34,13 +33,10 @@ class TaskController extends ApplicationController{
             catch(Exception $e){
                 $this->setFlash('error', 'Error al guardar la tarea: ' . $e->getMessage());
             }
-            header('Location: ./app/task/create');
+            header('Location: /task/');
             exit;
         }
-
-        $this->view->form = 'layouts/form.phtml';
-        require 'app/views/layouts/layout.phtml';
-    }
+    } */
 
     public function updateAction(): void
     {
@@ -55,7 +51,7 @@ class TaskController extends ApplicationController{
             catch(Exception $e){
                 $this->setFlash('error', 'Error al actualizar la tarea: ' . $e->getMessage());
             }
-            header('Location: ./app/task/update');
+            header('Location: /task/');
         }
     }
     //método para el drag & drop de las tareas. (Comprobar si puede ser opcional)
@@ -63,6 +59,7 @@ class TaskController extends ApplicationController{
     {
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
             $data = json_decode(file_get_contents('php://input'), true);
+            $taskModel = new TaskModel();
 
             try{
                 $taskModel->updateStatusTask($data['id'], $data['estado']);
@@ -71,8 +68,6 @@ class TaskController extends ApplicationController{
             catch(Exception $e){
                 $this->setFlash('error', 'Error al actualizar la tarea: ' . $e->getMessage());
             }
-            header('Location: ./app/task/updateStatus');
-            exit;
         }
     }  
 }

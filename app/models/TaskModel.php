@@ -6,7 +6,7 @@ class TaskModel{
 
     private $file = 'config/fakeTasks.json';
 
-    public function createTask(array $data): void
+    /* public function createTask(array $data): void
     {
         foreach($data as $key => $value){
             if(empty($value)){
@@ -36,9 +36,21 @@ class TaskModel{
         if(file_put_contents($this->file, $json) === false){
             throw new Exception("Hubo un fallo al guardar la tarea. ");
         }
-    }
+    } */
 
     public function updateTask(int $id, array $data): void{
+        //validación de los datos
+        foreach($data as $key => $value){
+            if(empty($value)){
+                throw new Exception("Este campo $key no debe estar vacío!");
+            }
+        }
+        if(!isset($data['id']) || $data['id'] !== $id){
+            throw new Exception("El ID no coincide con el ID de la tarea a actualizar.");
+        } else {
+            $data[$key] = $value;
+        }
+
         //Leer el archivo JSON
         $tasks = [];
         if(file_exists($this->file)){
@@ -48,14 +60,7 @@ class TaskModel{
             $tasks = $json ?? [];
 
             //Busca la tarea a actualizar
-            $taskIndex = array_search($id, array_columns($tasks, 'id'));
-            foreach($data as $key => $value){
-                if(empty($value)){
-                    throw new Exception("El campo $key no puede estar vacío.");
-                } else {
-                    $tasks[$taskIndex][$key] = $value; //Actualiza el campo
-                }
-            }
+            
             //Guarda el archivo actualizado de nuevo en el JSON.
             $json = json_encode(file_exists($this->file) ? $tasks : [], JSON_PRETTY_PRINT);
             if(file_put_contents($this->file, $json) === false){

@@ -42,13 +42,8 @@ class TaskController extends ApplicationController{
     {
         if($_SERVER['REQUEST_METHOD'] === 'GET'){
             $taskId = (int)$this->getParam('id');
-            if(!$taskId){
-                $this->setFlash('error', 'ID de tarea no válido.');
-                header('Location: /task/');
-                exit;
-            }
             $taskModel = new TaskModel();
-            $task = $taskModel->getTaskById($taskId);
+            $task = $taskModel->getTaskById('task', $taskId);
             if(!$task){
                 $this->setFlash('error', 'Tarea no encontrada.');
                 header('Location: /task/');

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Gestor de Tareas</title>
+	<link rel="stylesheet" href="/fullstackphp-sprint3/S302/S3_02_DevTeam/web/stylesheets/layout.css">
 </head>
 <body>
 	<div class="container">
@@ -17,7 +17,49 @@
 			<?php unset($_SESSION['flash']['error']); ?>
 		<?php endif; ?>
 	</div>
-	<?php echo $this->content(); ?>
+
+    <!-- Sidebar lateral izquierda -->
+    <div class="sidebar">
+        <button onclick="location.href='/fullstackphp-sprint3/S302/S3_02_DevTeam/web/task/create'">
+            + Nueva Tarea
+        </button>
+        <div id="trash" class="trash" ondrop="dropUpdate(event, 'delete')" ondragover="allowDrop(event)">
+            🗑 Papelera
+        </div>
+    </div>
+
+    <!-- Area principal del tablero -->
+    <div class="main">
+        <!-- Mensajes flash para feedback al usuario -->
+        <?php if($flashSuccess = $_SESSION['flash']['success'] ?? null): ?>
+            <div id="flash-message" class="success"><?=htmlspecialchars($flashSuccess)?></div>
+            <?php unset($_SESSION['flash']['success']); ?>
+        <?php endif; ?>
+        <?php if($flashError = $_SESSION['flash']['error'] ?? null): ?>
+            <div id="flash-message" class="error"><?=htmlspecialchars($flashError)?></div>
+            <?php unset($_SESSION['flash']['error']); ?>
+        <?php endif; ?>
+
+        <h1>Lista de Tareas</h1>
+        <!-- Contenedor del tablero estilo Trello -->
+        <div class="board" style="display: flex; gap: 1rem;">
+            <!-- Columna: Pendiente -->
+            <div id="pendiente" ondrop="dropUpdate(event, 'pendiente')" ondragover="allowDrop(event)">
+                <h2>Pendiente</h2>
+            </div>
+            <!-- Columna: En Proceso -->
+            <div id="en_proceso" ondrop="dropUpdate(event, 'en_proceso')" ondragover="allowDrop(event)">
+                <h2>En Proceso</h2>
+            </div>
+            <!-- Columna: Completado -->
+            <div id="hecho" ondrop="dropUpdate(event, 'hecho')" ondragover="allowDrop(event)">
+                <h2>Completado</h2>
+            </div>
+        </div>
+        <!-- Aqui se inserta el contenido generado por read.phtml -->
+        <?php echo $this->content(); ?>
+    </div>
+
 <script src="/javascripts/flash.js"></script>
 </body>
 </html>

@@ -10,9 +10,14 @@
  * '/calendar' => 'calendar#index'
  */
 $routes = array(
-	'/' => 'task#index',
-	'/test' => 'test#index',
-	'/user' => 'user#index',
-	'/task' => 'task#index',
-	'/task/create' => 'task#create'
+    // Ruta principal que muestra el tablero de tareas (puedes cambiar a index si preferir)
+    '/' => 'task#read',
+    '/test' => 'test#index',
+    '/user' => 'user#index',
+    '/task' => 'task#index',
+    '/task/create' => 'task#create',
+    // Rutas para leer, eliminar y ver detalle de tareas
+    '/task/read' => 'task#read',
+    '/task/delete' => 'task#delete',
+    '/task/detalle' => 'task#detalle'
 );

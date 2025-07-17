@@ -1,0 +1,30 @@
+<?php
+// agarra la tarea que viene del controller (usando el getter magico del framework)
+$task = $this->task;
+// checa si la tarea existe y tiene id, si no muestra error y para tudo
+if (!isset($task) || !$task || !is_array($task) || empty($task['id'])) {
+    // si no hay tarea, muestra mensaje de error y sale
+    echo '<div class="detalle-tarea" style="text-align:center; color:#b04632; font-size:1.2rem;">No se encontro la tarea solicitada</div>';
+    return;
+}
+?>
+<link rel="stylesheet" href="/fullstackphp-sprint3/S302/S3_02_DevTeam/web/stylesheets/detalles.css">
+<div class="detalle-tarea">
+    <!-- link para volver al tablero principal -->
+    <a href="/fullstackphp-sprint3/S302/S3_02_DevTeam/web/" style="display:inline-block;margin-bottom:1rem;">Volver al tablero</a>
+    <!-- titulo de la tarea -->
+    <h2><?= htmlspecialchars($task['titulo']) ?></h2>
+    <!-- descripcion de la tarea -->
+    <p><?= htmlspecialchars($task['descripcion']) ?></p>
+    <!-- estado y botones de accion (update/delete) -->
+    <div style="margin-top:1rem; display:flex; align-items:center; gap:1rem;">
+        <span style="border:1px solid #333; padding:0.3rem 1.2rem; border-radius:4px; font-size:1em; background:#f4f5f7;">
+            <?= htmlspecialchars($task['estado']) ?>
+        </span>
+        <!-- boton update (U) -->
+        <button onclick="updateTask('<?= htmlspecialchars($task['id']) ?>')" title="Actualizar tarea" style="margin-left:8px;">U</button>
+        <!-- boton delete (D) -->
+        <button onclick="deleteTask('<?= htmlspecialchars($task['id']) ?>')" title="Eliminar tarea">D</button>
+    </div>
+</div>
+<!-- el enlace de volver permite regresar al tablero principal desde la vista de detalle --> 

@@ -1,25 +1,23 @@
 <?php 
-declare(strict_types=1);
+    declare(strict_types=1);
 
-class TaskController extends ApplicationController{
+    class TaskController extends ApplicationController{
 
-    //Las funciones públicas son genéricas proque los sufijos Action() sirven
-    //para asociarse a las rutas (por convención)
+    // Este controlador maneja las acciones relacionadas con las tareas
+    // Incluye metodos para listar, crear, leer, mostrar detalle y actualizar estado
+
+    // Metodo para mostrar todas las tareas
     public function indexAction(): void
     {
-        /*Acción asociada a la ruta principal del recurso (/task o /task/index)
-        Muestra un listado de todas las tareas.
-       */
-        $tasks = $this->model->getAll();
+        // Obtenemos todas las tareas usando el modelo
+        $tasks = $this->model->getAllTasks(); // Si tu modelo solo tem getAll(), troca aqui
         $this->view->tasks = $tasks;
-        //$this->view->render('task/index.phtml');
     }
 
-
+    // Metodo para crear una nueva tarea
     public function createAction(): void
     {
-        /*Acción asociada a la creación de un nuevo elemento
-        Procesa el guardado de la nueva tarea si es POST*/
+        // Si la peticion es POST, procesamos los datos
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
             $data = [
                 'titulo' => $this->_getParam('titulo'),
@@ -38,16 +36,35 @@ class TaskController extends ApplicationController{
             header('Location: /task/');
             exit;
         }
-        //$this->view->render('task/create.phtml');
     }
 
-    /* public function updateStatusAction(): void
+    // Metodo para actualizar el estado de una tarea (placeholder, puedes implementar la logica)
+    public function updateStatusAction(): void
     {
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
             $data = json_decode(file_get_contents('php://input'), true);
+            // Aqui puedes agregar la logica para actualizar el estado
         }
     }
- */  
-}
+
+    // Metodo para leer todas las tareas y pasarlas a la vista
+    public function readAction() {
+        $taskModel = new TaskModel();
+        $tasks = $taskModel->getAllTasks();
+        $this->view->tasks = $tasks;
+    }
+
+    // Metodo para mostrar el detalle de una tarea especifica
+    public function detalleAction() {
+        $id = isset($_GET['id']) ? $_GET['id'] : null;
+        $taskModel = new TaskModel();
+        $task = $taskModel->getTaskById($id);
+        $this->view->task = $task;
+        $this->view->disableLayout();
+        $this->view->render('task/detalle.phtml');
+        exit;
+    }
+        
+    }
 
 ?>

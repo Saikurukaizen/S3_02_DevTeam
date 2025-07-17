@@ -3,23 +3,17 @@ declare(strict_types=1);
 
 class TaskController extends ApplicationController{
 
-    //Las funciones públicas son genéricas proque los sufijos Action() sirven
-    //para asociarse a las rutas (por convención)
     public function indexAction(): void
     {
-        /*Acción asociada a la ruta principal del recurso (/task o /task/index)
-        Muestra un listado de todas las tareas.
-       */
+
         $tasks = $this->model->getAll();
         $this->view->tasks = $tasks;
-        //$this->view->render('task/index.phtml');
+
     }
 
 
     public function createAction(): void
     {
-        /*Acción asociada a la creación de un nuevo elemento
-        Procesa el guardado de la nueva tarea si es POST*/
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
             $data = [
                 'titulo' => $this->_getParam('titulo'),
@@ -29,7 +23,7 @@ class TaskController extends ApplicationController{
             $taskModel = new TaskModel();
 
             try{
-                $taskModel->createTask($data);
+                $taskModel->createTask($data, null);
                 $this->setFlash('success', 'Tarea guardada correctamente.');
             }
             catch(Exception $e){
@@ -38,16 +32,7 @@ class TaskController extends ApplicationController{
             header('Location: /task/');
             exit;
         }
-        //$this->view->render('task/create.phtml');
     }
-
-    /* public function updateStatusAction(): void
-    {
-        if($_SERVER['REQUEST_METHOD'] === 'POST'){
-            $data = json_decode(file_get_contents('php://input'), true);
-        }
-    }
- */  
 }
 
 ?>

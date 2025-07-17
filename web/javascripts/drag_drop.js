@@ -43,7 +43,7 @@ function deleteTask(data){
     .then(response => response.json())
     .then(data => {
         //Manejamos la respuesta del backend
-        if(data.success){
+        if(data.success === true){
             //Borrado con exito: ver si hace aqui un div alert
         } else{
             //Error al borrar: ver si hace aqui un div alert
@@ -59,7 +59,7 @@ function dropUpdate(ev, newStatus){
     var realId = taskDiv.getAttribute('data-task-id');
     var stDiv = ev.target;
 
-    if(taskId && stDiv){
+    if(taskDiv && stDiv){
         stDiv.appendChild(taskDiv);
         updateTask(realId, newStatus); 
     }
@@ -73,7 +73,7 @@ function updateTask(id, newStatus){
     })
     .then(response => response.json())
     .then(data => {
-        if(data.success){
+        if(data.success === true){
             //Actualizacion con éxito: ver si hacer un div alert
         } else {
             //Error al actualizar: ver si hacer un div alert

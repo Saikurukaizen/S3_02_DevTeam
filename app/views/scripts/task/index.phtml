@@ -1,0 +1,26 @@
+<?php
+declare(strict_types=1);
+?>
+<h1>Listado de tareas</h1>
+<div class="task-actions" style="margin-bottom: 1em;">
+    <a href="/task/create">
+        <button class="btn btn-primary" type="button">ADD TASK</button>
+    </a>        
+</div>
+
+<?php if (!empty($this->tasks)): ?>
+    <ul>
+    <?php foreach ($this->tasks as $task): ?>
+        <li>
+            <strong><?= htmlspecialchars($task['titulo']) ?></strong>
+            <br>
+            <?= htmlspecialchars($task['descripcion']) ?>
+            <br>
+            <?= htmlspecialchars($task['estado']) ?>
+        </li>
+    <?php endforeach; ?>
+    </ul>
+<?php else: ?>
+    <p>No existen tareas</p>
+<?php endif; ?>
+

@@ -12,13 +12,14 @@ class TaskController extends ApplicationController{
        */
         $tasks = $this->model->getAll();
         $this->view->tasks = $tasks;
+        //$this->view->render('task/index.phtml');
     }
 
-    /*Método para instanciar el TaskModel con los $data al createTask()
+
     public function createAction(): void
     {
         /*Acción asociada a la creación de un nuevo elemento
-        Procesa el guardado de la nueva tarea si es POST
+        Procesa el guardado de la nueva tarea si es POST*/
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
             $data = [
                 'titulo' => $this->_getParam('titulo'),
@@ -26,20 +27,27 @@ class TaskController extends ApplicationController{
                 'estado' => $this->_getParam('estado')
             ];
             $taskModel = new TaskModel();
-            $taskModel->createTask($data);
-        }
-    }*/
 
-    public function updateStatusAction(): void
+            try{
+                $taskModel->createTask($data);
+                $this->setFlash('success', 'Tarea guardada correctamente.');
+            }
+            catch(Exception $e){
+                $this->setFlash('error', 'Error al guardar la tarea: ' . $e->getMessage());
+            }
+            header('Location: /task/');
+            exit;
+        }
+        //$this->view->render('task/create.phtml');
+    }
+
+    /* public function updateStatusAction(): void
     {
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
             $data = json_decode(file_get_contents('php://input'), true);
         }
     }
-
-    
-
-    
+ */  
 }
 
 ?>

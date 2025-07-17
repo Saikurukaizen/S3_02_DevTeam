@@ -6,6 +6,18 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
+	<div class="container">
+		<!-- Definir estilos de la alerta -->
+		<?php if($flashSuccess = $_SESSION['flash']['success'] ?? null): ?>
+			<div id="flash-message" class="success"><?=htmlspecialchars($flashSuccess)?></div>
+			<?php unset($_SESSION['flash']['success']); ?>
+		<?php endif; ?>
+		<?php if($flashError = $_SESSION['flash']['error'] ?? null): ?>
+			<div id="flash-message" class="error"><?=htmlspecialchars($flashError)?></div>
+			<?php unset($_SESSION['flash']['error']); ?>
+		<?php endif; ?>
+	</div>
 	<?php echo $this->content(); ?>
+<script src="/javascripts/flash.js"></script>
 </body>
 </html>

@@ -15,9 +15,9 @@ $routes = array(
     '/test' => 'test#index',
     '/user' => 'user#index',
     '/task' => 'task#index',
-    '/task/create' => 'task#create',
     // Rutas para leer, eliminar y ver detalle de tareas
     '/task/read' => 'task#read',
     '/task/delete' => 'task#delete',
+    // Ruta para ver el detalle de una tarea por id
     '/task/detalle' => 'task#detalle'
 );

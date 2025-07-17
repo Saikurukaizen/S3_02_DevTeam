@@ -28,3 +28,36 @@ if (!isset($task) || !$task || !is_array($task) || empty($task['id'])) {
     </div>
 </div>
 <!-- el enlace de volver permite regresar al tablero principal desde la vista de detalle --> 
+<script>
+// Funcion para eliminar la tarea con confirmacion y AJAX
+function deleteTask(id) {
+    // Pregunta al usuario si realmente quiere borrar
+    if (!confirm('Seguro que quieres eliminar esta tarea? Esta accion no se puede deshacer.')) {
+        // Si cancela, no hace nada
+        return;
+    }
+    // Hace la peticion AJAX al backend usando fetch
+    fetch('/fullstackphp-sprint3/S302/S3_02_DevTeam/web/task/delete', {
+        method: 'POST', // Usamos POST por seguridad
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ taskId: id }) // Enviamos el id en JSON
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Si el backend responde exito
+        if (data.success) {
+            // Redirige al tablero principal (read)
+            window.location.href = '/fullstackphp-sprint3/S302/S3_02_DevTeam/web/';
+        } else {
+            // Si hubo error, muestra mensaje
+            alert('Error al eliminar la tarea: ' + (data.message || 'Intenta de nuevo.'));
+        }
+    })
+    .catch(err => {
+        // Si falla la peticion, muestra error generico
+        alert('No se pudo conectar con el servidor para eliminar la tarea.');
+    });
+}
+</script> 

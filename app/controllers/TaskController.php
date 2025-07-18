@@ -64,25 +64,17 @@ class TaskController extends ApplicationController
         exit;
     }
     
-    public function updateStatusAction(): void
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data = json_decode(file_get_contents('php://input'), true);
-        }
-        header('Location: /task/');
-        exit;
-    }
     public function updateAction(): void
     {
         if($_SERVER['REQUEST_METHOD'] === 'GET'){
-            $taskId = (int)$this->getParam('id');
+            $taskId = (int)$this->_getParam('id');
             if(!$taskId){
                 $this->setFlash('error', 'ID de tarea no válido.');
                 header('Location: /task/');
                 exit;
             }
             $taskModel = new TaskModel();
-            $task = $taskModel->getTaskById($taskId);
+            $task = $taskModel->getTaskById('task', $taskId);
             if(!$task){
                 $this->setFlash('error', 'Tarea no encontrada.');
                 header('Location: /task/');
@@ -95,14 +87,11 @@ class TaskController extends ApplicationController
             $data = json_decode(file_get_contents('php://input'), true);
             $taskModel = new TaskModel();
             try{
-                $taskModel->createTask($data, null);
-                $this->setFlash('success', 'Tarea guardada correctamente.');
                 $taskModel->updateTask($data['id'], $data);
                 $this->setFlash('success', 'Tarea actualizada correctamente.');
             }
             catch(Exception $e){
                 $this->setFlash('error', 'Error al actualizar la tarea: ' . $e->getMessage());
-                $this->setFlash('error', 'Error al guardar la tarea: ' . $e->getMessage());
             }
             header('Location: /task/');
         }

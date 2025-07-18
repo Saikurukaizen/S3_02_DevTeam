@@ -22,8 +22,8 @@ $routes = array(
     '/task/read' => 'task#read',
 	'/task/update' => 'task#update',
 	//creo una ruta específica para el drag & drop de las tareas (puede ser opcional).
-	'/task/updateStatus' => 'task#updateStatus'
-	'/task/detalle' => 'task#detalle'
+	'/task/updateStatus' => 'task#updateStatus',
+	'/task/detalle' => 'task#detalle',
     '/task/delete' => 'task#delete',
     // Ruta para ver el detalle de una tarea por id
     

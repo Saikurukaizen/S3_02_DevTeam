@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insertar Tarea</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Crear Tarea</h1>
+        
+    </div>
+    <form method="post" action="/task/create">
+        <label for="titulo">Título</label>
+        <input type="text" id="titulo" name="titulo" placeholder="Título..." maxlength="50" required>
+        <br>
+        <label for="descripcion">Descripción de la tarea</label>
+        <textarea name="descripcion" id="descripcion" placeholder="Añade una descripción..." maxlength="500"></textarea>
+        <br>
+        <select name="estado" id="estado" required>Estado
+            <option value=""></option>
+            <option value="pendiente" class="pendiente">Pendiente</option>
+            <option value="en_proceso" class="en_proceso">En Proceso</option>
+            <option value="completado" class="completado">Completado</option>
+        </select>
+        <br>
+        <button type="submit">CREAR</button>
+        <input type="hidden" name="action" value="createTask">
+    </form> 
+</body>
+</html>
+

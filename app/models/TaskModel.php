@@ -13,20 +13,6 @@
             $this->file = ROOT_PATH . '/config/fakeTasks.json';
         }
 
-        // --- GET ALL TASKS ---
-        // Metodo que lee todas las tareas guardadas en el archivo JSON
-        // Abre el archivo definido en $this->file
-        // Si existe, lo lee y decodifica el contenido JSON a un array PHP
-        // Si no existe o esta vacio, devuelve un array vacio
-        public function getAllTasks() {
-            $tasks = []; // array por defecto vacio
-            if (file_exists($this->file)) { // verifica si el archivo existe
-                $content = file_get_contents($this->file); // lee contenido del archivo
-                $tasks = json_decode($content, true); // convierte JSON a array
-            }
-            return $tasks;
-        }
-
         // Metodo para crear una nueva tarea y guardarla en el archivo JSON
         public function createTask(array $data): void
         {
@@ -69,36 +55,21 @@
             return null;
         }
 
-        // --- DELETE BY ID ---
-        // Metodo para eliminar una tarea por su id
-        // Lee todas las tareas, busca la que coincide con el id, la borra y guarda el nuevo array en el JSON
-        // Devuelve true si borro, false si no encontro el id
-        public function deleteTaskById($id) {
-            // Lee todas las tareas
-            $tasks = $this->getAllTasks();
-            $encontro = false; // bandera para saber si borro
-            // Recorre el array y busca la tarea por id
-            foreach ($tasks as $i => $task) {
-                if (isset($task['id']) && $task['id'] == $id) {
-                    // Si encuentra, la elimina del array
-                    unset($tasks[$i]);
-                    $encontro = true;
-                    break;
-                }
+        // --- GET ALL TASKS ---
+        // Metodo que lee todas las tareas guardadas en el archivo JSON
+        // Abre el archivo definido en $this->file
+        // Si existe, lo lee y decodifica el contenido JSON a un array PHP
+        // Si no existe o esta vacio, devuelve un array vacio
+        public function getAllTasks() {
+            $tasks = []; // array por defecto vacio
+            if (file_exists($this->file)) { // verifica si el archivo existe
+                $content = file_get_contents($this->file); // lee contenido del archivo
+                $tasks = json_decode($content, true); // convierte JSON a array
             }
-            if ($encontro) {
-                // Reindexa el array para que no queden huecos
-                $tasks = array_values($tasks);
-                // Guarda el array actualizado en el archivo JSON
-                file_put_contents($this->file, json_encode($tasks, JSON_PRETTY_PRINT));
-                return true; // borro bien
-            } else {
-                return false; // no encontro la tarea
-            }
+            return $tasks;
         }
-    } */
 
-    public function updateTask(int $id, array $data): void{
+        public function updateTask(int $id, array $data): void{
         //validación de los datos
         foreach($data as $key => $value){
             if(empty($value)){
@@ -148,7 +119,38 @@
             }
         }
     }
+
+    // --- DELETE BY ID ---
+    // Metodo para eliminar una tarea por su id
+    // Lee todas las tareas, busca la que coincide con el id, la borra y guarda el nuevo array en el JSON
+    // Devuelve true si borro, false si no encontro el id
+    public function deleteTaskById($id) {
+        // Lee todas las tareas
+        $tasks = $this->getAllTasks();
+        $encontro = false; // bandera para saber si borro
+        // Recorre el array y busca la tarea por id
+        foreach ($tasks as $i => $task) {
+            if (isset($task['id']) && $task['id'] == $id) {
+                // Si encuentra, la elimina del array
+                unset($tasks[$i]);
+                $encontro = true;
+                break;
+            }
+        }
+        if ($encontro) {
+            // Reindexa el array para que no queden huecos
+            $tasks = array_values($tasks);
+            // Guarda el array actualizado en el archivo JSON
+            file_put_contents($this->file, json_encode($tasks, JSON_PRETTY_PRINT));
+            return true; // borro bien
+        } else {
+            return false; // no encontro la tarea
+        }
+    }
 }
+
+    
+
 
 ?>        
 

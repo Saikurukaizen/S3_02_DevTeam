@@ -15,7 +15,6 @@
             $this->view->tasks = $tasks;
         }
 
-
         /* 
         public function createAction(): void
         {
@@ -48,6 +47,7 @@
 
     public function updateAction(): void
     {
+
         if($_SERVER['REQUEST_METHOD'] === 'GET'){
             $taskId = (int)$this->getParam('id');
             if(!$taskId){
@@ -71,11 +71,16 @@
             $taskModel = new TaskModel();
 
             try{
+                $taskModel->createTask($data, null);
+                $this->setFlash('success', 'Tarea guardada correctamente.');
+
                 $taskModel->updateTask($data['id'], $data);
                 $this->setFlash('success', 'Tarea actualizada correctamente.');
+
             }
             catch(Exception $e){
                 $this->setFlash('error', 'Error al actualizar la tarea: ' . $e->getMessage());
+                $this->setFlash('error', 'Error al guardar la tarea: ' . $e->getMessage());
             }
             header('Location: /task/');
         }

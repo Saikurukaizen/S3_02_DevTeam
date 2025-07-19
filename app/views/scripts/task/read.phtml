@@ -13,7 +13,7 @@ foreach ($this->tasks as $task) {
         data-estado="<?= htmlspecialchars($task['estado']) ?>"
         draggable="true" 
         ondragstart="drag(event)"
-        onclick="window.location.href='/fullstackphp-sprint3/S302/S3_02_DevTeam/web/task/detalle?id=<?= htmlspecialchars($task['id']) ?>'"
+        onclick="window.location.href='<?= url('task/detalle') ?>?id=<?= htmlspecialchars($task['id']) ?>'"
         style="cursor:pointer"
     >
         <!-- Titulo de la tarea -->
@@ -31,12 +31,21 @@ foreach ($this->tasks as $task) {
 // Busca todos los elementos con clase task y los coloca en el div correspondiente
 // Los ids de columna deben coincidir con los valores de data-estado
 window.addEventListener('DOMContentLoaded', () => {
+    console.log('Organizando tareas en las columnas...');
+    
     document.querySelectorAll('.task').forEach(card => {
         const estado = card.getAttribute('data-estado');
+        console.log('Tarea con estado:', estado);
+        
         const columna = document.getElementById(estado);
         if (columna) {
+            console.log('Moviendo a columna:', estado);
             columna.appendChild(card);
+        } else {
+            console.warn('Columna no encontrada para estado:', estado);
         }
     });
+    
+    console.log('Organización completada!');
 });
 </script>

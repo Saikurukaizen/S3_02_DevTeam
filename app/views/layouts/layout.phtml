@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Gestor de Tareas</title>
-	<link rel="stylesheet" href="/fullstackphp-sprint3/S302/S3_02_DevTeam/web/stylesheets/layout.css">
+	<link rel="stylesheet" href="<?= asset('stylesheets/layout.css') ?>">
 </head>
 <body>
 
     <!-- Sidebar lateral izquierda -->
     <div class="sidebar">
-        <button onclick="location.href='/fullstackphp-sprint3/S302/S3_02_DevTeam/web/task/create'">
+        <button onclick="location.href='<?= url('task/create') ?>'">
             + Nueva Tarea
         </button>
 
@@ -23,11 +23,23 @@
     <div class="main">
         <!-- Mensajes flash para feedback al usuario -->
         <?php if($flashSuccess = $_SESSION['flash']['success'] ?? null): ?>
-            <div id="flash-message" class="success"><?=htmlspecialchars($flashSuccess)?></div>
+            <div id="flash-message" class="flash-message success">
+                <div class="flash-content">
+                    <div class="flash-icon">✅</div>
+                    <div class="flash-text"><?=htmlspecialchars($flashSuccess)?></div>
+                    <button class="flash-close" onclick="closeFlashMessage()">×</button>
+                </div>
+            </div>
             <?php unset($_SESSION['flash']['success']); ?>
         <?php endif; ?>
         <?php if($flashError = $_SESSION['flash']['error'] ?? null): ?>
-            <div id="flash-message" class="error"><?=htmlspecialchars($flashError)?></div>
+            <div id="flash-message" class="flash-message error">
+                <div class="flash-content">
+                    <div class="flash-icon">❌</div>
+                    <div class="flash-text"><?=htmlspecialchars($flashError)?></div>
+                    <button class="flash-close" onclick="closeFlashMessage()">×</button>
+                </div>
+            </div>
             <?php unset($_SESSION['flash']['error']); ?>
         <?php endif; ?>
 
@@ -63,6 +75,39 @@
         <?php echo $this->content(); ?>
     </div>
 
-<script src="/javascripts/flash.js"></script>
+<!-- Configuración de URLs para JavaScript -->
+<script>
+    // Configuración de URLs base para compatibilidad entre XAMPP y PHP Server
+    window.BASE_URL = '<?= BASE_URL ?>';
+    
+    // Función helper para construir URLs en JavaScript
+    function buildUrl(path) {
+        path = path.replace(/^\//, '');
+        return window.BASE_URL + '/' + path;
+    }
+    
+    // Función para cerrar mensajes flash
+    function closeFlashMessage() {
+        const flashMessage = document.getElementById('flash-message');
+        if (flashMessage) {
+            flashMessage.classList.add('hiding');
+            setTimeout(() => {
+                flashMessage.remove();
+            }, 300);
+        }
+    }
+    
+    // Auto-cerrar mensajes flash después de 5 segundos
+    document.addEventListener('DOMContentLoaded', function() {
+        const flashMessage = document.getElementById('flash-message');
+        if (flashMessage) {
+            setTimeout(() => {
+                closeFlashMessage();
+            }, 5000);
+        }
+    });
+</script>
+
+<script src="<?= asset('javascripts/flash.js') ?>"></script>
 </body>
 </html>

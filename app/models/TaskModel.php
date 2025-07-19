@@ -70,15 +70,18 @@
         }
 
         public function updateTask(int $id, array $data): void{
-        //validación de los datos
-        foreach($data as $key => $value){
-            if(empty($value)){
-                throw new Exception("Este campo $key no debe estar vacío!");
-            }
+        //validación de los datos - solo título y estado son obligatorios
+        if(empty($data['titulo'])){
+            throw new Exception("El título no puede estar vacío.");
         }
+        if(empty($data['estado'])){
+            throw new Exception("El estado no puede estar vacío.");
+        }
+        
         if(!isset($data['id']) || $data['id'] !== $id){
             throw new Exception("El ID no coincide con el ID de la tarea a actualizar.");
         } 
+        
         //Leer el archivo JSON
         if(file_exists($this->file)){
             $tasks = json_decode(file_get_contents($this->file), true) ?? [];

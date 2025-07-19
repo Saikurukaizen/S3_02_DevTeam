@@ -20,11 +20,12 @@ $routes = array(
     '/task' => 'task#index',
     // Rutas para leer, eliminar y ver detalle de tareas
     '/task/read' => 'task#read',
+    '/task/create' => 'task#create',
 	'/task/update' => 'task#update',
 	//creo una ruta específica para el drag & drop de las tareas (puede ser opcional).
 	'/task/updateStatus' => 'task#updateStatus',
 	'/task/detalle' => 'task#detalle',
-    '/task/delete' => 'task#delete',
+    '/task/delete' => 'task#delete', // Solo POST para eliminar directamente
     // Ruta para ver el detalle de una tarea por id
     
 

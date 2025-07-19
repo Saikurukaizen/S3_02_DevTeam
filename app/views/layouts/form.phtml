@@ -10,7 +10,7 @@
         <h1>Crear Tarea</h1>
         
     </div>
-    <form method="post" action="/task/create">
+    <form method="post" action="<?= url('task/create') ?>">
         <label for="titulo">Título</label>
         <input type="text" id="titulo" name="titulo" placeholder="Título..." maxlength="50" required>
         <br>
@@ -21,7 +21,7 @@
             <option value=""></option>
             <option value="pendiente" class="pendiente">Pendiente</option>
             <option value="en_proceso" class="en_proceso">En Proceso</option>
-            <option value="completado" class="completado">Completado</option>
+            <option value="hecho" class="hecho">Completado</option>
         </select>
         <br>
         <button type="submit">CREAR</button>

@@ -12,40 +12,14 @@ foreach ($this->tasks as $task) {
         data-task-id="<?= htmlspecialchars($task['id']) ?>" 
         data-estado="<?= htmlspecialchars($task['estado']) ?>"
         draggable="true" 
-        ondragstart="drag(event)"
-        onclick="window.location.href='<?= url('task/detalle') ?>?id=<?= htmlspecialchars($task['id']) ?>'"
-        style="cursor:pointer"
-    >
-        <!-- Titulo de la tarea -->
-        <strong><?= htmlspecialchars($task['titulo']) ?></strong><br>
-        <!-- Descripcion de la tarea -->
-        <small><?= htmlspecialchars($task['descripcion']) ?></small>
-        <!-- No mostrar estado ni botones aqui, solo preview -->
+        ondragstart="drag(event)">
+        <a href="<?=url('task/detalle')?>?id=<?= htmlspecialchars($task['id']) ?>">
+            <strong><?= htmlspecialchars($task['titulo']) ?></strong>
+            <small><?= htmlspecialchars($task['descripcion']) ?></small>
+        </a>
     </div>
     <?php
     $i++;
 }
 ?>
-<script>
-// Script para mover las tareas a su columna por estado
-// Busca todos los elementos con clase task y los coloca en el div correspondiente
-// Los ids de columna deben coincidir con los valores de data-estado
-window.addEventListener('DOMContentLoaded', () => {
-    console.log('Organizando tareas en las columnas...');
-    
-    document.querySelectorAll('.task').forEach(card => {
-        const estado = card.getAttribute('data-estado');
-        console.log('Tarea con estado:', estado);
-        
-        const columna = document.getElementById(estado);
-        if (columna) {
-            console.log('Moviendo a columna:', estado);
-            columna.appendChild(card);
-        } else {
-            console.warn('Columna no encontrada para estado:', estado);
-        }
-    });
-    
-    console.log('Organización completada!');
-});
-</script>
+<script src="/web/javascripts/task_organize.js"></script>

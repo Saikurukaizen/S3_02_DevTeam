@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Gestor de Tareas</title>
-	<link rel="stylesheet" href="<?= asset('stylesheets/layout.css') ?>">
+	<link rel="stylesheet" src="./stylesheets/layout.css">
 </head>
 <body>
 
     <!-- Sidebar lateral izquierda -->
     <div class="sidebar">
-        <button onclick="location.href='<?= url('task/create') ?>'">
+        <button><a href="<?=url('task/create')?>">
             + Nueva Tarea
-        </button>
+        </a></button>
 
         <!-- Icono de papelera para Drop futuro -->
         <div id="trash" class="trash" ondrop="dropUpdate(event, 'delete')" ondragover="allowDrop(event)">
@@ -75,39 +75,11 @@
         <?php echo $this->content(); ?>
     </div>
 
-<!-- Configuración de URLs para JavaScript -->
-<script>
-    // Configuración de URLs base para compatibilidad entre XAMPP y PHP Server
-    window.BASE_URL = '<?= BASE_URL ?>';
-    
-    // Función helper para construir URLs en JavaScript
-    function buildUrl(path) {
-        path = path.replace(/^\//, '');
-        return window.BASE_URL + '/' + path;
-    }
-    
-    // Función para cerrar mensajes flash
-    function closeFlashMessage() {
-        const flashMessage = document.getElementById('flash-message');
-        if (flashMessage) {
-            flashMessage.classList.add('hiding');
-            setTimeout(() => {
-                flashMessage.remove();
-            }, 300);
-        }
-    }
-    
-    // Auto-cerrar mensajes flash después de 5 segundos
-    document.addEventListener('DOMContentLoaded', function() {
-        const flashMessage = document.getElementById('flash-message');
-        if (flashMessage) {
-            setTimeout(() => {
-                closeFlashMessage();
-            }, 5000);
-        }
-    });
-</script>
 
-<script src="<?= asset('javascripts/flash.js') ?>"></script>
+
+<script src="/web/javascripts/buildUrl.js"></script>
+<script src="/web/javascripts/task_organize.js"></script>
+<script src="/web/javascripts/drag_drop.js"></script>
+<script src="/web/javascripts/flash.js"></script>
 </body>
 </html>

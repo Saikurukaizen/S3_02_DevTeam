@@ -2,26 +2,20 @@
     {
         "id": 1,
         "titulo": "Empezar el CRUD",
-        "descripcion": "Primera tarea de prueba sobre empezar el CRUD",
-        "estado": "in_process"
-    },
-    {
-        "id": 2,
-        "titulo": "Asignar la tarea a mi calendario",
-        "descripcion": "Segunda tarea sobre asignar la tarea a mi calendario",
-        "estado": "in_process"
+        "descripcion": "EDICAO!!!! Primera tarea de prueba sobre empezar el CRUD",
+        "estado": "pendiente"
     },
     {
         "id": 3,
         "titulo": "Terminar el CRUD",
         "descripcion": "Tercera tarea sobre terminar el CRUD",
-        "estado": "todo"
+        "estado": "pendiente"
     },
     {
         "id": 4,
         "titulo": "Revisar el c\u00f3digo",
         "descripcion": "Cuarta tarea sobre revisar el c\u00f3digo",
-        "estado": "done"
+        "estado": "hecho"
     },
     {
         "titulo": "La tarea de guardar",
@@ -30,9 +24,9 @@
         "id": 5
     },
     {
-        "titulo": "La tarea de guardar",
-        "descripcion": "sfdgvhbj",
-        "estado": "pendiente",
+        "titulo": "La tarea de guardar em processo",
+        "descripcion": "teste de completo",
+        "estado": "en_proceso",
         "id": 6
     },
     {
@@ -44,13 +38,13 @@
     {
         "titulo": "Segunda prueba de guardado",
         "descripcion": "Comprobar persistencia en JSON",
-        "estado": "en_proceso",
+        "estado": "pendiente",
         "id": 8
     },
     {
         "titulo": "Tercera prueba de guardado",
         "descripcion": "Comprobar persistencia en JSON",
-        "estado": "en_proceso",
+        "estado": "hecho",
         "id": 9
     },
     {
@@ -61,15 +55,9 @@
     },
     {
         "titulo": "Cuarta prueba de guardado",
-        "descripcion": "qwerty",
-        "estado": "en_proceso",
+        "descripcion": "trste de teste",
+        "estado": "hecho",
         "id": 11
-    },
-    {
-        "titulo": "saber que co\u00f1o hacer",
-        "descripcion": "Puta URL",
-        "estado": "en_proceso",
-        "id": 12
     },
     {
         "titulo": "saber que co\u00f1o hacer2",
@@ -84,15 +72,39 @@
         "id": 14
     },
     {
-        "titulo": "Creo saber que hacer3",
-        "descripcion": "Opcioasdhnal",
-        "estado": "en_proceso",
+        "titulo": "Hacer Boton",
+        "descripcion": "teste de sabado a tarde",
+        "estado": "pendiente",
         "id": 15
     },
     {
         "titulo": "ense\u00f1ar a Leandro el boton",
         "descripcion": "Me la pela",
-        "estado": "completado",
+        "estado": "hecho",
         "id": 16
+    },
+    {
+        "titulo": "sabado a tarde",
+        "descripcion": "tarefa criada no sabado",
+        "estado": "pendiente",
+        "id": 17
+    },
+    {
+        "titulo": "Ajuste da tarefa",
+        "descripcion": "ajustando tela de criacao de tarefa",
+        "estado": "en_proceso",
+        "id": 18
+    },
+    {
+        "titulo": "teste de tela para pendente",
+        "descripcion": "msg na tela",
+        "estado": "pendiente",
+        "id": 19
+    },
+    {
+        "titulo": "mensagem de sucesso",
+        "descripcion": "testar box de sucesso",
+        "estado": "hecho",
+        "id": 20
     }
 ]

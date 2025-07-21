@@ -1,63 +1,131 @@
-<?php
-// agarra la tarea que viene del controller (usando el getter magico del framework)
-$task = $this->task;
-// checa si la tarea existe y tiene id, si no muestra error y para tudo
-if (!isset($task) || !$task || !is_array($task) || empty($task['id'])) {
-    // si no hay tarea, muestra mensaje de error y sale
-    echo '<div class="detalle-tarea" style="text-align:center; color:#b04632; font-size:1.2rem;">No se encontro la tarea solicitada</div>';
-    return;
-}
-?>
-<link rel="stylesheet" href="/fullstackphp-sprint3/S302/S3_02_DevTeam/web/stylesheets/detalles.css">
-<div class="detalle-tarea">
-    <!-- link para volver al tablero principal -->
-    <a href="/fullstackphp-sprint3/S302/S3_02_DevTeam/web/" style="display:inline-block;margin-bottom:1rem;">Volver al tablero</a>
-    <!-- titulo de la tarea -->
-    <h2><?= htmlspecialchars($task['titulo']) ?></h2>
-    <!-- descripcion de la tarea -->
-    <p><?= htmlspecialchars($task['descripcion']) ?></p>
-    <!-- estado y botones de accion (update/delete) -->
-    <div style="margin-top:1rem; display:flex; align-items:center; gap:1rem;">
-        <span style="border:1px solid #333; padding:0.3rem 1.2rem; border-radius:4px; font-size:1em; background:#f4f5f7;">
-            <?= htmlspecialchars($task['estado']) ?>
-        </span>
-        <!-- boton update (U) -->
-        <button onclick="updateTask('<?= htmlspecialchars($task['id']) ?>')" title="Actualizar tarea" style="margin-left:8px;">U</button>
-        <!-- boton delete (D) -->
-        <button onclick="deleteTask('<?= htmlspecialchars($task['id']) ?>')" title="Eliminar tarea">D</button>
-    </div>
-</div>
-<!-- el enlace de volver permite regresar al tablero principal desde la vista de detalle --> 
-<script>
-// Funcion para eliminar la tarea con confirmacion y AJAX
-function deleteTask(id) {
-    // Pregunta al usuario si realmente quiere borrar
-    if (!confirm('Seguro que quieres eliminar esta tarea? Esta accion no se puede deshacer.')) {
-        // Si cancela, no hace nada
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Tarea - Gestor de Tareas</title>
+    <link rel="stylesheet" href="<?= asset('stylesheets/layout.css') ?>">
+</head>
+<body>
+    <?php
+    // Obtiene la tarea que viene del controller (usando el getter mágico del framework)
+    $task = $this->task;
+    // Verifica si la tarea existe y tiene id, si no muestra error y termina
+    if (!isset($task) || !$task || !is_array($task) || empty($task['id'])) {
+        // Si no hay tarea, muestra mensaje de error y sale
+        echo '<div class="detalle-tarea"><h1>No se encontró la tarea solicitada</h1></div>';
         return;
     }
-    // Hace la peticion AJAX al backend usando fetch
-    fetch('/fullstackphp-sprint3/S302/S3_02_DevTeam/web/task/delete', {
-        method: 'POST', // Usamos POST por seguridad
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ taskId: id }) // Enviamos el id en JSON
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Si el backend responde exito
-        if (data.success) {
-            // Redirige al tablero principal (read)
-            window.location.href = '/fullstackphp-sprint3/S302/S3_02_DevTeam/web/';
-        } else {
-            // Si hubo error, muestra mensaje
-            alert('Error al eliminar la tarea: ' + (data.message || 'Intenta de nuevo.'));
+    ?>
+    
+    <div class="create-task-page">
+        <div class="create-task-container">
+            <h1>Detalle de Tarea</h1>
+            
+            <form class="create-task-form">
+                <div class="form-group">
+                    <label for="titulo">Título</label>
+                    <input type="text" id="titulo" name="titulo" 
+                           value="<?= htmlspecialchars($task['titulo']) ?>" 
+                           readonly style="background-color: #f8f9fa; cursor: not-allowed;">
+                </div>
+                
+                <div class="form-group">
+                    <label for="descripcion">Descripción</label>
+                    <textarea name="descripcion" id="descripcion" 
+                              readonly style="background-color: #f8f9fa; cursor: not-allowed; resize: none;" rows="4"><?= htmlspecialchars($task['descripcion']) ?></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="estado">Estado</label>
+                    <select name="estado" id="estado" disabled style="background-color: #f8f9fa; cursor: not-allowed;">
+                        <option value="pendiente" <?= $task['estado'] === 'pendiente' ? 'selected' : '' ?>>Pendiente</option>
+                        <option value="en_proceso" <?= $task['estado'] === 'en_proceso' ? 'selected' : '' ?>>En Proceso</option>
+                        <option value="hecho" <?= $task['estado'] === 'hecho' ? 'selected' : '' ?>>Completado</option>
+                    </select>
+                </div>
+                
+                <div class="form-actions">
+                    <a href="<?= url('task/update') ?>?id=<?= htmlspecialchars($task['id']) ?>" class="btn-create">
+                        Editar Tarea
+                    </a>
+                    <button type="button" class="btn-cancel delete-btn" 
+                            onclick="confirmarEliminacion(<?= htmlspecialchars($task['id']) ?>)">
+                        Excluir Tarea
+                    </button>
+                    <a href="<?= url('') ?>" class="btn-cancel">
+                        Volver
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        function confirmarEliminacion(taskId) {
+            // Crear un modal personalizado en lugar del confirm() del navegador
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0,0,0,0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+            `;
+            
+            const modalContent = document.createElement('div');
+            modalContent.style.cssText = `
+                background-color: white;
+                padding: 2rem;
+                border-radius: 8px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                max-width: 400px;
+                width: 90%;
+                text-align: center;
+            `;
+            
+            modalContent.innerHTML = `
+                <h3 style="margin-bottom: 1rem; color: #172b4d; font-size: 1.2rem;">Confirmar Eliminación</h3>
+                <p style="margin-bottom: 2rem; color: #6c757d; line-height: 1.5;">¿Estás seguro de que quieres eliminar esta tarea? Esta acción no se puede deshacer.</p>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <button onclick="deleteTask(${taskId}); this.closest('.modal').remove();" 
+                            style="background-color: #dc3545; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem; min-width: 100px; transition: all 0.2s ease;">
+                        Sí, Eliminar
+                    </button>
+                    <button onclick="this.closest('.modal').remove()" 
+                            style="background-color: #6c757d; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem; min-width: 100px; transition: all 0.2s ease;">
+                        Cancelar
+                    </button>
+                </div>
+            `;
+            
+            modal.className = 'modal';
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
         }
-    })
-    .catch(err => {
-        // Si falla la peticion, muestra error generico
-        alert('No se pudo conectar con el servidor para eliminar la tarea.');
-    });
-}
-</script> 
+        
+        function deleteTask(taskId) {
+            // Crear un formulario temporal para hacer POST
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '<?= url('task/delete') ?>';
+            
+            // Agregar el campo ID
+            const idInput = document.createElement('input');
+            idInput.type = 'hidden';
+            idInput.name = 'id';
+            idInput.value = taskId;
+            
+            form.appendChild(idInput);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    </script>
+</body>
+</html>
+ 

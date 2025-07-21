@@ -4,6 +4,9 @@ error_reporting(E_ALL|E_STRICT);
 ini_set('display_errors', 1);
 date_default_timezone_set('CET');
 
+// Incluir configuracion de entorno para compatibilidad XAMPP/PHP Server
+include(realpath(dirname(__FILE__) . '/../config/environment.inc.php'));
+
 // defines the web root
 define('WEB_ROOT', substr($_SERVER['SCRIPT_NAME'], 0, strpos($_SERVER['SCRIPT_NAME'], '/index.php')));
 // defindes the path to the files

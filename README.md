@@ -1,34 +1,148 @@
-# PHP initial Project
-Main structure of php project. Folders / files:
-- **app**
-  - **controllers**
-  - **models**
-  - **views**
-- **config**
-- **lib**
-  - **base**
-- **web**
+# PHP Task Manager
+
+## 👤Bootcamp Coleagues
+Developed by:
+  . Marc Sanchez
+  . Leandro Da Silva
+
+## 📄 Project Review
+We're created this Trello's style Task Manager, using a PHP main structure called
+*Php Initial Project* [Github Repository Link](https://github.com/IT-Academy-BCN/phpInitialDemo)
+
+We made such functionalities as CRUD actions/methods, JavaScript's Drag & Drop scripts using AJAX, automatic
+server detections, facade database persistence and so on.
+
+## 🎯 Keywords
+. CRUD
+. MVC
+. GET/POST requests
+. Drag & Drop
+. Developer Team
+. Gitflow
+. features & branches
+. Terminal Command Lines
+
+## 🛠️ Stack Tech
+- PHP Server & XAMPP for server selections
+- PHP 8.3 for Backend
+- TailwindCSS v4.0 for Web Design
+- JavaScript for extra functions
+- Gitflow as Roadmap Methodology
+- LucidChart for use's cases & design roadmap
+- IDE: Visual Studio Code
+- Git & GitHub
+
+## 📋 Requisitos
+- Local Server for PHP compilation. You can use XAMPP or initialize an PHP Server using the next command-line argument:
+
+```bash
+
+php -S localhost:8000
+
+```
+
+## 🛠️ How to Install
+- Open your terminal command-line in a empyu project and clone the repository:
+
+```bash
+
+git clone https://github.com/Saikurukaizen/S3_02_DevTeam
+
+```
+
+- Start your server and open your internet browser. You can write in URL sidebar an:
+. localhost/8000/app
+
+Adding the /app the router will detect the project's renderized main view.
+
+
+## ▶️ Execution
+- Once the project has been installed, you can observer the structure
+
+### Folder Structure
+
+```
+S3_02_DevTeam/
+├── app/                            # Application usages
+│   ├── controllers/
+│   │   └── TaskController.php      # CRUD logic
+│   ├── models/
+│   │   └── TaskModel.php           # JSON persistence's requests
+│   └── views/scripts/task/
+│       ├── create.phtml            # Create
+│       ├── read.phtml              # Read a List
+│       ├── detalle.phtml           # Read an specific task
+│       ├── update.phtml            # Edit
+│       └── delete.phtml            # Confirm a deleting task
+├── config/
+│   ├── routes.php                  # route config
+│   ├── environment.inc.php         # environtment detection
+│   └── tasks.json                  # JSON files
+├── web/
+│   ├── stylesheets/
+│   │   └── layout.css              # styles
+│   └── javascripts/
+│       |── drag_drop.js            # drag & drop
+|       |__ flash.js                # for flash messages    
+└── lib/                            # framework basis
+```
 
 ### Usage
 
-The web/index.php is the heart of the system.
-This means that your web applications root folder is the “web” folder.
+The project has been designed using a MVC pattern. All the app files are located in the "app" folder.
 
 All requests go through this file and it decides how the routing of the app
 should be.
 You can add additional hooks in this file to add certain routes.
 
-### Project Structure
+### Automatic Server Detector - Hybrid System Style
 
-The root of the project holds a few directories:
-**/app** This is the folder where your magic will happen. Use the views, controllers and models folder for your app code.
-**/config** this folder holds a few configuration files. Currently only the connection to the database.
-**/lib** This is where you should put external libraries and other external files.
-**/lib/base** The library files. Don’t change these :)
-**/web** This folder holds files that are to be “downloaded” from your app. Stylesheets, javascripts and images used. (and more of course)
+Leandro:
 
-The system uses a basic MVC structure, with your web app’s files located in the
-“app” folder.
+I was having problems because there're app parts that just run it in XAMPP. Other parts in the command-line's PHP 
+Server. So, I build a solution that it detects autmoatically in which server we are.
+
+Basically, if we're running in port 8000, the system assumes that's a PHP Server. If it sees that
+Básicamente si estamos corriendo en el puerto 8000, el sistema asume que es PHP Server.
+an URL with */fullstackphp-sprint3/*, assume the XAMPP Server.
+In addition, getBaseUrl() method decides which base route have to decide. Using that way I don't need to change
+the routes manually if I want to pass one server to another.
+
+#### Automatic Detection
+- File: `config/environment.inc.php`
+- It detects automatically XAMPP & PHP Server
+- Adjust base URLs depends of the environtment.
+
+#### Compatibility
+- XAMPP: `localhost/fullstackphp-sprint3/S302/S3_02_DevTeam/web/`
+- PHP Server: `localhost:8000/`
+- JavaScript: Dinamic URLs using `buildUrl()` helper method
+
+### Database Persistence's Interface
+
+Marc:
+Thanks to a partner's reference, I was planning a more elegant way to change database persistence. I
+created an Interface using a Facade pattern.
+
+You can see it at feature/db
+
+### Persistence
+
+#### JSON
+- File: `config/tasks.json`
+- Structure: Object's Array with auto-increment Id, títle, description y status
+- Full Validation CRUD
+
+### Using Scripts for a better UI / UX
+
+Marc:
+I was thinking about a more dynamic / better user experience. When we designed the main view of the task list, it
+louds a Drag & Drop functionality. So, there're three important elements in the function:
+  . A Draggable element
+  . A droppable div / icon
+  . Allow the element to Drop
+
+
 
 #### app/controllers
 Your application’s controllers should be defined here.

@@ -1,49 +1,13 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Actualizar Tarea - Gestor de Tareas</title>
-</head>
-<body>
-    <div class="create-task-page">
-        <div class="create-task-container">
-            <h1>Actualizar Tarea</h1>
-            
-            <form method="post" action="<?= url('task/update') ?>" class="create-task-form">
-                <!-- Campo oculto com o ID da tarefa -->
-                <input type="hidden" name="id" value="<?= htmlspecialchars($this->task['id']) ?>">
-                
-                <div class="form-group">
-                    <label for="titulo">Título *</label>
-                    <input type="text" id="titulo" name="titulo" 
-                           value="<?= htmlspecialchars($this->task['titulo']) ?>" 
-                           placeholder="Título de la tarea..." maxlength="50" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="descripcion">Descripción</label>
-                    <textarea name="descripcion" id="descripcion" 
-                              placeholder="Añade una descripción detallada..." 
-                              maxlength="500" rows="4"><?= htmlspecialchars($this->task['descripcion']) ?></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label for="estado">Estado *</label>
-                    <select name="estado" id="estado" required>
-                        <option value="">Selecciona un estado</option>
-                        <option value="pendiente" <?= $this->task['estado'] === 'pendiente' ? 'selected' : '' ?>>Pendiente</option>
-                        <option value="en_proceso" <?= $this->task['estado'] === 'en_proceso' ? 'selected' : '' ?>>En Proceso</option>
-                        <option value="hecho" <?= $this->task['estado'] === 'hecho' ? 'selected' : '' ?>>Completado</option>
-                    </select>
-                </div>
-                
-                <div class="form-actions">
-                    <button type="submit" class="btn-create">Actualizar Tarea</button>
-                    <a href="<?= url('task/detalle') ?>?id=<?= htmlspecialchars($this->task['id']) ?>" class="btn-cancel">Cancelar</a>
-                </div>
-            </form>
-        </div>
-    </div>
-</body>
-</html> 
+<?php
+declare(strict_types=1);
+
+include __DIR__ . '/../layouts/form.phtml';
+
+$action = url('task/update') . '?id=' . htmlspecialchars($task['id']);
+$readonly = false;
+$buttonText = 'Actualizar Tarea';
+$showDelete = true;
+$deleteUrl = url('task/delete') . '?id=' . htmlspecialchars($task['id']);
+$cancelUrl = url('task/detalle') . '?id=' . htmlspecialchars($task['id']);
+
+?>

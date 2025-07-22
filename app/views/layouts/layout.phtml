@@ -2,38 +2,29 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Gestor de Tareas</title>
-	<link rel="stylesheet" href="/web/stylesheets/layout.css">
+    <title>Task Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="
-    font-sans m-0 p-0 bg-[#f4f5f7] flex w-full h-full 
-    overflow-hidden
+    font-sans m-0 p-0 bg-[#f4f5f7] flex w-full min-h-screen overflow-y-auto
     ">
 
     <!-- Sidebar lateral izquierda -->
-    <div class="w-[200px] bg-[#ebecf0] p-4 border-r border-[#ccc] h-screen box-border">
-        <button class="
-            w-full py-2 mb-4 bg-[#5aac44] 
-            text-white border-none rounded cursor-pointer 
-            font-bold hover:bg-[#519839]
-        "><a class="text-[#0052cc] no-underline text-[0.85rem]
-            hover:underline
-            " href="<?=url('task/create')?>">
-            + Nueva Tarea
-        </a></button>
+    <div class="w-[200px] bg-[slategrey] p-6 border-r border-[#ccc] min-h-full box-border flex flex-col items-center">
+        <a href="<?= BASE_URL ?>task/create" id="btn-add" class="
+            block mb-8 bg-[#5aac44] text-white border-none rounded-lg cursor-pointer
+            font-bold hover:bg-[#519839] flex items-center justify-center
+            w-20 h-20 text-2xl shadow transition-all duration-200">
+            +
+        </a>
 
-        <!-- Icono de papelera para Drop futuro -->
-        <div id="trash" class="
-            mt-8 p-4 border-2 border-dashed 
-            border-[#b04632] text-[#b04632] 
-            text-center bg-white rounded-lg cursor-pointer
-            " ondrop="dropUpdate(event, 'delete')" ondragover="allowDrop(event)">
-            🗑 Papelera
-        </div>
+    <!-- Icono de papelera para Drop futuro -->
+
     </div>
 
     <!-- Área principal del tablero -->
-    <div class="f-1 p-[1rem, 2rem]">
+    <div class="f-1 p-[1rem, 2rem] w-[100%] p-6 transition-colors duration-200" 
+        style="background: linear-gradient(135deg, #3a56a1ff 0%, #8551afff 100%);">
         <!-- Mensajes flash para feedback al usuario -->
         <?php if($flashSuccess = $_SESSION['flash']['success'] ?? null): ?>
             <div id="flash-message" class="flash-message success">
@@ -56,41 +47,61 @@
             <?php unset($_SESSION['flash']['error']); ?>
         <?php endif; ?>
 
-        <h1 class="text-[#172b4d]">Lista de Tareas</h1>
+        <h1 class="text-[white] font-bold">Tus tareas</h1>
 
         <!-- Contenedor del tablero estilo Trello -->
         <div class="display flex gap-6 mt-4 board">
 
             <!-- Columna: Pendiente -->
-            <div class="flex-1 bg-[#ebecf0] p-4 rounded-lg
-                min-h-[400px] max-h-[80vh] overflow-y-auto
-                shadow-[0_1px_2px_rgba(0,0,0,0.1)]
-                " id="pendiente" ondrop="dropUpdate(event, 'pendiente')" ondragover="allowDrop(event)">
-                <h2 class="mt-0 text-[1.1rem]">Pendiente</h2>
+            <div class="flex-1 bg-[#ebecf0] p-3 rounded-lg min-h-[180px] max-h-[340px] shadow-[0_1px_2px_rgba(0,0,0,0.1)] text-[0.8rem] flex flex-col"
+                id="pendiente" ondrop="dropUpdate(event, 'pendiente')" ondragover="allowDrop(event)">
+                <h2 class="mt-0 text-[1.1rem] sticky top-0 z-10 bg-[#ebecf0] pb-2">Pendiente</h2>
+                <div class="flex-1 overflow-y-auto">
+                    <?php $estadoColumna = 'pendiente';
+                    include __DIR__ . '/../scripts/task/main.phtml'; ?>
+                </div>
                 <!-- Aqui se inyectan las tareas del estado 'pendiente' desde read.phtml -->
                 <!-- Cada tarjeta debe ser draggable y clickeable para ver detalles -->
             </div>
 
             <!-- Columna: En Proceso -->
-            <div class="flex-1 bg-[#ebecf0] p-4 rounded-lg
-                min-h-[400px] max-h-[80vh] overflow-y-auto
-                shadow-[0_1px_2px_rgba(0,0,0,0.1)]
-                " id="en_proceso" ondrop="dropUpdate(event, 'en_proceso')" ondragover="allowDrop(event)">
-                <h2 class="mt-0 text-[1.1rem]">En Proceso</h2>
+            <div class="flex-1 bg-[#ebecf0] p-3 rounded-lg min-h-[180px] max-h-[340px] shadow-[0_1px_2px_rgba(0,0,0,0.1)] text-[0.8rem] flex flex-col"
+                id="en_proceso" ondrop="dropUpdate(event, 'en_proceso')" ondragover="allowDrop(event)">
+                <h2 class="mt-0 text-[1.1rem] sticky top-0 z-10 bg-[#ebecf0] pb-2">En Proceso</h2>
+                <div class="flex-1 overflow-y-auto">
+                    <?php $estadoColumna = 'en_proceso';
+                    include __DIR__ . '/../scripts/task/main.phtml'; ?>
+                </div>
                 <!-- Aqui se inyectan las tareas del estado 'en_proceso' -->
                 <!-- Cada tarjeta debe ser draggable y clickeable para ver detalles -->
             </div>
 
             <!-- Columna: Completado -->
-            <div class="flex-1 bg-[#ebecf0] p-4 rounded-lg
-                min-h-[400px] max-h-[80vh] overflow-y-auto
-                shadow-[0_1px_2px_rgba(0,0,0,0.1)]
-                " id="hecho" ondrop="dropUpdate(event, 'hecho')" ondragover="allowDrop(event)">
-                <h2 class="mt-0 text-[1.1rem]">Completado</h2>
+            <div class="flex-1 bg-[#ebecf0] p-3 rounded-lg min-h-[180px] max-h-[340px] shadow-[0_1px_2px_rgba(0,0,0,0.1)] text-[0.8rem] flex flex-col"
+                id="hecho" ondrop="dropUpdate(event, 'hecho')" ondragover="allowDrop(event)">
+                <h2 class="mt-0 text-[1.1rem] sticky top-0 z-10 bg-[#ebecf0] pb-2">Completado</h2>
+                <div class="flex-1 overflow-y-auto">
+                    <?php $estadoColumna = 'completado';
+                    include __DIR__ . '/../scripts/task/main.phtml'; ?>
+                </div>
                 <!-- Aqui se inyectan las tareas del estado 'hecho' -->
                 <!-- Cada tarjeta debe ser draggable y clickeable para ver detalles -->
             </div>
 
+
+        </div>
+
+        <!-- Icono de papelera para Drop futuro debajo del tablero -->
+        <div class="flex justify-end mt-12">
+            <div id="trash" class="
+                border-2 border-[#b04632] text-[#b04632] 
+                text-center bg-white rounded-lg cursor-pointer transition-colors duration-200
+                flex items-center justify-center w-20 h-20 text-4xl shadow-lg
+                " ondrop="dropDelete(event, 'delete')" ondragover="allowDrop(event)"
+                ondragenter="this.classList.add('bg-red-500','text-white','border-red-700')"
+                ondragleave="this.classList.remove('bg-red-500','text-white','border-red-700')">
+                🗑
+            </div>
         </div>
 
         <!-- Aquí se inserta el contenido generado por read.phtml -->
@@ -101,9 +112,9 @@
 <script>
     window.BASE_URL = '<?= BASE_URL ?>';
 </script>
-<script src="/web/javascripts/buildUrl.js"></script>
-<script src="/web/javascripts/task_organize.js"></script>
-<script src="/web/javascripts/drag_drop.js"></script>
-<script src="/web/javascripts/flash.js"></script>
+<script src="/phpInitialDemo-main/web/javascripts/buildUrl.js"></script>
+<script src="/phpInitialDemo-main/web/javascripts/task_organize.js"></script>
+<script src="/phpInitialDemo-main/web/javascripts/drag_drop.js"></script>
+<script src="/phpInitialDemo-main/web/javascripts/flash.js"></script>
 </body>
 </html>

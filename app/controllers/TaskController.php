@@ -3,23 +3,22 @@
 
 class TaskController extends ApplicationController
 {
-    // Las funciones publicas son genericas porque los sufijos Action() sirven
-    // para asociarse a las rutas (por convencion)
+
     public function indexAction(): void
     {
-        /*
-        Accion asociada a la ruta principal del recurso (/task o /task/index)
-        Muestra un listado de todas las tareas.
-        */
         $tasks = $this->model->getAllTasks();
+        $this->view->tasks = $tasks;
+    }
+
+    public function mainAction(): void
+    {
+        $taskModel = new TaskModel();
+        $tasks = $taskModel->getAllTasks();
         $this->view->tasks = $tasks;
     }
 
     public function createAction(): void
     {
-        // Metodo para instanciar el TaskModel con los $data al createTask()
-        // Accion asociada a la creacion de un nuevo elemento
-        // Procesa el guardado de la nueva tarea si es POST
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
             try {
                 $data = [
@@ -28,7 +27,6 @@ class TaskController extends ApplicationController
                     'estado' => $this->_getParam('estado')
                 ];
                 
-                // Validar que los campos requeridos estén presentes
                 if (empty($data['titulo']) || empty($data['estado'])) {
                     throw new Exception('Título y estado son obligatorios.');
                 }
@@ -37,50 +35,25 @@ class TaskController extends ApplicationController
                 $taskModel->createTask($data);
                 $this->setFlash('success', 'Tarea guardada correctamente.');
                 
-                // Redirigir de vuelta al tablero principal
                 header('Location: ' . url(''));
                 exit;
             } catch (Exception $e) {
                 $this->setFlash('error', 'Error al crear la tarea: ' . $e->getMessage());
-                // No redirigir, mostrar el formulario con el error
             }
-        }
-        
-        // Si es GET, mostrar SOLO el formulario de creación (sin layout do tablero)
+        }       
         $this->view->disableLayout();
+        $this->view->action = url('task/create');
         $this->view->render('task/create.phtml');
         exit;
     }
 
-     // --- READ ---
-    // Este metodo es el encargado de manejar la ruta /task/read
-    // Cuando el router detecta /task/read, ejecuta este readAction()
-    // Aqui instanciamos el TaskModel para acceder a la persistencia (JSON)
-    // Llamamos a getAllTasks() que devuelve todas las tareas guardadas
-    // Asignamos el resultado a la vista usando $this->view->tasks
-    // Finalmente renderizamos la vista task/read.phtml
-    public function readAction(): void
-    {
-        $taskModel = new TaskModel(); // modelo que maneja tareas
-        $tasks = $taskModel->getAllTasks(); // obtenemos todas las tareas
-        $this->view->tasks = $tasks; // pasamos las tareas a la vista
-    }
-    // --- DETALLE ---
-    // Metodo para mostrar los detalles de una tarea especifica
-    // Implementado/ajustado por mi: busca la tarea por id, pasa a la vista y renderiza manualmente sin layout
-    public function detalleAction() {
-        // agarra el id de la url (GET)
+    public function readAction() {
         $id = isset($_GET['id']) ? $_GET['id'] : null;
-        // instancia el modelo de tareas
         $taskModel = new TaskModel();
-        // busca la tarea por id
         $task = $taskModel->getTaskById($id);
-        // paso la tarea a la vista (asi la view puede usar $this->task)
         $this->view->task = $task;
-        // desactivo el layout para mostrar solo el detalle
         $this->view->disableLayout();
-        // renderizo la vista de detalle manualmente (sin layout)
-        $this->view->render('task/detalle.phtml');
+        $this->view->render('task/read.phtml');
         exit;
     }
     
@@ -99,6 +72,7 @@ class TaskController extends ApplicationController
                 }
                 $this->view->task = $task;
                 $this->view->disableLayout();
+                $this->view->action = url('task/update');
                 $this->view->render('task/update.phtml');
                 exit;
             } catch (Exception $e) {
@@ -109,12 +83,9 @@ class TaskController extends ApplicationController
         }
 
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
-            // Soporte para AJAX y POST tradicional
-            $isAjax = false;
-            $data = null;
-            if (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
+            if ($this->isAjaxRequest()) {
                 $data = json_decode(file_get_contents('php://input'), true);
-                $isAjax = true;
+                $this->handleAjaxUpdate($data);
             } else {
                 $data = [
                     'id' => (int)$this->_getParam('id'),
@@ -122,46 +93,22 @@ class TaskController extends ApplicationController
                     'descripcion' => $this->_getParam('descripcion'),
                     'estado' => $this->_getParam('estado')
                 ];
-            }
-            try {
-                // Validar que los campos requeridos estén presentes
-                if (empty($data['titulo']) || empty($data['estado'])) {
-                    throw new Exception('Título y estado son obligatorios.');
-                }
-                $taskModel = new TaskModel();
-                $taskModel->updateTask($data['id'], $data);
-                if ($isAjax) {
-                    header('Content-Type: application/json');
-                    echo json_encode([
-                        'success' => true,
-                        'message' => 'Tarea actualizada correctamente.'
-                    ]);
-                    exit;
-                } else {
+                try {
+                    if (empty($data['titulo']) || empty($data['estado'])) {
+                        throw new Exception('Título y estado son obligatorios.');
+                    }
+                    $taskModel = new TaskModel();
+                    $taskModel->updateTask($data['id'], $data);
                     $this->setFlash('success', 'Tarea actualizada correctamente.');
-                    // Redirigir de vuelta a los detalles de la tarea
-                    header('Location: ' . url('task/detalle') . '?id=' . $data['id']);
+                    header('Location: ' . url('task/read') . '?id=' . $data['id']);
                     exit;
-                }
-            } catch (Exception $e) {
-                if ($isAjax) {
-                    header('Content-Type: application/json');
-                    echo json_encode([
-                        'success' => false,
-                        'message' => 'Error al actualizar la tarea: ' . $e->getMessage()
-                    ]);
-                    exit;
-                } else {
+                } catch (Exception $e) {
                     $this->setFlash('error', 'Error al actualizar la tarea: ' . $e->getMessage());
-                    // No redirigir, mostrar el formulario con el error
                 }
             }
         }
     }
 
-    // --- DELETE ---
-    // Metodo para eliminar una tarea por ID
-    // Solo acepta POST (AJAX o tradicional)
     public function deleteAction() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = json_decode(file_get_contents('php://input'), true);
@@ -202,5 +149,33 @@ class TaskController extends ApplicationController
             exit;
         }
     }
+
+    private function isAjaxRequest(): bool{
+        return isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false;
+    }
+
+    private function handleAjaxUpdate(?array $data): void {
+        header('Content-Type: application/json');
+        try {
+            if (!$data || empty($data['id']) || empty($data['titulo']) || empty($data['estado'])) {
+                throw new Exception('ID, título y estado son obligatorios.');
+            }
+            $taskModel = new TaskModel();
+            $taskModel->updateTask($data['id'], $data);
+            echo json_encode([
+                'success' => true,
+                'message' => 'Tarea actualizada correctamente.'
+            ]);
+            exit;
+        } catch (Exception $e) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Error al actualizar la tarea: ' . $e->getMessage()
+            ]);
+            exit;
+        }
+    }
+
+    
 }
 ?>

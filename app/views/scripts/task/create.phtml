@@ -1,52 +1,11 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crear Nueva Tarea - Gestor de Tareas</title></head>
-<body>
-    <div class="create-task-page">
-        <div class="max-w-[600px] mx-auto my-8 p-8 bg-white rounded-lg
-            shadow-[0_2px_8px_rgba(0,0,0,0.1)]
-            ">
-            <h1 class="mb-8 text-[#172b4d] text-center">Crear Nueva Tarea</h1>
-            
-            <form method="post" class="flex flex-col gap-6" action="<?= url('task/create') ?>" >
-                <div class="form-group">
-                    <label class="font-semibold text-[#172b4d] text-[0.9rem]" for="titulo">Título *</label>
-                    <input type="text" id="titulo" name="titulo" placeholder="Título de la tarea..." maxlength="50" required>
-                </div>
-                
-                <div class="flex flex-col gap-2">
-                    <label class="font-semibold text-[#172b4d] text-[0.9rem]" for="descripcion">Descripción</label>
-                    <textarea class="resize-y min-h-[100px]" name="descripcion" id="descripcion" placeholder="Añade una descripción detallada..." maxlength="500" rows="4"></textarea>
-                </div>
-                
-                <div class="flex flex-col gap-2">
-                    <label class="font-semibold text-[#172b4d] text-[0.9rem]" for="estado">Estado *</label>
-                    <select name="estado" id="estado" required>
-                        <option value="">Selecciona un estado</option>
-                        <option value="pendiente">Pendiente</option>
-                        <option value="en_proceso">En Proceso</option>
-                        <option value="hecho">Completado</option>
-                    </select>
-                </div>
-
-                <div class="flex gap-4 justify-end mt-8 flex-wrap">
-                    <button type="submit" class="bg-[#5aac44] text-white border-none py-3 px-5
-                        rounded-lg cursor-pointer font-semibold text-[0.9rem]
-                        transition-all duration-200 shadow-[0_2px_4px_rgba(0,0,0,0.1)]
-                        min-w-[100px] text-center inline-block hover:bg-[#519839]
-                        hover:-translate-y-0.5 hover:shadow-[0_4px_8px_rgba(0,0,0,0.15)]
-                        ">Crear Tarea</button>
-                    <a href="<?= url('') ?>" class="bg-white text-[#172b4d] border-2
-                        border-[#e1e5e9] py-3 px-5 rounded-lg text-[0.9rem] font-semibold
-                        transition-all duration-200 cursor-pointer inline-block text-center
-                        min-w-[100px] hover:bg-[#f8f9fa]">Cancelar</a>
-                </div>
-            </form>
-        </div>
-    </div>
-</body>
-</html>
+<?php
+declare(strict_types=1);
+$action = url('task/create');
+$task = [];
+$readonly = false;
+$buttonText = 'Crear Tarea';
+$showDelete = false;
+$cancelUrl = url('');
+include __DIR__ . '/../layouts/form.phtml';
+?>
 

@@ -7,7 +7,7 @@ $i = 1;
 foreach ($this->tasks as $task) {
     ?>
     <div 
-        id="task-<?= $i ?>" 
+        id="<?= htmlspecialchars($task['id']) ?>" 
         class="task" 
         data-task-id="<?= htmlspecialchars($task['id']) ?>" 
         data-estado="<?= htmlspecialchars($task['estado']) ?>"

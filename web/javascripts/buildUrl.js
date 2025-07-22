@@ -6,9 +6,10 @@
     
     // Función helper para construir URLs en JavaScript
 
-    window.BASE_URL = '<?= BASE_URL ?>';
-
     function buildUrl(path) {
+        if(typeof window.BASE_URL !== 'string'){
+            throw new Error('BASE_URL is not defined');
+        }
         path = path.replace(/^\//, '');
         return window.BASE_URL + '/' + path;
     }

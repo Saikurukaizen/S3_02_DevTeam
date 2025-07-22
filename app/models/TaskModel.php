@@ -102,27 +102,6 @@
         }
     }
 
-
-    public function updateStatusTask(int $id, string $newStatus): void
-    {
-        if(file_exists($this->file)){
-            $tasks = json_decode(file_get_contents($this->file), true) ?? [];
-
-            foreach($tasks as &$task){
-                if($task['id'] === $id){
-                    $task['status'] = $newStatus;
-                }
-            }
-
-            $json = json_encode($tasks, JSON_PRETTY_PRINT);
-            if(file_put_contents($this->file, $json) === false){
-                throw new Exception("Hubo un fallo al actualizar el estado de la tarea.");
-            } else {
-                return;
-            }
-        }
-    }
-
     // --- DELETE BY ID ---
     // Metodo para eliminar una tarea por su id
     // Lee todas las tareas, busca la que coincide con el id, la borra y guarda el nuevo array en el JSON

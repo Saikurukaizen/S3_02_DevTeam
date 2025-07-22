@@ -87,80 +87,78 @@ class TaskController extends ApplicationController
     public function updateAction(): void
     {
         if($_SERVER['REQUEST_METHOD'] === 'GET'){
-            $taskId = (int)$this->_getParam('id');
-            
-            // Debug: verificar si el ID está siendo recibido
-            error_log("DEBUG UPDATE: taskId = " . $taskId);
-            error_log("DEBUG UPDATE: _GET = " . print_r($_GET, true));
-            
-            if(!$taskId){
-                $this->setFlash('error', 'ID de tarea no válido.');
-                header('Location: ' . url(''));
-                exit;
-            }
-            $taskModel = new TaskModel();
-            $task = $taskModel->getTaskById($taskId);
-            
-            // Debug: verificar si la tarea fue encontrada
-            error_log("DEBUG UPDATE: task encontrada = " . ($task ? 'SÍ' : 'NO'));
-            
-            if(!$task){
-                $this->setFlash('error', 'Tarea no encontrada.');
-                header('Location: ' . url(''));
-                exit;
-            } else {
+            try {
+                $taskId = (int)$this->_getParam('id');
+                if(!$taskId){
+                    throw new Exception('ID de tarea no válido.');
+                }
+                $taskModel = new TaskModel();
+                $task = $taskModel->getTaskById($taskId);
+                if(!$task){
+                    throw new Exception('Tarea no encontrada.');
+                }
                 $this->view->task = $task;
+                $this->view->disableLayout();
+                $this->view->render('task/update.phtml');
+                exit;
+            } catch (Exception $e) {
+                $this->setFlash('error', $e->getMessage());
+                header('Location: ' . url(''));
+                exit;
             }
         }
-        
+
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
-            try {
+            // Soporte para AJAX y POST tradicional
+            $isAjax = false;
+            $data = null;
+            if (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
+                $data = json_decode(file_get_contents('php://input'), true);
+                $isAjax = true;
+            } else {
                 $data = [
                     'id' => (int)$this->_getParam('id'),
                     'titulo' => $this->_getParam('titulo'),
                     'descripcion' => $this->_getParam('descripcion'),
                     'estado' => $this->_getParam('estado')
                 ];
-                
+            }
+            try {
                 // Validar que los campos requeridos estén presentes
                 if (empty($data['titulo']) || empty($data['estado'])) {
                     throw new Exception('Título y estado son obligatorios.');
                 }
-                
                 $taskModel = new TaskModel();
                 $taskModel->updateTask($data['id'], $data);
-                $this->setFlash('success', 'Tarea actualizada correctamente.');
-                
-                // Redirigir de vuelta a los detalles de la tarea
-                header('Location: ' . url('task/detalle') . '?id=' . $data['id']);
-                exit;
+                if ($isAjax) {
+                    header('Content-Type: application/json');
+                    echo json_encode([
+                        'success' => true,
+                        'message' => 'Tarea actualizada correctamente.'
+                    ]);
+                    exit;
+                } else {
+                    $this->setFlash('success', 'Tarea actualizada correctamente.');
+                    // Redirigir de vuelta a los detalles de la tarea
+                    header('Location: ' . url('task/detalle') . '?id=' . $data['id']);
+                    exit;
+                }
             } catch (Exception $e) {
-                $this->setFlash('error', 'Error al actualizar la tarea: ' . $e->getMessage());
-                // No redirigir, mostrar el formulario con el error
+                if ($isAjax) {
+                    header('Content-Type: application/json');
+                    echo json_encode([
+                        'success' => false,
+                        'message' => 'Error al actualizar la tarea: ' . $e->getMessage()
+                    ]);
+                    exit;
+                } else {
+                    $this->setFlash('error', 'Error al actualizar la tarea: ' . $e->getMessage());
+                    // No redirigir, mostrar el formulario con el error
+                }
             }
         }
-        
-        // Si es GET, mostrar SOLO el formulario de actualización (sin layout do tablero)
-        $this->view->disableLayout();
-        $this->view->render('task/update.phtml');
-        exit;
     }
-//método para el drag & drop de las tareas. (Comprobar si puede ser opcional)
-    public function updateStatusAction(): void
-    {
-    if($_SERVER['REQUEST_METHOD'] === 'POST'){
-        $data = json_decode(file_get_contents('php://input'), true);
-        $taskModel = new TaskModel();
-        try{
-            $taskModel->updateStatusTask($data['id'], $data['estado']);
-            $this->setFlash('success', 'Tarea actualizada correctamente.');
-        }
-        catch(Exception $e){
-            $this->setFlash('error', 'Error al actualizar la tarea: ' . $e->getMessage());
-        }
-    }
-    }  
-   
+
     // --- DELETE ---
     // Metodo para eliminar una tarea por ID
     // Solo acepta POST (AJAX o tradicional)

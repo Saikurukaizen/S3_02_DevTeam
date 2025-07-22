@@ -82,10 +82,31 @@ function dropUpdate(ev, newStatus) {
 }
 
 function updateTask(id, newStatus){
-    console.log(id, newStatus);
+    // Obtener el div de la tarea por id
+    var taskDiv = document.getElementById(id);
+    if (!taskDiv) {
+        console.error('No se encontró el div de la tarea para actualizar:', id);
+        return;
+    }
+    // Obtener los valores actuales del DOM
+    var titulo = '';
+    var descripcion = '';
+    // Busca el <a> y los elementos dentro del div
+    var a = taskDiv.querySelector('a');
+    if (a) {
+        var strong = a.querySelector('strong');
+        var small = a.querySelector('small');
+        if (strong) titulo = strong.textContent.trim();
+        if (small) descripcion = small.textContent.trim();
+    }
     fetch(buildUrl('task/update'), {
         method: 'POST',
-        body: JSON.stringify({ taskId: id, status: newStatus}),
+        body: JSON.stringify({
+            id: Number(id),
+            titulo: titulo,
+            descripcion: descripcion,
+            estado: newStatus
+        }),
         headers: { 'Content-Type': 'application/json'}
     })
     .then(response => response.json())
@@ -98,3 +119,10 @@ function updateTask(id, newStatus){
         }
     });
 }
+
+document.addEventListener('drop', function(ev){
+    ev.preventDefault();
+}, false);
+document.addEventListener('dragover', function(ev){
+    ev.preventDefault();
+}, false);

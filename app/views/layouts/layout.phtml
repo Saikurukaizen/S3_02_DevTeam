@@ -5,22 +5,35 @@
     <title>Gestor de Tareas</title>
 	<link rel="stylesheet" href="/web/stylesheets/layout.css">
 </head>
-<body>
+<body class="
+    font-sans m-0 p-0 bg-[#f4f5f7] flex w-full h-full 
+    overflow-hidden
+    ">
 
     <!-- Sidebar lateral izquierda -->
-    <div class="sidebar">
-        <button><a href="<?=url('task/create')?>">
+    <div class="w-[200px] bg-[#ebecf0] p-4 border-r border-[#ccc] h-screen box-border">
+        <button class="
+            w-full py-2 mb-4 bg-[#5aac44] 
+            text-white border-none rounded cursor-pointer 
+            font-bold hover:bg-[#519839]
+        "><a class="text-[#0052cc] no-underline text-[0.85rem]
+            hover:underline
+            " href="<?=url('task/create')?>">
             + Nueva Tarea
         </a></button>
 
         <!-- Icono de papelera para Drop futuro -->
-        <div id="trash" class="trash" ondrop="dropUpdate(event, 'delete')" ondragover="allowDrop(event)">
+        <div id="trash" class="
+            mt-8 p-4 border-2 border-dashed 
+            border-[#b04632] text-[#b04632] 
+            text-center bg-white rounded-lg cursor-pointer
+            " ondrop="dropUpdate(event, 'delete')" ondragover="allowDrop(event)">
             🗑 Papelera
         </div>
     </div>
 
     <!-- Área principal del tablero -->
-    <div class="main">
+    <div class="f-1 p-[1rem, 2rem]">
         <!-- Mensajes flash para feedback al usuario -->
         <?php if($flashSuccess = $_SESSION['flash']['success'] ?? null): ?>
             <div id="flash-message" class="flash-message success">
@@ -43,28 +56,37 @@
             <?php unset($_SESSION['flash']['error']); ?>
         <?php endif; ?>
 
-        <h1>Lista de Tareas</h1>
+        <h1 class="text-[#172b4d]">Lista de Tareas</h1>
 
         <!-- Contenedor del tablero estilo Trello -->
-        <div class="board" style="display: flex; gap: 1rem;">
+        <div class="display flex gap-6 mt-4 board">
 
             <!-- Columna: Pendiente -->
-            <div id="pendiente" ondrop="dropUpdate(event, 'pendiente')" ondragover="allowDrop(event)">
-                <h2>Pendiente</h2>
+            <div class="flex-1 bg-[#ebecf0] p-4 rounded-lg
+                min-h-[400px] max-h-[80vh] overflow-y-auto
+                shadow-[0_1px_2px_rgba(0,0,0,0.1)]
+                " id="pendiente" ondrop="dropUpdate(event, 'pendiente')" ondragover="allowDrop(event)">
+                <h2 class="mt-0 text-[1.1rem]">Pendiente</h2>
                 <!-- Aqui se inyectan las tareas del estado 'pendiente' desde read.phtml -->
                 <!-- Cada tarjeta debe ser draggable y clickeable para ver detalles -->
             </div>
 
             <!-- Columna: En Proceso -->
-            <div id="en_proceso" ondrop="dropUpdate(event, 'en_proceso')" ondragover="allowDrop(event)">
-                <h2>En Proceso</h2>
+            <div class="flex-1 bg-[#ebecf0] p-4 rounded-lg
+                min-h-[400px] max-h-[80vh] overflow-y-auto
+                shadow-[0_1px_2px_rgba(0,0,0,0.1)]
+                " id="en_proceso" ondrop="dropUpdate(event, 'en_proceso')" ondragover="allowDrop(event)">
+                <h2 class="mt-0 text-[1.1rem]">En Proceso</h2>
                 <!-- Aqui se inyectan las tareas del estado 'en_proceso' -->
                 <!-- Cada tarjeta debe ser draggable y clickeable para ver detalles -->
             </div>
 
             <!-- Columna: Completado -->
-            <div id="hecho" ondrop="dropUpdate(event, 'hecho')" ondragover="allowDrop(event)">
-                <h2>Completado</h2>
+            <div class="flex-1 bg-[#ebecf0] p-4 rounded-lg
+                min-h-[400px] max-h-[80vh] overflow-y-auto
+                shadow-[0_1px_2px_rgba(0,0,0,0.1)]
+                " id="hecho" ondrop="dropUpdate(event, 'hecho')" ondragover="allowDrop(event)">
+                <h2 class="mt-0 text-[1.1rem]">Completado</h2>
                 <!-- Aqui se inyectan las tareas del estado 'hecho' -->
                 <!-- Cada tarjeta debe ser draggable y clickeable para ver detalles -->
             </div>

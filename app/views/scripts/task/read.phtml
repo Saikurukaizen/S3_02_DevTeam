@@ -1,11 +1,15 @@
 <?php
 declare(strict_types=1);
 
+if (empty($task) || !is_array($task)) {
+    echo "<p>Tarea no encontrada.</p>";
+    return;
+}
 $action = $action ??'';
 $readonly = true;
 $buttonText = '';
 $showDelete = false;
-$cancelUrl = Environment::url('task/main');
+$cancelUrl = '';
 
 include dirname(__DIR__, 2) . '/layouts/form.phtml';
 

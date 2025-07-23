@@ -6,7 +6,7 @@ $readonly = false;
 $buttonText = 'Actualizar Tarea';
 $showDelete = true;
 $deleteUrl = Environment::url('task/delete') . '?id=' . htmlspecialchars($task['id']);
-$cancelUrl = Environment::url('task/main');
+$cancelUrl = '';
 
 include dirname(__DIR__, 2) . '/layouts/form.phtml';
 

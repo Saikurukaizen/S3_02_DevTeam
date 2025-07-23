@@ -1,8 +1,9 @@
 <?php 
-if (!isset($estadoColumna)) { $estadoColumna = null; } 
+if (!isset($estadoColumna)) { $estadoColumna = null; }
+$tasks = $this->tasks ?? [];
 ?>
-<?php foreach ($this->tasks as $task): ?>
-    <?php if ($task['estado'] === $estadoColumna): ?>
+<?php foreach ($tasks as $task): ?>
+    <?php if (isset($task['estado']) && $task['estado'] === $estadoColumna): ?>
         <div class="bg-white p-2 mb-2 rounded shadow-[0_1px_0_rgba(9,30,66,0.25)]
             cursor-grab transition-transform duration-200 text-[0.8rem]
             hover:-translate-y-0.5 hover:shadow-[0_2px_4px_rgba(9,30,66,0.15)]

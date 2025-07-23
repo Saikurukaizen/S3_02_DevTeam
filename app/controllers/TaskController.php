@@ -31,10 +31,12 @@ class TaskController extends ApplicationController
                 $this->processFormCreateRequest();
             }
         }
-        $this->view->disableLayout();
-        $this->view->action = url('task/create');
+        $this->view->action = Environment::url('task/create');
+        $this->view->readonly = true;
+        $this->view->buttonText = '';
+        $this->view->showDelete = false;
+        $this->view->cancelUrl = '';
         $this->view->render('task/create.phtml');
-        exit;
     }
 
     private function processFormCreateRequest(): void
@@ -51,7 +53,7 @@ class TaskController extends ApplicationController
             $taskModel = new TaskModel();
             $taskModel->createTask($data);
             $this->setFlash('success', 'Tarea guardada correctamente.');
-            header('Location: ' . url(''));
+            header('Location: ' . Environment::url(''));
             exit;
         } catch (Exception $e) {
             $this->setFlash('error', 'Error al crear la tarea: ' . $e->getMessage());
@@ -88,41 +90,46 @@ class TaskController extends ApplicationController
 
     public function readAction(): void
     {
-        $id = isset($_GET['id']) ? $_GET['id'] : null;
+        $id = $this->_getParam('id');
         $taskModel = new TaskModel();
         $task = $taskModel->getTaskById($id);
         $this->view->task = $task;
-        $this->view->disableLayout();
+        $this->view->readonly = true;
+        $this->view->buttonText = '';
+        $this->view->showDelete = false;
+        $this->view->cancelUrl = '';
         $this->view->render('task/read.phtml');
-        exit;
     }
 
-     public function updateAction(): void
+    public function updateAction(): void
     {
-        if($_SERVER['REQUEST_METHOD'] === 'GET'){
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             try {
                 $taskId = (int)$this->_getParam('id');
-                if(!$taskId){
+                if (!$taskId) {
                     throw new Exception('ID de tarea no válido.');
                 }
                 $taskModel = new TaskModel();
                 $task = $taskModel->getTaskById($taskId);
-                if(!$task){
+                if (!$task) {
                     throw new Exception('Tarea no encontrada.');
                 }
                 $this->view->task = $task;
-                $this->view->disableLayout();
-                $this->view->action = url('task/update');
+                $this->view->action = Environment::url('task/update');
+                $this->view->readonly = false;
+                $this->view->buttonText = 'Actualizar tarea';
+                $this->view->showDelete = true;
+                $this->view->cancelUrl = '';
                 $this->view->render('task/update.phtml');
-                exit;
+                return;
             } catch (Exception $e) {
                 $this->setFlash('error', $e->getMessage());
-                header('Location: ' . url(''));
+                header('Location: ' . Environment::url('task/main'));
                 exit;
             }
         }
 
-        if($_SERVER['REQUEST_METHOD'] === 'POST'){
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($this->isAjaxRequest()) {
                 $this->processAjaxUpdateRequest();
             } else {
@@ -146,7 +153,7 @@ class TaskController extends ApplicationController
             $taskModel = new TaskModel();
             $taskModel->updateTask($data['id'], $data);
             $this->setFlash('success', 'Tarea actualizada correctamente.');
-            header('Location: ' . url('task/read') . '?id=' . $data['id']);
+            header('Location: ' . Environment::url('task/read') . '?id=' . $data['id']);
             exit;
         } catch (Exception $e) {
             $this->setFlash('error', 'Error al actualizar la tarea: ' . $e->getMessage());
@@ -191,7 +198,7 @@ class TaskController extends ApplicationController
                 $this->processFormDeleteRequest();
             }
         } else {
-            header('Location: ' . url(''));
+            header('Location: ' . Environment::url(''));
             exit;
         }
     }
@@ -206,7 +213,7 @@ class TaskController extends ApplicationController
         } else {
             $this->setFlash('error', 'ID de tarea inválido.');
         }
-        header('Location: ' . url(''));
+        header('Location: ' . Environment::url(''));
         exit;
     }
 

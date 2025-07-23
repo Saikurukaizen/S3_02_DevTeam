@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-include __DIR__ . '/../layouts/form.phtml';
-
 $action = url('task/delete') . '?id=' . htmlspecialchars($task['id']);
 $readonly = true;
 $buttonText = 'Eliminar Tarea';
 $showDelete = false;
-$cancelUrl = url('task/read') . '?id=' . htmlspecialchars($task['id']);
+$cancelUrl = url('task/main');
+
+include dirname(__DIR__, 2) . '/layouts/form.phtml';
 
 ?>

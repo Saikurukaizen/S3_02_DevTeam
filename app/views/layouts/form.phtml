@@ -1,43 +1,30 @@
-
-<form method="POST" action="<?= htmlspecialchars($action) ?>" class="flex flex-col gap-6">
-    <!-- Título -->
+<form method="POST" action="<?= htmlspecialchars($action ?? '') ?>" class="flex flex-col gap-6">
     <div class="flex flex-col gap-2">
         <label for="titulo" class="font-semibold text-[#172b4d] text-[0.9rem]">Título</label>
         <input type="text" id="titulo" name="titulo" value="<?= htmlspecialchars($task['titulo'] ?? '') ?>" class="
-            p-3 border border-[#ddd] rounded text-[0.9rem] transition-colors
-            duration-200 focus:outline-none focus:border-[#0052cc] focus:shadow-[0_0_0_2px_rgba(0,82,204,0.1)]
-            <?= !empty($readonly) ? 'bg-[#f8f9fa] cursor-not-allowed' : '' ?>"
+            p-3 bg-[#ebecf0] border-none rounded-lg text-[0.8rem] shadow-[0_1px_2px_rgba(0,0,0,0.1)] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#0052cc] <?= !empty($readonly) ? 'bg-[#f8f9fa] cursor-not-allowed' : '' ?>"
             <?= !empty($readonly) ? 'readonly' : '' ?> required>
     </div>
 
-    <!-- Descripción -->
     <div class="flex flex-col gap-2">
         <label for="descripcion" class="font-semibold text-[#172b4d] text-[0.9rem]">Descripción</label>
         <textarea id="descripcion" name="descripcion" rows="4" class="
-            p-3 border border-[#ddd] rounded text-[0.9rem] transition-colors duration-200
-            focus:outline-none focus:border-[#0052cc] focus:shadow-[0_0_0_2px_rgba(0,82,204,0.1)]
-            resize-y min-h-[100px]
-            <?= !empty($readonly) ? 'bg-[#f8f9fa] cursor-not-allowed resize-none' : '' ?>"
+            p-3 bg-[#ebecf0] border-none rounded-lg text-[0.8rem] shadow-[0_1px_2px_rgba(0,0,0,0.1)] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#0052cc] resize-y min-h-[100px] <?= !empty($readonly) ? 'bg-[#f8f9fa] cursor-not-allowed resize-none' : '' ?>"
             <?= !empty($readonly) ? 'readonly' : '' ?>
             ><?= htmlspecialchars($task['descripcion'] ?? '') ?>
         </textarea>
     </div>
 
-    <!-- Estado -->
     <div class="flex flex-col gap-2">
         <label for="estado" class="font-semibold text-[#172b4d] text-[0.9rem]">Estado</label>
         <select id="estado" name="estado" class="
-            p-3 border border-[#ddd] rounded text-[0.9rem] transition-colors duration-200
-            focus:outline-none focus:border-[#0052cc] focus:shadow-[0_0_0_2px_rgba(0,82,204,0.1)]
-            <?= !empty($readonly) ? 'bg-[#f8f9fa] cursor-not-allowed' : '' ?>"
+            p-3 bg-[#ebecf0] border-none rounded-lg text-[0.8rem] shadow-[0_1px_2px_rgba(0,0,0,0.1)] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#0052cc] <?= !empty($readonly) ? 'bg-[#f8f9fa] cursor-not-allowed' : '' ?>"
             <?= !empty($readonly) ? 'disabled' : '' ?>>
                 <option value="pendiente" <?= ($task['estado'] ?? '') === 'pendiente' ? 'selected' : '' ?>>Pendiente</option>
                 <option value="en_proceso" <?= ($task['estado'] ?? '') === 'en_proceso' ? 'selected' : '' ?>>En Proceso</option>
                 <option value="completado" <?= ($task['estado'] ?? '') === 'completado' ? 'selected' : '' ?>>Completado</option>
         </select>
     </div>
-
-    <!-- Acciones -->
     <div class="flex gap-4 justify-end mt-8 flex-wrap">
         <?php if (empty($readonly)): ?>
             <button type="submit" class="
@@ -48,9 +35,8 @@
                 <?= htmlspecialchars($buttonText ?? 'Guardar') ?>
             </button>
         <?php endif; ?>
-
         <?php if (!empty($showDelete) && !empty($deleteUrl)): ?>
-            <a href="<?= htmlspecialchars($deleteUrl) ?>" class="
+            <a href="<?= htmlspecialchars(Environment::url($deleteUrl)) ?>" class="
                 bg-[#dc3545] text-white border-2 border-[#dc3545] py-3 px-5 rounded-lg
                 text-[0.9rem] font-semibold transition-all duration-200 cursor-pointer
                 inline-block text-center min-w-[100px] hover:bg-[#dc3545] hover:text-white
@@ -58,9 +44,8 @@
                 Eliminar
             </a>
         <?php endif; ?>
-
         <?php if (!empty($cancelUrl)): ?>
-            <a href="<?= htmlspecialchars($cancelUrl) ?>" class="
+            <a href="<?= htmlspecialchars(Environment::url($cancelUrl)) ?>" class="
                 bg-white text-[#172b4d] border-2 border-[#e1e5e9] py-3 px-5
                 rounded-lg text-[0.9rem] font-semibold transition-all duration-200
                 cursor-pointer inline-block text-center min-w-[100px] hover:bg-[#f8f9fa]

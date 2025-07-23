@@ -3,7 +3,7 @@
         "id": 1,
         "titulo": "Empezar el CRUD",
         "descripcion": "EDICAO!!!! Primera tarea de prueba sobre empezar el CRUD",
-        "estado": "pendiente"
+        "estado": "hecho"
     },
     {
         "id": 3,
@@ -22,12 +22,6 @@
         "descripcion": "asdfghj",
         "estado": "pendiente",
         "id": 5
-    },
-    {
-        "titulo": "La tarea de guardar em processo",
-        "descripcion": "teste de completo",
-        "estado": "en_proceso",
-        "id": 6
     },
     {
         "titulo": "La tarea de guardar",

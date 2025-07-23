@@ -17,37 +17,77 @@ class TaskController extends ApplicationController
         $this->view->tasks = $tasks;
     }
 
+    private function isAjaxRequest(): bool
+    {
+        return isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false;
+    }
+
     public function createAction(): void
     {
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
-            try {
-                $data = [
-                    'titulo' => $this->_getParam('titulo'),
-                    'descripcion' => $this->_getParam('descripcion'),
-                    'estado' => $this->_getParam('estado')
-                ];
-                
-                if (empty($data['titulo']) || empty($data['estado'])) {
-                    throw new Exception('Título y estado son obligatorios.');
-                }
-                
-                $taskModel = new TaskModel();
-                $taskModel->createTask($data);
-                $this->setFlash('success', 'Tarea guardada correctamente.');
-                
-                header('Location: ' . url(''));
-                exit;
-            } catch (Exception $e) {
-                $this->setFlash('error', 'Error al crear la tarea: ' . $e->getMessage());
+            if ($this->isAjaxRequest()) {
+                $this->processAjaxCreateRequest();
+            } else {
+                $this->processFormCreateRequest();
             }
-        }       
+        }
         $this->view->disableLayout();
         $this->view->action = url('task/create');
         $this->view->render('task/create.phtml');
         exit;
     }
 
-    public function readAction() {
+    private function processFormCreateRequest(): void
+    {
+        $data = [
+            'titulo' => $this->_getParam('titulo'),
+            'descripcion' => $this->_getParam('descripcion'),
+            'estado' => $this->_getParam('estado')
+        ];
+        try {
+            if (empty($data['titulo']) || empty($data['estado'])) {
+                throw new Exception('Título y estado son obligatorios.');
+            }
+            $taskModel = new TaskModel();
+            $taskModel->createTask($data);
+            $this->setFlash('success', 'Tarea guardada correctamente.');
+            header('Location: ' . url(''));
+            exit;
+        } catch (Exception $e) {
+            $this->setFlash('error', 'Error al crear la tarea: ' . $e->getMessage());
+        }
+    }
+
+    private function processAjaxCreateRequest(): void {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $this->handleAjaxCreate($data);
+    }
+
+    private function handleAjaxCreate(?array $data): void
+    {
+        header('Content-Type: application/json');
+        try {
+            if (!$data || empty($data['titulo']) || empty($data['estado'])) {
+                throw new Exception('Título y estado son obligatorios.');
+            }
+            $taskModel = new TaskModel();
+            $taskModel->createTask($data);
+            echo json_encode([
+                'success' => true,
+                'message' => 'Tarea guardada correctamente.'
+            ]);
+            exit;
+        } catch (Exception $e) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Error al crear la tarea: ' . $e->getMessage()
+            ]);
+            exit;
+        }
+    }
+
+    public function readAction(): void
+    {
         $id = isset($_GET['id']) ? $_GET['id'] : null;
         $taskModel = new TaskModel();
         $task = $taskModel->getTaskById($id);
@@ -56,8 +96,8 @@ class TaskController extends ApplicationController
         $this->view->render('task/read.phtml');
         exit;
     }
-    
-    public function updateAction(): void
+
+     public function updateAction(): void
     {
         if($_SERVER['REQUEST_METHOD'] === 'GET'){
             try {
@@ -84,77 +124,43 @@ class TaskController extends ApplicationController
 
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
             if ($this->isAjaxRequest()) {
-                $data = json_decode(file_get_contents('php://input'), true);
-                $this->handleAjaxUpdate($data);
+                $this->processAjaxUpdateRequest();
             } else {
-                $data = [
-                    'id' => (int)$this->_getParam('id'),
-                    'titulo' => $this->_getParam('titulo'),
-                    'descripcion' => $this->_getParam('descripcion'),
-                    'estado' => $this->_getParam('estado')
-                ];
-                try {
-                    if (empty($data['titulo']) || empty($data['estado'])) {
-                        throw new Exception('Título y estado son obligatorios.');
-                    }
-                    $taskModel = new TaskModel();
-                    $taskModel->updateTask($data['id'], $data);
-                    $this->setFlash('success', 'Tarea actualizada correctamente.');
-                    header('Location: ' . url('task/read') . '?id=' . $data['id']);
-                    exit;
-                } catch (Exception $e) {
-                    $this->setFlash('error', 'Error al actualizar la tarea: ' . $e->getMessage());
-                }
+                $this->processFormUpdateRequest();
             }
         }
     }
 
-    public function deleteAction() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data = json_decode(file_get_contents('php://input'), true);
-            $id = $data['taskId'] ?? $this->_getParam('id');
-            
-            if ($id) {
-                $taskModel = new TaskModel();
-                $borrado = $taskModel->deleteTaskById($id);
-                
-                if ($data) {
-                    // AJAX: responde JSON
-                    header('Content-Type: application/json');
-                    echo json_encode([
-                        'success' => $borrado,
-                        'message' => $borrado ? 'Tarea eliminada correctamente.' : 'No se pudo eliminar la tarea.'
-                    ]);
-                    exit;
-                }
-                
-                // POST tradicional: redirige al tablero principal
-                $this->setFlash('success', 'Tarea eliminada correctamente.');
-                header('Location: ' . url(''));
-                exit;
-            } else {
-                if ($data) {
-                    header('Content-Type: application/json');
-                    echo json_encode(['success' => false, 'message' => 'ID inválido']);
-                    exit;
-                } else {
-                    $this->setFlash('error', 'ID de tarea inválido.');
-                    header('Location: ' . url(''));
-                    exit;
-                }
+    private function processFormUpdateRequest(): void
+    {
+        $data = [
+            'id' => (int)$this->_getParam('id'),
+            'titulo' => $this->_getParam('titulo'),
+            'descripcion' => $this->_getParam('descripcion'),
+            'estado' => $this->_getParam('estado')
+        ];
+        try {
+            if (empty($data['titulo']) || empty($data['estado'])) {
+                throw new Exception('Título y estado son obligatorios.');
             }
-        } else {
-            // Si no es POST, redirige al tablero
-            header('Location: ' . url(''));
+            $taskModel = new TaskModel();
+            $taskModel->updateTask($data['id'], $data);
+            $this->setFlash('success', 'Tarea actualizada correctamente.');
+            header('Location: ' . url('task/read') . '?id=' . $data['id']);
             exit;
+        } catch (Exception $e) {
+            $this->setFlash('error', 'Error al actualizar la tarea: ' . $e->getMessage());
         }
     }
 
-    private function isAjaxRequest(): bool{
-        return isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false;
+    private function processAjaxUpdateRequest(): void
+    {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $this->handleAjaxUpdate($data);
     }
 
-    private function handleAjaxUpdate(?array $data): void {
+    private function handleAjaxUpdate(?array $data): void
+    {
         header('Content-Type: application/json');
         try {
             if (!$data || empty($data['id']) || empty($data['titulo']) || empty($data['estado'])) {
@@ -176,6 +182,53 @@ class TaskController extends ApplicationController
         }
     }
 
-    
+    public function deleteAction(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if ($this->isAjaxRequest()) {
+                $this->processAjaxDeleteRequest();
+            } else {
+                $this->processFormDeleteRequest();
+            }
+        } else {
+            header('Location: ' . url(''));
+            exit;
+        }
+    }
+
+    private function processFormDeleteRequest(): void
+    {
+        $id = $this->_getParam('id');
+        if ($id) {
+            $taskModel = new TaskModel();
+            $borrado = $taskModel->deleteTaskById($id);
+            $this->setFlash('success', 'Tarea eliminada correctamente.');
+        } else {
+            $this->setFlash('error', 'ID de tarea inválido.');
+        }
+        header('Location: ' . url(''));
+        exit;
+    }
+
+    private function processAjaxDeleteRequest(): void
+    {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $id = $data['taskId'] ?? null;
+        header('Content-Type: application/json');
+        if ($id) {
+            $taskModel = new TaskModel();
+            $borrado = $taskModel->deleteTaskById($id);
+            echo json_encode([
+                'success' => $borrado,
+                'message' => $borrado ? 'Tarea eliminada correctamente.' : 'No se pudo eliminar la tarea.'
+            ]);
+        } else {
+            echo json_encode([
+                'success' => false,
+                'message' => 'ID inválido'
+            ]);
+        }
+        exit;
+    }  
 }
 ?>

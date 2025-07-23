@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-include __DIR__ . '/../layouts/form.phtml';
-
-$action = '';
+$action = $action ??'';
 $readonly = true;
 $buttonText = '';
 $showDelete = false;
-$cancelUrl = url('');
+$cancelUrl = Environment::url('task/main');
+
+include dirname(__DIR__, 2) . '/layouts/form.phtml';
 
 ?>

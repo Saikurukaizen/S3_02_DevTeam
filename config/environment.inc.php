@@ -1,57 +1,58 @@
 <?php
-/**
- * Configuracion de entorno para compatibilidad entre XAMPP y servidor PHP built-in
- * Detecta automaticamente el entorno y configura las URLs base apropiadas
- */
+declare(strict_types=1);
 
-// Detectar si estamos usando XAMPP o servidor PHP built-in
-function detectEnvironment() {
-    $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
-    $serverPort = $_SERVER['SERVER_PORT'] ?? '';
-    $httpHost = $_SERVER['HTTP_HOST'] ?? '';
-    
-    // Si el puerto es 8000, probablemente es php -S localhost:8000
-    if ($serverPort === '8000' || strpos($httpHost, ':8000') !== false) {
-        return 'php_server';
+class Environment{
+
+    public const ENV_PHP_SERVER = 'php_server';
+    public const ENV_XAMPP = 'xampp';
+
+    public static function detectEnvironment(): string{
+        $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
+        $serverPort = $_SERVER['SERVER_PORT'] ?? '';
+        $httpHost = $_SERVER['HTTP_HOST'] ?? '';
+
+        if ($serverPort === '8000' || strpos($httpHost, ':8000') !== false) {
+        return self::ENV_PHP_SERVER;
+        }
+
+        if (
+            $serverPort === '80' ||
+            $serverPort === '443' ||
+            strpos($httpHost, ':80') !== false ||
+            strpos($httpHost, ':443') !== false
+        ) {
+            return self::ENV_XAMPP;
+        }
+        return self::ENV_XAMPP;
     }
-    
-    // Si la URL contiene /fullstackphp-sprint3/, es XAMPP
-    if (strpos($scriptName, '/fullstackphp-sprint3/') !== false) {
-        return 'xampp';
+
+    public static function getBaseUrl(): string {
+        $env = self::detectEnvironment();
+
+        switch ($env) {
+            case self::ENV_PHP_SERVER:
+                return '';
+            case self::ENV_XAMPP:
+            default:
+                $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
+                $baseUrl = rtrim(str_replace(basename($scriptName), '', $scriptName), '/');
+                return $baseUrl;          
+        }
     }
-    
-    // Por defecto, asumir XAMPP
-    return 'xampp';
-}
 
-// Configurar la URL base segun el entorno
-function getBaseUrl() {
-    $environment = detectEnvironment();
-    
-    switch ($environment) {
-        case 'php_server':
-            // Para php -S localhost:8000
-            return '';
-        case 'xampp':
-        default:
-            // Para XAMPP con la estructura actual
-            return '/fullstackphp-sprint3/S302/S3_02_DevTeam/web';
+    public static function url(string $path = ''): string{
+        $path = ltrim($path, '/');
+        return self::getBaseUrl() . '/' . $path;
+    }
+
+    public static function asset(string $path = ''): string{
+        $path = ltrim($path, '/');
+        return self::getBaseUrl() . '/' . $path;
     }
 }
 
-// Constantes globales para usar en toda la aplicacion
-define('ENVIRONMENT', detectEnvironment());
-define('BASE_URL', getBaseUrl());
 
-// Funcion helper para construir URLs
-function url($path = '') {
-    $path = ltrim($path, '/');
-    return BASE_URL . '/' . $path;
-}
+define('ENVIRONMENT', Environment::detectEnvironment());
+define('BASE_URL', Environment::getBaseUrl());
 
-// Funcion helper para assets (CSS, JS, imagenes)
-function asset($path = '') {
-    $path = ltrim($path, '/');
-    return BASE_URL . '/' . $path;
-}
 ?>

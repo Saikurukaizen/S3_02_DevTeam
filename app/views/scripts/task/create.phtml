@@ -1,11 +1,14 @@
 <?php
 declare(strict_types=1);
-$action = url('task/create');
+
+$action = Environment::url('task/create');
 $task = [];
 $readonly = false;
 $buttonText = 'Crear Tarea';
 $showDelete = false;
-$cancelUrl = url('');
-include __DIR__ . '/../layouts/form.phtml';
+$cancelUrl = Environment::url('task/main');
+
+include dirname(__DIR__, 2) . '/layouts/form.phtml';
+
 ?>
 

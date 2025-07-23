@@ -6,7 +6,7 @@ class TaskModel{
 
     public function __construct()
     {
-        $this->file = ROOT_PATH . '/config/fakeTasks.json';
+        $this->file = ROOT_PATH . '/config/fakeTasksTests.json';
     }
 
     public function createTask(array $data): void
@@ -53,14 +53,19 @@ class TaskModel{
 
     public function updateTask(int $id, array $data): void
     {
+         error_log("updateTask llamado con ID: $id y data: " . print_r($data, true));
+
         if(empty($data['titulo'])){
+            error_log("updateTask error: El título no puede estar vacío.");
             throw new Exception("El título no puede estar vacío.");
         }
         if(empty($data['estado'])){
+            error_log("updateTask error: El estado no puede estar vacío.");
             throw new Exception("El estado no puede estar vacío.");
         }
 
         if(!isset($data['id']) || $data['id'] !== $id){
+            error_log("updateTask error: El ID no coincide con el ID de la tarea a actualizar.");
             throw new Exception("El ID no coincide con el ID de la tarea a actualizar.");
         } 
 
@@ -69,10 +74,12 @@ class TaskModel{
             foreach($tasks as &$task){
                 if($task['id'] == $id){
                     $task = array_merge($task, $data);
+                    error_log("Tarea actualizada: " . print_r($task, true));
                 }
             }
             $json = json_encode($tasks, JSON_PRETTY_PRINT);
             if(file_put_contents($this->file, $json) === false){
+                error_log("Fallo al escribir el archivo JSON al actualizar (ID: $id)");
                 throw new Exception("Hubo un fallo al actualizar la tarea.");
             } else {
                 return;
@@ -89,14 +96,22 @@ class TaskModel{
             if (isset($task['id']) && $task['id'] == $id) {
                 unset($tasks[$i]);
                 $encontro = true;
+                error_log("Tarea con ID $id eliminada.");
                 break;
             }
         }
         if ($encontro) {
             $tasks = array_values($tasks);
-            file_put_contents($this->file, json_encode($tasks, JSON_PRETTY_PRINT));
-            return true;
+            $result =file_put_contents($this->file, json_encode($tasks, JSON_PRETTY_PRINT));
+            if($result === false){
+                error_log("Fallo al escribir el archivo JSON al borrar (ID: $id)");
+                return false;
+            } else{
+                error_log("Archivo JSON actualizado correctamente tras borrar (ID: $id)");
+                return true;
+            }       
         } else {
+            error_log("No se encontró la tarea con ID: $id para borrar");
             return false;
         }
     }

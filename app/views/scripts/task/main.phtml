@@ -12,7 +12,7 @@ if (!isset($estadoColumna)) { $estadoColumna = null; }
             data-estado="<?= htmlspecialchars($task['estado']) ?>"
             draggable="true"
             ondragstart="drag(event)">
-            <a href="<?=Environment::url('task/read?id=' . $task['id']) ?>">
+            <a href="<?= Environment::url('task/read?id=' . $task['id']) ?>">
                 <strong class="block mb-2 text-[#172b4d] text-[0.9rem]">
                     <?= htmlspecialchars($task['titulo']) ?>
                 </strong>

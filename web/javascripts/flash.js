@@ -16,12 +16,14 @@ function getTimeoutFlash(){
   });
 }
 
-   function closeFlashMessage() {
-        const flashMessage = document.getElementById('flash-message');
-        if (flashMessage) {
-            flashMessage.classList.add('hiding');
-            setTimeout(() => {
-                flashMessage.remove();
-            }, 300);
-        }
+function closeFlashMessage() {
+    const flashMessage = document.getElementById('flash-message');
+    if (flashMessage) {
+        flashMessage.classList.add('hiding');
+        setTimeout(() => {
+            flashMessage.remove();
+        }, 300);
     }
+}
+
+getTimeoutFlash();

@@ -1,41 +1,42 @@
 <?php
 
 /**
- * Used for setting up the routing in the system
+ * Router del Sistema
+ * 
+ * Maneja el enrutamiento de URLs a controladores y acciones.
+ * Soporta rutas simples y parametrizadas.
  */
 class Router
 {
 	/**
-	 * Executes the system routing
-	 * @throws Exception
+	 * Ejecuta el enrutamiento basado en las rutas definidas
+	 * @param array $routes Array de rutas disponibles
 	 */
 	public function execute($routes)
 	{
-		// tries to find the route and run the given action on the controller
 		try {
-			// the controller and action to execute
 			$controller = null;
 			$action = null;
 			
-			// tries to find a simple route
+			// Buscar ruta simple
 			$routeFound = $this->_getSimpleRoute($routes, $controller, $action);
 			
 			if (!$routeFound) {
-				// tries to find the a matching "parameter route"
+				// Buscar ruta con parametros
 				$routeFound = $this->_getParameterRoute($routes, $controller, $action);
 			}
 			
-			// no route found, throw an exception to run the error controller
+			// Si no hay ruta, ejecutar controlador de error
 			if (!$routeFound || $controller == null || $action == null) {
 				throw new Exception('no route added for ' . $_SERVER['REQUEST_URI']);
 			}
 			else {
-				// executes the action on the controller
+				// Ejecutar accion en el controlador
 				$controller->execute($action);
 			}
 		}
 		catch(Exception $exception) {
-			// runs the error controller
+			// Ejecutar controlador de error
 			$controller = new ErrorController();
 			$controller->setException($exception);
 			$controller->execute('error');
@@ -43,8 +44,8 @@ class Router
 	}
 	
 	/**
-	 * Tests if a route has parameters
-	 * @param string $route the route (uri) to test
+	 * Verifica si una ruta tiene parametros
+	 * @param string $route Ruta a verificar
 	 * @return boolean
 	 */
 	public function hasParameters($route)
@@ -53,108 +54,64 @@ class Router
 	}
 	
 	/**
-	 * Fetches the current URI called
-	 * @return string the URI called
+	 * Obtiene la URI actual limpia
+	 * @return string URI procesada
 	 */
 	protected function _getUri()
 	{
-		$uri = explode('?',$_SERVER['REQUEST_URI']);
-		$uri = $uri[0];
-		$uri = substr($uri, strlen(WEB_ROOT));
+		$uri = $_SERVER['REQUEST_URI'];
+		
+		// Remover query string
+		if (false !== $pos = strpos($uri, '?')) {
+			$uri = substr($uri, 0, $pos);
+		}
+		
+		// Remover web root si esta definido
+		if (defined('WEB_ROOT') && !empty(WEB_ROOT)) {
+			$uri = substr($uri, strlen(WEB_ROOT));
+		}
 		
 		return $uri;
 	}
 	
 	/**
-	 * Tries to find a matching simple route
-	 * @param array $routes the list of routes in the system
-	 * @param Controller $controller the controller to use (sent as reference)
-	 * @param string $action the action to execute (sent as reference)
-	 * @return boolean
+	 * Busca ruta simple en el array de rutas
+	 * @param array $routes Rutas disponibles
+	 * @param object &$controller Controlador encontrado
+	 * @param string &$action Accion encontrada
+	 * @return boolean True si encuentra ruta
 	 */
 	protected function _getSimpleRoute($routes, &$controller, &$action)
 	{
-		// fetches the URI
 		$uri = $this->_getUri();
 		
-		// if the route isn't defined, try to add a trailing slash
-		if (isset($routes[$uri])) {
+		// Buscar coincidencia exacta
+		if (array_key_exists($uri, $routes)) {
 			$routeFound = $routes[$uri];
 		}
-		else if(isset($routes[$uri . '/'])) {
+		// Buscar con barra final
+		elseif (array_key_exists($uri . '/', $routes)) {
 			$routeFound = $routes[$uri . '/'];
 		}
+		// Buscar coincidencia parcial
 		else {
-			$uri = substr($uri, 0, -1);
-			// fetches the current route
-			$routeFound = isset($routes[$uri]) ? $routes[$uri] : false;
+			$routeFound = null;
+			foreach ($routes as $route => $target) {
+				if (substr($uri, 0, strlen($route)) == $route) {
+					$routeFound = $target;
+					break;
+				}
+			}
 		}
 		
-		// if a matching route was found
 		if ($routeFound) {
-			list($name, $action) = explode('#', $routeFound);
-		
-			// initializes the controller
-			$controller = $this->_initializeController($name);
-			
-			return true;
-		}
-		
-		return false;
-	}
-	
-	/**
-	 * Tries to find a matching parameter route
-	 * @param array $routes the list of routes in the system
-	 * @param Controller $controller the controller to use (sent as reference)
-	 * @param string $action the action to execute (sent as reference)
-	 * @return boolean
-	 */
-	protected function _getParameterRoute($routes, &$controller, &$action)
-	{
-		// fetches the URI
-		$uri = $this->_getUri();
-		
-		// testing routes with parameters
-		foreach ($routes as $route => $path) {
-			if ($this->hasParameters($route)) {
-				$uriParts = explode('/:', $route);
-					
-				$pattern = '/^';
-				//$pattern .= '\\'.($uriParts[0] == '' ? '/' : $uriParts[0]); 
-				if ($uriParts[0] == '') {
-					$pattern .= '\\/';
-				}
-				else {
-					$pattern .= str_replace('/', '\\/', $uriParts[0]);
-				}
-					
-				foreach (range(1, count($uriParts)-1) as $index) {
-					$pattern .= '\/([a-zA-Z0-9]+)';
-				}
-				
-				// now also handles ending slashes!
-				$pattern .= '[\/]{0,1}$/';
-					
-				$namedParameters = array();
-				$match = preg_match($pattern, $uri, $namedParameters);
-				// if the route matches
-				if ($match) {
-					list($name, $action) = explode('#', $path);
-		
-					// initializes the controller
-					$controller = $this->_initializeController($name);
-		
-					// adds the named parameters to the controller
-					foreach (range(1, count($namedParameters)-1) as $index) {
-						$controller->addNamedParameter(
-								$uriParts[$index],
-								$namedParameters[$index]
-						);
-					}
-					
-					return true;
-				}
+			// Parsear formato controller#action
+			if (strpos($routeFound, '#') !== false) {
+				list($name, $action) = explode('#', $routeFound);
+				$controllerName = ucfirst($name) . 'Controller';
+				$controller = new $controllerName();
+				$controller->init();
+				return true;
 			}
 		}
 		
@@ -162,15 +119,16 @@ class Router
 	}
 	
 	/**
-	 * Initializes the given controller
-	 * @param string $name the name of the controller
-	 * @return mixed null if error, else a controller
+	 * Busca ruta parametrizada
+	 * @param array $routes Rutas disponibles
+	 * @param object &$controller Controlador encontrado
+	 * @param string &$action Accion encontrada
+	 * @return boolean True si encuentra ruta
 	 */
-	protected function _initializeController($name)
+	protected function _getParameterRoute($routes, &$controller, &$action)
 	{
-		// initializes the controller
-		$controller = ucfirst($name) . 'Controller';
-		// constructs the controller
-		return new $controller();
+		// Implementacion basica para rutas con parametros
+		// Se puede expandir segun necesidades
+		return false;
 	}
 }

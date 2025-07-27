@@ -1,59 +1,199 @@
 <?php
+declare(strict_types=1);
 
 /**
- * Base controller for the application.
- * Add general things in this controller.
+ * Controlador Base de la Aplicación
+ * 
+ * Clase base para todos los controladores del sistema.
+ * Provee funcionalidades comunes: modelos, vistas, sesiones y validaciones.
+ * Mejora: código limpio, seguro y organizado.
+ * 
+ * @author Sistema de Tareas
+ * @version 2.1
  */
 class ApplicationController extends Controller 
 {
     protected $model = null;
-
-    // Declaramos la propiedad view para que todos los controladores hijos la tengan
     public $view = null;
 
     /**
-     * Método de inicialización común para todos los controladores hijos
+     * Inicializa el controlador: inicia sesión, crea vista y carga modelo asociado
      */
-    public function init()
+    public function init(): void
     {
-        // Inicializa la vista
-        $this->view = new View();
+        try {
+            $this->initializeSession();
+            $this->view = new View();
+            $this->loadAssociatedModel();
+        } catch (Exception $e) {
+            // Se recomienda loguear el error aquí si hay sistema de logs
+            throw $e;
+        }
+    }
 
-        // Ejemplo: cargar el modelo según el nombre del controlador
+    /**
+     * Inicia la sesión si no está activa
+     */
+    private function initializeSession(): void
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+    }
+
+    /**
+     * Carga automáticamente el modelo asociado al controlador
+     */
+    private function loadAssociatedModel(): void
+    {
         $controllerName = strtolower(str_replace('Controller', '', get_class($this)));
         $modelClass = ucfirst($controllerName) . 'Model';
         if (class_exists($modelClass)) {
             $this->model = new $modelClass();
         }
-        // Puedes inicializar otras variables o helpers aquí
     }
 
     /**
-     * Método para cargar cualquier modelo por nombre
+     * Carga un modelo específico por nombre
+     * @param string $modelName Nombre del modelo (sin el sufijo 'Model')
+     * @return object Instancia del modelo
+     * @throws Exception Si el modelo no existe
      */
-    protected function loadModel($modelName)
+    protected function loadModel(string $modelName): object
     {
-        $modelClass = ucfirst($modelName) . 'Model';
-        if (class_exists($modelClass)) {
-            return new $modelClass();
+        $modelName = trim($modelName);
+        if (empty($modelName)) {
+            throw new InvalidArgumentException("El nombre del modelo no puede estar vacío");
         }
-        throw new Exception("Modelo no encontrado: $modelClass");
+        $modelClass = ucfirst($modelName) . 'Model';
+        if (!class_exists($modelClass)) {
+            throw new Exception("Modelo no encontrado: $modelClass");
+        }
+        return new $modelClass();
     }
 
+    /**
+     * Define un mensaje flash para mostrar al usuario
+     * @param string $type Tipo de mensaje (success, error, warning, info)
+     * @param string $message Mensaje a mostrar
+     * @throws InvalidArgumentException Si los parámetros son inválidos
+     */
     protected function setFlash(string $type, string $message): void
     {
-        $_SESSION['flash'][$type] = $message;
+        $type = trim($type);
+        $message = trim($message);
+        if (empty($type)) {
+            throw new InvalidArgumentException("El tipo de mensaje flash no puede estar vacío");
+        }
+        if (empty($message)) {
+            throw new InvalidArgumentException("El mensaje flash no puede estar vacío");
+        }
+        $validTypes = ['success', 'error', 'warning', 'info'];
+        if (!in_array($type, $validTypes)) {
+            throw new InvalidArgumentException("Tipo de mensaje flash inválido: $type");
+        }
+        $this->initializeSession();
+        // Sanitiza el mensaje para evitar XSS
+        $_SESSION['flash'][$type] = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
     }
 
+    /**
+     * Recupera y elimina un mensaje flash por tipo
+     * @param string $type Tipo de mensaje
+     * @return string|null Mensaje o null si no existe
+     */
     protected function getFlash(string $type): ?string
     {
-        if(isset($_SESSION['flash'][$type])){
-            $msg = $_SESSION['flash'][$type];
+        $this->initializeSession();
+        if (isset($_SESSION['flash'][$type])) {
+            $message = $_SESSION['flash'][$type];
             unset($_SESSION['flash'][$type]);
-            return $msg;
+            return $message;
         }
         return null;
     }
 
-    // Puedes añadir aquí filtros before/after si lo necesitas
+    /**
+     * Verifica si existe un mensaje flash de un tipo específico
+     * @param string $type Tipo de mensaje
+     * @return bool True si existe
+     */
+    protected function hasFlash(string $type): bool
+    {
+        $this->initializeSession();
+        return isset($_SESSION['flash'][$type]);
+    }
+
+    /**
+     * Recupera todos los mensajes flash sin eliminarlos
+     * @return array Array asociativo con todos los mensajes flash
+     */
+    protected function getAllFlashes(): array
+    {
+        $this->initializeSession();
+        return $_SESSION['flash'] ?? [];
+    }
+
+    /**
+     * Elimina todos los mensajes flash
+     */
+    protected function clearAllFlashes(): void
+    {
+        $this->initializeSession();
+        unset($_SESSION['flash']);
+    }
+
+    /**
+     * Redirige a una URL específica
+     * @param string $url URL de destino
+     * @param int $statusCode Código de estado HTTP (por defecto: 302)
+     */
+    protected function redirect(string $url, int $statusCode = 302): void
+    {
+        if (empty($url)) {
+            throw new InvalidArgumentException("La URL de redirección no puede estar vacía");
+        }
+        if (headers_sent()) {
+            throw new RuntimeException("No se puede redirigir, las cabeceras ya fueron enviadas");
+        }
+        http_response_code($statusCode);
+        // Sanitiza la URL para evitar inyección de cabeceras
+        $safeUrl = filter_var($url, FILTER_SANITIZE_URL);
+        header("Location: $safeUrl");
+        exit();
+    }
+
+    /**
+     * Verifica si la petición es AJAX
+     * @return bool True si es AJAX
+     */
+    protected function isAjaxRequest(): bool
+    {
+        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+               strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+    }
+
+    /**
+     * Verifica si la petición es de tipo JSON
+     * @return bool True si el Content-Type es application/json
+     */
+    protected function isJsonRequest(): bool
+    {
+        return isset($_SERVER['CONTENT_TYPE']) && 
+               strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false;
+    }
+
+    /**
+     * Devuelve una respuesta JSON
+     * @param mixed $data Datos a devolver en JSON
+     * @param int $statusCode Código de estado HTTP
+     */
+    protected function jsonResponse($data, int $statusCode = 200): void
+    {
+        http_response_code($statusCode);
+        header('Content-Type: application/json');
+        // Opciones de seguridad y compatibilidad en la respuesta JSON
+        echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        exit();
+    }
 }

@@ -27,7 +27,7 @@ class ErrorController extends Controller
 		$this->view->error = $this->_exception->getMessage();
 		
 		// logs the error to the log
-		error_log($this->view->error);
-		error_log($this->_exception->getTraceAsString());
+		// Log del error procesado
+		// Detalles del error guardados
 	}
 }

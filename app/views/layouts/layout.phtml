@@ -2,86 +2,143 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Gestor de Tareas</title>
-	<link rel="stylesheet" href="/web/stylesheets/layout.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Tareas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#8551af',
+              secondary: '#6d3bbd',
+              accent: '#4a6bb5',
+              kanbanBlue: '#1976d2',
+              kanbanLight: '#64b5f6',
+            },
+            fontFamily: {
+              'sans': ['Segoe UI', 'system-ui', 'sans-serif'],
+            },
+          },
+        },
+      }
+    </script>
+    <style>
+      /* Reset para asegurar que Tailwind funcione correctamente */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      /* Evitar conflictos con CSS antiguo */
+      body {
+        font-family: 'Segoe UI', system-ui, sans-serif !important;
+      }
+    </style>
 </head>
-<body>
+<body class="font-sans m-0 p-0 min-h-screen w-full flex overflow-y-auto bg-gradient-to-r from-primary via-secondary to-accent">
 
-    <!-- Sidebar lateral izquierda -->
-    <div class="sidebar">
-        <button><a href="<?=url('task/create')?>">
-            + Nueva Tarea
-        </a></button>
-
-        <!-- Icono de papelera para Drop futuro -->
-        <div id="trash" class="trash" ondrop="dropUpdate(event, 'delete')" ondragover="allowDrop(event)">
-            🗑 Papelera
-        </div>
-    </div>
-
-    <!-- Área principal del tablero -->
-    <div class="main">
-        <!-- Mensajes flash para feedback al usuario -->
-        <?php if($flashSuccess = $_SESSION['flash']['success'] ?? null): ?>
-            <div id="flash-message" class="flash-message success">
-                <div class="flash-content">
-                    <div class="flash-icon">✅</div>
-                    <div class="flash-text"><?=htmlspecialchars($flashSuccess)?></div>
-                    <button class="flash-close" onclick="closeFlashMessage()">×</button>
+    <div class="flex w-full min-h-screen">
+        <!-- Sidebar izquierdo (Tailwind) -->
+        <div class="flex flex-col min-w-[240px] h-screen bg-gradient-to-r from-accent via-secondary to-primary p-6">
+            <!-- Navegación principal: Home en el index, Volver en otras páginas -->
+            <div class="w-full flex flex-col gap-4 mt-2 mb-8">
+                <!-- Espacio para alinear con las columnas -->
+                <div class="h-[3.7rem]"></div>
+                <!-- Botón de navegación: solo en páginas que no son index -->
+                <div class="mb-0">
+                    <?php 
+                    // Detectar si es página inicial verificando URL o variable
+                    $isHomePage = (isset($this->isIndexPage) && $this->isIndexPage) || 
+                                  (isset($_SERVER['REQUEST_URI']) && 
+                                   (strpos($_SERVER['REQUEST_URI'], '/task/') === false || 
+                                    $_SERVER['REQUEST_URI'] === '/' || 
+                                    strpos($_SERVER['REQUEST_URI'], '/index') !== false));
+                    if (!$isHomePage): 
+                    ?>
+                        <a href="<?= Environment::url('/') ?>" class="w-full flex items-center justify-center py-3 rounded-lg font-semibold text-white text-base shadow-lg transition bg-gradient-to-r from-pink-500 to-pink-400 hover:from-pink-600 hover:to-pink-400 mb-3">
+                            <span class="text-2xl mr-2">←</span>
+                            <span class="text-base font-semibold">Volver</span>
+                        </a>
+                    <?php else: ?>
+                        <!-- Área de bienvenida en la página inicial -->
+                        <div class="w-full flex items-center justify-center py-3 rounded-lg font-semibold text-white text-base shadow-lg transition bg-gradient-to-r from-pink-500 to-pink-400 hover:from-pink-600 hover:to-pink-400 mb-3">
+                            <span class="text-2xl mr-2">🏠</span>
+                            <span class="text-base font-semibold">Página Inicial</span>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <!-- Botón principal para crear tarea -->
+                <div class="mb-3">
+                    <a href="<?= Environment::url('task/create') ?>" class="w-full flex items-center justify-center py-3 rounded-lg font-semibold text-white text-base shadow-lg transition bg-gradient-to-r from-green-500 to-green-400 hover:from-green-600 hover:to-green-400">
+                        <span class="mr-2 text-lg font-bold">+</span>
+                        <span> Nueva Tarea</span>
+                    </a>
                 </div>
             </div>
-            <?php unset($_SESSION['flash']['success']); ?>
-        <?php endif; ?>
-        <?php if($flashError = $_SESSION['flash']['error'] ?? null): ?>
-            <div id="flash-message" class="flash-message error">
-                <div class="flash-content">
-                    <div class="flash-icon">❌</div>
-                    <div class="flash-text"><?=htmlspecialchars($flashError)?></div>
-                    <button class="flash-close" onclick="closeFlashMessage()">×</button>
+            <!-- Panel de estadísticas -->
+            <div class="bg-white/10 rounded-lg p-4 mb-6 w-full">
+                <h3 class="font-bold text-white text-lg mb-4 flex items-center gap-2"><span>📊</span> Estadísticas</h3>
+                <div class="flex flex-col gap-2">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">📋</span>
+                        <div>
+                            <span class="font-bold text-white text-lg" id="pending-count">0</span>
+                            <span class="text-white/80 text-sm">Pendientes</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">🔄</span>
+                        <div>
+                            <span class="font-bold text-white text-lg" id="progress-count">0</span>
+                            <span class="text-white/80 text-sm">En Progreso</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">✅</span>
+                        <div>
+                            <span class="font-bold text-white text-lg" id="completed-count">0</span>
+                            <span class="text-white/80 text-sm">Completadas</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">📈</span>
+                        <div>
+                            <span class="font-bold text-white text-lg" id="total-count">0</span>
+                            <span class="text-white/80 text-sm">Total</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <?php unset($_SESSION['flash']['error']); ?>
-        <?php endif; ?>
-
-        <h1>Lista de Tareas</h1>
-
-        <!-- Contenedor del tablero estilo Trello -->
-        <div class="board" style="display: flex; gap: 1rem;">
-
-            <!-- Columna: Pendiente -->
-            <div id="pendiente" ondrop="dropUpdate(event, 'pendiente')" ondragover="allowDrop(event)">
-                <h2>Pendiente</h2>
-                <!-- Aqui se inyectan las tareas del estado 'pendiente' desde read.phtml -->
-                <!-- Cada tarjeta debe ser draggable y clickeable para ver detalles -->
+            <!-- Área de la papelera en la parte inferior -->
+            <div class="mt-auto w-full">
+                <div class="flex flex-col items-center justify-center bg-white/10 rounded-lg py-3">
+                    <div class="text-2xl" id="closeLitter">🗑️</div>
+                    <div class="text-2xl" id="openLitter" style="display: none;">🗑️</div>
+                    <span class="text-white/80 text-sm">Arrastra aquí para eliminar</span>
+                </div>
             </div>
-
-            <!-- Columna: En Proceso -->
-            <div id="en_proceso" ondrop="dropUpdate(event, 'en_proceso')" ondragover="allowDrop(event)">
-                <h2>En Proceso</h2>
-                <!-- Aqui se inyectan las tareas del estado 'en_proceso' -->
-                <!-- Cada tarjeta debe ser draggable y clickeable para ver detalles -->
-            </div>
-
-            <!-- Columna: Completado -->
-            <div id="hecho" ondrop="dropUpdate(event, 'hecho')" ondragover="allowDrop(event)">
-                <h2>Completado</h2>
-                <!-- Aqui se inyectan las tareas del estado 'hecho' -->
-                <!-- Cada tarjeta debe ser draggable y clickeable para ver detalles -->
-            </div>
-
         </div>
-
-        <!-- Aquí se inserta el contenido generado por read.phtml -->
-        <?php echo $this->content(); ?>
+        <!-- Contenido principal -->
+        <div class="flex-1 p-8 flex flex-col items-center">
+            <!-- Título principal -->
+            <div class="w-full flex flex-col items-center mb-8">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg tracking-tight text-center">
+                    <span class="inline-block align-middle mr-2 text-kanbanBlue">🚀</span> Gestión de Tareas <span class="font-black">Kanban Board</span>
+                </h1>
+                <div class="mt-2 text-lg text-white font-medium text-center">Organiza, sigue y completa tus tareas con estilo!</div>
+            </div>
+            <div class="w-full max-w-[90vw] xl:max-w-[1400px]">
+                <?php echo $this->content(); ?>
+            </div>
+        </div>
     </div>
-
-
 <script>
-    window.BASE_URL = '<?= BASE_URL ?>';
+    // Definir BASE_URL para JavaScript
+    window.BASE_URL = '<?= Environment::url('') ?>';
 </script>
-<script src="/web/javascripts/buildUrl.js"></script>
-<script src="/web/javascripts/task_organize.js"></script>
-<script src="/web/javascripts/drag_drop.js"></script>
-<script src="/web/javascripts/flash.js"></script>
+<script src="<?= Environment::url('javascripts/buildUrl.js') ?>"></script>
+<script src="<?= Environment::url('javascripts/drag_drop.js') ?>"></script>
+<script src="<?= Environment::url('javascripts/stats.js') ?>"></script>
 </body>
 </html>

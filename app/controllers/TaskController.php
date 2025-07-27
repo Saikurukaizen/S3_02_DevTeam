@@ -17,6 +17,18 @@ class TaskController extends ApplicationController
         $this->view->tasks = $tasks;
     }
 
+    /**
+     * Configura la vista para crear tarea
+     */
+    private function setupCreateView(): void
+    {
+        $this->view->action = Environment::url('task/create');
+        $this->view->readonly = false;
+        $this->view->buttonText = 'Crear Tarea';
+        $this->view->showDelete = false;
+        $this->view->cancelUrl = Environment::url('task');
+    }
+
     private function isAjaxRequest(): bool
     {
         return isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false;
@@ -30,13 +42,9 @@ class TaskController extends ApplicationController
             } else {
                 $this->processFormCreateRequest();
             }
+            
         }
-        $this->view->action = Environment::url('task/create');
-        $this->view->readonly = true;
-        $this->view->buttonText = '';
-        $this->view->showDelete = false;
-        $this->view->cancelUrl = '';
-        //$this->view->render('task/create.phtml');
+        $this->setupCreateView();
     }
 
     private function processFormCreateRequest(): void

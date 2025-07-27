@@ -36,7 +36,7 @@ class TaskController extends ApplicationController
         $this->view->buttonText = '';
         $this->view->showDelete = false;
         $this->view->cancelUrl = '';
-        $this->view->render('task/create.phtml');
+        //$this->view->render('task/create.phtml');
     }
 
     private function processFormCreateRequest(): void
@@ -87,7 +87,7 @@ class TaskController extends ApplicationController
             exit;
         }
     }
-
+    
     public function readAction(): void
     {
         $id = $this->_getParam('id');
@@ -98,7 +98,7 @@ class TaskController extends ApplicationController
         $this->view->buttonText = '';
         $this->view->showDelete = false;
         $this->view->cancelUrl = '';
-        $this->view->render('task/read.phtml');
+        //$this->view->render('task/read.phtml');
     }
 
     public function updateAction(): void

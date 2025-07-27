@@ -1,16 +1,22 @@
 <?php
 declare(strict_types=1);
-
-if (empty($task) || !is_array($task)) {
-    echo "<p>Tarea no encontrada.</p>";
-    return;
-}
+/* $task = $this->task ?? [];
 $action = $action ??'';
 $readonly = true;
-$buttonText = '';
+$buttonText = 'Actualizar';
+$updateUrl = Environment::url('task/update') . '?id=' . htmlspecialchars((string)$task['id']);
 $showDelete = false;
 $cancelUrl = '';
 
-include dirname(__DIR__, 2) . '/layouts/form.phtml';
+include dirname(__DIR__, 2) . '/layouts/form.phtml'; */
 
+$task = $this->task ?? [];
+$action = $action ??'';
+$readonly = false;
+$buttonText = '';
+$updateUrl = Environment::url('task/update') . '?id=' . htmlspecialchars((string)($task['id'] ?? ''));
+$showDelete = true;
+$cancelUrl = Environment::url('/');
+
+include dirname(__DIR__, 2) . '/layouts/form.phtml';
 ?>

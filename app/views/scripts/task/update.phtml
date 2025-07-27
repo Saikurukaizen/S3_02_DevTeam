@@ -1,7 +1,10 @@
 <?php
 declare(strict_types=1);
 
+$task = $this->task ?? [];
+
 $action = Environment::url('task/update') . '?id=' . htmlspecialchars($task['id']);
+//$updateUrl = true;
 $readonly = false;
 $buttonText = 'Actualizar Tarea';
 $showDelete = true;

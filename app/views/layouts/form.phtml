@@ -26,25 +26,23 @@
         </select>
     </div>
     <div class="flex gap-4 justify-end mt-8 flex-wrap">
-        <?php if (empty($readonly)): ?>
-            <button type="submit" class="
+            <button type="submit">
+                <?= htmlspecialchars($buttonText ?? 'Guardar') ?>
+            </button>
+            <button type="submit" name="action" value="update" class="
                 bg-[#5aac44] text-white border-none py-3 px-5 rounded-lg cursor-pointer
                 font-semibold text-[0.9rem] transition-all duration-200 shadow-[0_2px_4px_rgba(0,0,0,0.1)]
                 min-w-[100px] text-center inline-block hover:bg-[#519839] hover:-translate-y-0.5
                 hover:shadow-[0_4px_8px_rgba(0,0,0,0.15)]">
-                <?= htmlspecialchars($buttonText ?? 'Guardar') ?>
+                Actualizar
             </button>
-        <?php endif; ?>
-        <?php if (!empty($showDelete) && !empty($deleteUrl)): ?>
-            <a href="<?= htmlspecialchars(Environment::url($deleteUrl)) ?>" class="
+            <button type="submit" name="action" value="delete" class="
                 bg-[#dc3545] text-white border-2 border-[#dc3545] py-3 px-5 rounded-lg
                 text-[0.9rem] font-semibold transition-all duration-200 cursor-pointer
                 inline-block text-center min-w-[100px] hover:bg-[#dc3545] hover:text-white
                 hover:border-[#dc3545] hover:shadow-[0_2px_4px_rgba(0,0,0,0.1)]">
                 Eliminar
-            </a>
-        <?php endif; ?>
-        <?php if (!empty($cancelUrl)): ?>
+            </button>
             <a href="<?= htmlspecialchars(Environment::url($cancelUrl)) ?>" class="
                 bg-white text-[#172b4d] border-2 border-[#e1e5e9] py-3 px-5
                 rounded-lg text-[0.9rem] font-semibold transition-all duration-200
@@ -52,7 +50,6 @@
                 hover:border-[#c1c7cd] hover:-translate-y-0.5 hover:shadow-[0_2px_4px_rgba(0,0,0,0.1)]">
                 Cancelar
             </a>
-        <?php endif; ?>
     </div>
 </form>
 

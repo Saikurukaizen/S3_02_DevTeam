@@ -1,23 +1,12 @@
 <?php
 declare(strict_types=1);
 
-/**
- * Sistema de Rutas de la Aplicación
- * 
- * Define el mapeo entre URLs y controladores/acciones.
- * Formato: 'ruta' => 'controlador#accion'
- * 
- * @author Dev Team
- * @version 2.0
- */
-
 $routes = [
     // ===== RUTAS PRINCIPALES =====
     '/' => 'task#index',                   // Pagina de inicio - Kanban Board
     '/home' => 'task#index',               // Alias para home
     
     // ===== RUTAS DE TAREAS (CRUD COMPLETO) =====
-    // '/task' => 'task#index',            // Vista principal Kanban (eliminada por redundancia)
     '/task/create' => 'task#create',       // Crear nueva tarea (GET: formulario, POST: procesar)
     '/task/read' => 'task#read',           // Leer/mostrar tarea especifica (requiere ?id=X)
     '/task/update' => 'task#update',       // Actualizar tarea (GET: formulario, POST: procesar)

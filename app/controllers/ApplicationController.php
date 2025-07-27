@@ -1,24 +1,11 @@
 <?php
 declare(strict_types=1);
 
-/**
- * Controlador Base de la Aplicación
- * 
- * Clase base para todos los controladores del sistema.
- * Provee funcionalidades comunes: modelos, vistas, sesiones y validaciones.
- * Mejora: código limpio, seguro y organizado.
- * 
- * @author Sistema de Tareas
- * @version 2.1
- */
 class ApplicationController extends Controller 
 {
     protected $model = null;
     public $view = null;
 
-    /**
-     * Inicializa el controlador: inicia sesión, crea vista y carga modelo asociado
-     */
     public function init(): void
     {
         try {
@@ -31,9 +18,6 @@ class ApplicationController extends Controller
         }
     }
 
-    /**
-     * Inicia la sesión si no está activa
-     */
     private function initializeSession(): void
     {
         if (session_status() === PHP_SESSION_NONE) {

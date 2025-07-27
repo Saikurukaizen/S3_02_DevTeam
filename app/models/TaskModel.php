@@ -27,9 +27,6 @@ class TaskModel
         'fecha_actualizacion' => ''
     ];
 
-    /**
-     * Constructor - inicializa archivo de datos
-     */
     public function __construct()
     {
         $this->file = ROOT_PATH . '/config/fakeTasks.json';

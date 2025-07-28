@@ -1,9 +1,6 @@
 'use strict';
 
-// Modal personalizado para confirmar la eliminación de una tarea
-// Refuerza la experiencia de usuario y evita el uso del confirm() nativo
-function confirmarEliminacion(taskId) {
-    // Crea el modal de fondo oscurecido
+function confirmarEliminacion(taskId){
     const modal = document.createElement('div');
     modal.className = 'modal';
     modal.style.cssText = [
@@ -19,7 +16,6 @@ function confirmarEliminacion(taskId) {
         'z-index: 10000'
     ].join(';');
 
-    // Contenido del modal
     const modalContent = document.createElement('div');
     modalContent.style.cssText = [
         'background-color: white',
@@ -31,7 +27,6 @@ function confirmarEliminacion(taskId) {
         'text-align: center'
     ].join(';');
 
-    // HTML del modal con botones de acción
     modalContent.innerHTML = `
         <h3 style="margin-bottom: 1rem; color: #172b4d; font-size: 1.2rem;">Confirmar Eliminación</h3>
         <p style="margin-bottom: 2rem; color: #6c757d; line-height: 1.5;">¿Estás seguro de que quieres eliminar esta tarea? Esta acción no se puede deshacer.</p>
@@ -40,11 +35,9 @@ function confirmarEliminacion(taskId) {
             <button id="btn-cancel-delete" style="background-color: #6c757d; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem; min-width: 100px; transition: all 0.2s ease;">Cancelar</button>
         </div>
     `;
-
     modal.appendChild(modalContent);
     document.body.appendChild(modal);
 
-    // Agrega eventos a los botones para reforzar la seguridad
     modalContent.querySelector('#btn-confirm-delete').onclick = function() {
         deleteTask(taskId);
         modal.remove();
@@ -54,14 +47,12 @@ function confirmarEliminacion(taskId) {
     };
 }
 
-// Función para eliminar tarea vía POST seguro
-function deleteTask(taskId) {
-    // Crea un formulario temporal para envío seguro
+function deleteTask(taskId)
+{
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = '/task/delete';
 
-    // Agrega campo oculto de ID
     const idInput = document.createElement('input');
     idInput.type = 'hidden';
     idInput.name = 'id';

@@ -50,7 +50,6 @@ function deleteTask(data){
     .then(response => response.json())
     .then(data => {
         if(data.success === true){
-            // Notificar que uma tarefa foi deletada
             if (typeof notifyTaskChange === 'function') {
                 notifyTaskChange('delete');
             }
@@ -107,9 +106,7 @@ function updateTask(id, newStatus){
     })
     .then(response => response.json())
     .then(data => {
-         // Respuesta procesada
         if(data.success === true){
-            // Notificar que uma tarefa foi movida
             if (typeof notifyTaskChange === 'function') {
                 notifyTaskChange('move');
             }

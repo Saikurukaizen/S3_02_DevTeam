@@ -57,8 +57,6 @@ class ApplicationController extends Controller
             throw new InvalidArgumentException("Tipo de mensaje flash inválido: $type");
         }
         $this->initializeSession();
-        // Sanitiza el mensaje para evitar XSS
-        //$_SESSION['flash'][$type] = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
     }
 
     protected function getFlash(string $type): ?string
@@ -90,7 +88,7 @@ class ApplicationController extends Controller
         unset($_SESSION['flash']);
     }
 
-    /* protected function redirect(string $url, int $statusCode = 302): void
+    protected function redirect(string $url, int $statusCode = 302): void
     {
         if (empty($url)) {
             throw new InvalidArgumentException("La URL de redirección no puede estar vacía");
@@ -102,7 +100,7 @@ class ApplicationController extends Controller
         $safeUrl = filter_var($url, FILTER_SANITIZE_URL);
         header("Location: $safeUrl");
         exit();
-    } */
+    }
 
     protected function isAjaxRequest(): bool
     {

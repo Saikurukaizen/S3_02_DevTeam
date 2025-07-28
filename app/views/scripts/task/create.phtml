@@ -1,6 +1,6 @@
 <?php
+declare(strict_types=1);
 
-// Valores por defecto para nueva tarea
 $task = $task ?? [];
 $defaultValues = [
     'titulo' => '',
@@ -12,15 +12,12 @@ $defaultValues = [
 $task = array_merge($defaultValues, $task);
 ?>
 
-<!-- Main Content -->
 <div class="w-full max-w-4xl mx-auto">
     <h1 class="text-2xl md:text-3xl font-bold text-white mb-8 text-center">✨ Nueva Tarea</h1>
     <?php
-    // Pasa las variables necesarias al partial del formulario
     $this->action = Environment::url('task/create');
     $this->buttonText = '✨ Crear Tarea';
     $this->isReadOnly = false;
-    // La vista parcial _form.phtml usará las variables de $this
     include(ROOT_PATH . '/app/views/scripts/task/_form.phtml');
     ?>
 </div>

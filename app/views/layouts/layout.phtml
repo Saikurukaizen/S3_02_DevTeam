@@ -23,32 +23,14 @@
         },
       }
     </script>
-    <style>
-      /* Reset para asegurar que Tailwind funcione correctamente */
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      /* Evitar conflictos con CSS antiguo */
-      body {
-        font-family: 'Segoe UI', system-ui, sans-serif !important;
-      }
-    </style>
 </head>
 <body class="font-sans m-0 p-0 min-h-screen w-full flex overflow-y-auto bg-gradient-to-r from-primary via-secondary to-accent">
-
     <div class="flex w-full min-h-screen">
-        <!-- Sidebar izquierdo (Tailwind) -->
         <div class="sticky top-0 self-start flex flex-col min-w-[240px] h-screen bg-gradient-to-r from-accent via-secondary to-primary p-6">
-            <!-- Navegación principal: Home en el index, Volver en otras páginas -->
             <div class="w-full flex flex-col gap-4 mt-2 mb-8">
-                <!-- Espacio para alinear con las columnas -->
                 <div class="h-[3.7rem]"></div>
-                <!-- Botón de navegación: solo en páginas que no son index -->
                 <div class="mb-0">
                     <?php 
-                    // Detectar si es página inicial verificando URL o variable
                     $isHomePage = (isset($this->isIndexPage) && $this->isIndexPage) || 
                                   (isset($_SERVER['REQUEST_URI']) && 
                                    (strpos($_SERVER['REQUEST_URI'], '/task/') === false || 
@@ -61,14 +43,12 @@
                             <span class="text-base font-semibold">Volver</span>
                         </a>
                     <?php else: ?>
-                        <!-- Área de bienvenida en la página inicial -->
                         <div class="w-full flex items-center justify-center py-3 rounded-lg font-semibold text-white text-base shadow-lg transition bg-gradient-to-r from-pink-500 to-pink-400 hover:from-pink-600 hover:to-pink-400 mb-3">
                             <span class="text-2xl mr-2">🏠</span>
                             <span class="text-base font-semibold">Página Inicial</span>
                         </div>
                     <?php endif; ?>
                 </div>
-                <!-- Botón principal para crear tarea -->
                 <div class="mb-3">
                     <a href="<?= Environment::url('task/create') ?>" class="w-full flex items-center justify-center py-3 rounded-lg font-semibold text-white text-base shadow-lg transition bg-gradient-to-r from-green-500 to-green-400 hover:from-green-600 hover:to-green-400">
                         <span class="mr-2 text-lg font-bold">+</span>
@@ -76,7 +56,6 @@
                     </a>
                 </div>
             </div>
-            <!-- Panel de estadísticas -->
             <div class="bg-white/10 rounded-lg p-4 mb-6 w-full">
                 <h3 class="font-bold text-white text-lg mb-4 flex items-center gap-2"><span>📊</span> Estadísticas</h3>
                 <div class="flex flex-col gap-2">
@@ -110,7 +89,6 @@
                     </div>
                 </div>
             </div>
-            <!-- Área de la papelera en la parte inferior -->
             <div class="mt-auto w-full">
                 <div class="flex flex-col items-center justify-center bg-white/10 rounded-lg py-3">
                     <div class="text-2xl" id="closeLitter">🗑️</div>
@@ -119,9 +97,7 @@
                 </div>
             </div>
         </div>
-        <!-- Contenido principal -->
         <div class="flex-1 p-8 flex flex-col items-center">
-            <!-- Título principal -->
             <div class="w-full flex flex-col items-center mb-8">
                 <h1 class="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg tracking-tight text-center">
                     <span class="inline-block align-middle mr-2 text-kanbanBlue">🚀</span> Gestión de Tareas <span class="font-black">Kanban Board</span>
@@ -134,7 +110,6 @@
         </div>
     </div>
 <script>
-    // Definir BASE_URL para JavaScript
     window.BASE_URL = '<?= Environment::url('') ?>';
 </script>
 <script src="<?= Environment::url('javascripts/buildUrl.js') ?>"></script>

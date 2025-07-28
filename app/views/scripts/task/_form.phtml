@@ -1,7 +1,6 @@
-
 <?php
+declare(strict_types=1);
 
-// Valores por defecto y variables para el formulario
 $task = $this->task ?? [];
 $defaultValues = [
     'titulo' => '',
@@ -18,18 +17,12 @@ $showReadActions = $this->showReadActions ?? false;
 $showDeleteButton = $this->showDeleteButton ?? false;
 ?>
 
-<!--
-    Formulario de tarea
-    - Seguridad: htmlspecialchars en todos los valores
-    - Organización y comentarios explicativos
--->
 <form action="<?= htmlspecialchars($action, ENT_QUOTES, 'UTF-8') ?>" method="POST" class="task-form">
     <?php if (isset($task['id'])): ?>
         <input type="hidden" name="id" value="<?= htmlspecialchars((string)$task['id'], ENT_QUOTES, 'UTF-8') ?>">
     <?php endif; ?>
 
     <div class="flex flex-col gap-4 w-full max-w-md mx-auto bg-white/10 rounded-xl p-6 shadow-lg">
-        <!-- Campo: Título de la tarea -->
         <div class="flex flex-col gap-2">
             <label for="titulo" class="font-semibold text-white">Título *</label>
             <input type="text" id="titulo" name="titulo"
@@ -37,7 +30,6 @@ $showDeleteButton = $this->showDeleteButton ?? false;
                 value="<?= htmlspecialchars($task['titulo'], ENT_QUOTES, 'UTF-8') ?>"
                 <?= $isReadOnly ? 'disabled' : '' ?> required placeholder="Describe tu tarea de manera clara y concisa...">
         </div>
-        <!-- Campo: Descripción de la tarea -->
         <div class="flex flex-col gap-2">
             <label for="descripcion" class="font-semibold text-white">Descripción</label>
             <textarea id="descripcion" name="descripcion" rows="4"
@@ -45,7 +37,6 @@ $showDeleteButton = $this->showDeleteButton ?? false;
                 class="px-4 py-2 rounded-lg border border-white/30 bg-white/80 text-gray-900 focus:outline-none focus:ring-2 focus:ring-kanbanBlue"
                 <?= $isReadOnly ? 'disabled' : '' ?>><?= htmlspecialchars($task['descripcion'], ENT_QUOTES, 'UTF-8') ?></textarea>
         </div>
-        <!-- Campo: Asignado a -->
         <div class="flex flex-col gap-2">
             <label for="asignado_a" class="font-semibold text-white">Asignar a</label>
             <input type="text" id="asignado_a" name="asignado_a"
@@ -54,7 +45,6 @@ $showDeleteButton = $this->showDeleteButton ?? false;
                 class="px-4 py-2 rounded-lg border border-white/30 bg-white/80 text-gray-900 focus:outline-none focus:ring-2 focus:ring-kanbanBlue"
                 <?= $isReadOnly ? 'disabled' : '' ?> >
         </div>
-        <!-- Campo: Estado de la tarea -->
         <div class="flex flex-col gap-2">
             <label for="estado" class="font-semibold text-white">Estado</label>
             <select id="estado" name="estado"
@@ -66,8 +56,6 @@ $showDeleteButton = $this->showDeleteButton ?? false;
                 <option value="cancelada" <?= $task['estado'] === 'cancelada' ? 'selected' : '' ?>>❌ Cancelada</option>
             </select>
         </div>
-
-        <!-- Botones de acción -->
         <div class="flex justify-center mt-6">
             <?php if (!$isReadOnly): ?>
                 <div class="flex gap-3">

@@ -1,37 +1,22 @@
 <?php
 
-/**
- * Base controller for the application.
- * Add general things in this controller.
- */
 class ApplicationController extends Controller 
 {
     protected $model = null;
 
-    // Declaramos la propiedad view para que todos los controladores hijos la tengan
     public $view = null;
 
-    /**
-     * Método de inicialización común para todos los controladores hijos
-     */
-    public function init()
+    public function init(): void
     {
-        // Inicializa la vista
         $this->view = new View();
-
-        // Ejemplo: cargar el modelo según el nombre del controlador
         $controllerName = strtolower(str_replace('Controller', '', get_class($this)));
         $modelClass = ucfirst($controllerName) . 'Model';
         if (class_exists($modelClass)) {
             $this->model = new $modelClass();
         }
-        // Puedes inicializar otras variables o helpers aquí
     }
 
-    /**
-     * Método para cargar cualquier modelo por nombre
-     */
-    protected function loadModel($modelName)
+    protected function loadModel(string $modelName): object
     {
         $modelClass = ucfirst($modelName) . 'Model';
         if (class_exists($modelClass)) {
@@ -54,6 +39,4 @@ class ApplicationController extends Controller
         }
         return null;
     }
-
-    // Puedes añadir aquí filtros before/after si lo necesitas
 }

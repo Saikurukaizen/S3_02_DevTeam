@@ -3,13 +3,13 @@
         "id": 1,
         "titulo": "Empezar el CRUD",
         "descripcion": "EDICAO!!!! Primera tarea de prueba sobre empezar el CRUD",
-        "estado": "pendiente"
+        "estado": "hecho"
     },
     {
         "id": 3,
         "titulo": "Terminar el CRUD",
         "descripcion": "Tercera tarea sobre terminar el CRUD",
-        "estado": "pendiente"
+        "estado": "hecho"
     },
     {
         "id": 4,
@@ -20,25 +20,25 @@
     {
         "titulo": "La tarea de guardar",
         "descripcion": "asdfghj",
-        "estado": "pendiente",
+        "estado": "hecho",
         "id": 5
     },
     {
-        "titulo": "La tarea de guardar em processo",
-        "descripcion": "teste de completo",
-        "estado": "en_proceso",
+        "titulo": "Segunda prueba de guardado",
+        "descripcion": "Comprobar persistencia en JSON",
+        "estado": "hecho",
         "id": 6
     },
     {
         "titulo": "La tarea de guardar",
         "descripcion": "qwertyui",
-        "estado": "pendiente",
+        "estado": "hecho",
         "id": 7
     },
     {
         "titulo": "Segunda prueba de guardado",
         "descripcion": "Comprobar persistencia en JSON",
-        "estado": "pendiente",
+        "estado": "hecho",
         "id": 8
     },
     {
@@ -50,7 +50,7 @@
     {
         "titulo": "Cuarta prueba de guardado",
         "descripcion": "qqq",
-        "estado": "pendiente",
+        "estado": "hecho",
         "id": 10
     },
     {
@@ -62,18 +62,18 @@
     {
         "titulo": "saber que co\u00f1o hacer2",
         "descripcion": "asdfgh",
-        "estado": "en_proceso",
+        "estado": "hecho",
         "id": 13
     },
     {
         "titulo": "Creo saber que hacer",
         "descripcion": "Opcional",
-        "estado": "en_proceso",
+        "estado": "hecho",
         "id": 14
     },
     {
-        "titulo": "Hacer Boton",
-        "descripcion": "teste de sabado a tarde",
+        "titulo": "Hacer Boton                \n            \n                \n                    sabado a tarde                \n                \n                    tarefa criada no sabado",
+        "descripcion": "tarefa criada no sabado",
         "estado": "pendiente",
         "id": 15
     },
@@ -92,13 +92,13 @@
     {
         "titulo": "Ajuste da tarefa",
         "descripcion": "ajustando tela de criacao de tarefa",
-        "estado": "en_proceso",
+        "estado": "hecho",
         "id": 18
     },
     {
         "titulo": "teste de tela para pendente",
         "descripcion": "msg na tela",
-        "estado": "pendiente",
+        "estado": "hecho",
         "id": 19
     },
     {

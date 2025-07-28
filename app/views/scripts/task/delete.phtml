@@ -1,57 +1,12 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirmar Eliminación - Gestor de Tareas</title>
-</head>
-<body>
-    <div class="create-task-page">
-        <div class="create-task-container">
-            <h1>Confirmar Eliminación</h1>
-            
-            <?php if ($this->task): ?>
-                <!-- Información de la tarea a eliminar -->
-                <div style="margin-bottom: 1.5rem;">
-                    <label style="font-weight: 600; color: #172b4d; font-size: 0.9rem;">Tarea a eliminar:</label>
-                    <div style="margin-top: 0.5rem; font-size: 0.9rem; line-height: 1.5; color: #6c757d; background-color: #f8f9fa; padding: 0.75rem; border-radius: 4px; border-left: 4px solid #dc3545;">
-                        <p><strong>Título:</strong> <?= htmlspecialchars($this->task['titulo']) ?></p>
-                        <p><strong>Descripción:</strong> <?= htmlspecialchars($this->task['descripcion']) ?: 'Sin descripción' ?></p>
-                        <p><strong>Estado:</strong> <?= ucfirst(htmlspecialchars($this->task['estado'])) ?></p>
-                    </div>
-                </div>
+<?php
+declare(strict_types=1);
 
-                <!-- Formulario que confirma la eliminación -->
-                <form method="POST" action="<?= url('task/delete') ?>">
-                    <!-- Campo oculto con el ID de la tarea -->
-                    <input type="hidden" name="id" value="<?= htmlspecialchars($this->task['id']) ?>">
+$action = url('task/delete') . '?id=' . htmlspecialchars($task['id']);
+$readonly = true;
+$buttonText = 'Eliminar Tarea';
+$showDelete = false;
+$cancelUrl = url('task/main');
 
-                    <!-- Botones de acción -->
-                    <div class="form-actions">
-                        <button type="submit" class="btn-cancel" style="background-color: #dc3545; color: white;">
-                            Sí, Eliminar Tarea
-                        </button>
-                        <a href="<?= url('task/detalle') ?>?id=<?= htmlspecialchars($this->task['id']) ?>" class="btn-create">
-                            Cancelar
-                        </a>
-                    </div>
-                </form>
-            <?php else: ?>
-                <!-- Mensaje si no se encontró la tarea -->
-                <div style="margin-bottom: 1.5rem;">
-                    <label style="font-weight: 600; color: #172b4d; font-size: 0.9rem;">Error:</label>
-                    <div style="margin-top: 0.5rem; font-size: 0.9rem; line-height: 1.5; color: #6c757d; background-color: #f8f9fa; padding: 0.75rem; border-radius: 4px; border-left: 4px solid #dc3545;">
-                        No se encontró la tarea solicitada.
-                    </div>
-                </div>
-                
-                <div class="form-actions">
-                    <a href="<?= url('') ?>" class="btn-create">
-                        Volver al Tablero
-                    </a>
-                </div>
-            <?php endif; ?>
-        </div>
-    </div>
-</body>
-</html>
+include dirname(__DIR__, 2) . '/layouts/form.phtml';
+
+?>

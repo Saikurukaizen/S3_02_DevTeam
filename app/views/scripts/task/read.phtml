@@ -1,25 +1,22 @@
 <?php
-// Este archivo genera los elementos card de las tareas para el tablero principal
-// Cada card es draggable y clickeable para ver detalles de la tarea
-// Al hacer click, se abre /task/detalle?id=... para ver los detalles
-// No se debe mostrar el boton eliminar aqui, solo preview
-$i = 1;
-foreach ($this->tasks as $task) {
-    ?>
-    <div 
-        id="<?= htmlspecialchars($task['id']) ?>" 
-        class="task" 
-        data-task-id="<?= htmlspecialchars($task['id']) ?>" 
-        data-estado="<?= htmlspecialchars($task['estado']) ?>"
-        draggable="true" 
-        ondragstart="drag(event)">
-        <a href="<?=url('task/detalle')?>?id=<?= htmlspecialchars($task['id']) ?>">
-            <strong><?= htmlspecialchars($task['titulo']) ?></strong>
-            <small><?= htmlspecialchars($task['descripcion']) ?></small>
-        </a>
-    </div>
-    <?php
-    $i++;
-}
+declare(strict_types=1);
+/* $task = $this->task ?? [];
+$action = $action ??'';
+$readonly = true;
+$buttonText = 'Actualizar';
+$updateUrl = Environment::url('task/update') . '?id=' . htmlspecialchars((string)$task['id']);
+$showDelete = false;
+$cancelUrl = '';
+
+include dirname(__DIR__, 2) . '/layouts/form.phtml'; */
+
+$task = $this->task ?? [];
+$action = $action ??'';
+$readonly = false;
+$buttonText = '';
+$updateUrl = Environment::url('task/update') . '?id=' . htmlspecialchars((string)($task['id'] ?? ''));
+$showDelete = true;
+$cancelUrl = Environment::url('/');
+
+include dirname(__DIR__, 2) . '/layouts/form.phtml';
 ?>
-<script src="/web/javascripts/task_organize.js"></script>

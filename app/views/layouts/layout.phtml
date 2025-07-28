@@ -2,86 +2,93 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Gestor de Tareas</title>
-	<link rel="stylesheet" href="/web/stylesheets/layout.css">
+    <title>Task Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="
+    font-sans m-0 p-0 min-h-screen w-full flex overflow-y-auto bg-gradient-to-r from-primary via-secondary to-accent
+    ">
 
-    <!-- Sidebar lateral izquierda -->
-    <div class="sidebar">
-        <button><a href="<?=url('task/create')?>">
-            + Nueva Tarea
-        </a></button>
-
-        <!-- Icono de papelera para Drop futuro -->
-        <div id="trash" class="trash" ondrop="dropUpdate(event, 'delete')" ondragover="allowDrop(event)">
-            🗑 Papelera
-        </div>
+    <div class="w-[200px] bg-[slategrey] p-6 border-r border-[#ccc] min-h-full box-border flex flex-col items-center">
+        <a href="<?= Environment::url('task/create') ?>" id="btn-add" class="
+            block mb-8 bg-[#5aac44] text-white border-none rounded-lg cursor-pointer
+            font-bold hover:bg-[#519839] flex items-center justify-center
+            w-20 h-20 text-2xl shadow transition-all duration-200">
+            +
+        </a>
     </div>
 
-    <!-- Área principal del tablero -->
-    <div class="main">
-        <!-- Mensajes flash para feedback al usuario -->
-        <?php if($flashSuccess = $_SESSION['flash']['success'] ?? null): ?>
-            <div id="flash-message" class="flash-message success">
-                <div class="flash-content">
-                    <div class="flash-icon">✅</div>
-                    <div class="flash-text"><?=htmlspecialchars($flashSuccess)?></div>
-                    <button class="flash-close" onclick="closeFlashMessage()">×</button>
-                </div>
+    <div class="f-1 p-[1rem, 2rem] w-[100%] p-6 transition-colors duration-200" 
+        style="background: linear-gradient(135deg, #3a56a1ff 0%, #8551afff 100%);">
+
+        <?php if (isset($_SESSION['flash']['success'])): ?>
+            <div id="flash-message" class="flash-message success bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+                <span class="block sm:inline"><?= htmlspecialchars($_SESSION['flash']['success']) ?></span>
+                <button class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.style.display='none';">&times;</button>
             </div>
             <?php unset($_SESSION['flash']['success']); ?>
         <?php endif; ?>
-        <?php if($flashError = $_SESSION['flash']['error'] ?? null): ?>
-            <div id="flash-message" class="flash-message error">
-                <div class="flash-content">
-                    <div class="flash-icon">❌</div>
-                    <div class="flash-text"><?=htmlspecialchars($flashError)?></div>
-                    <button class="flash-close" onclick="closeFlashMessage()">×</button>
-                </div>
+
+        <?php if (isset($_SESSION['flash']['error'])): ?>
+            <div id="flash-message" class="flash-message error bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+                <span class="block sm:inline"><?= htmlspecialchars($_SESSION['flash']['error']) ?></span>
+                <button class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.style.display='none';">&times;</button>
             </div>
             <?php unset($_SESSION['flash']['error']); ?>
         <?php endif; ?>
 
-        <h1>Lista de Tareas</h1>
+        <h1 class="text-[white] font-bold">Tus tareas</h1>
 
-        <!-- Contenedor del tablero estilo Trello -->
-        <div class="board" style="display: flex; gap: 1rem;">
+        <div class="display flex gap-6 mt-4 board">
 
-            <!-- Columna: Pendiente -->
-            <div id="pendiente" ondrop="dropUpdate(event, 'pendiente')" ondragover="allowDrop(event)">
-                <h2>Pendiente</h2>
-                <!-- Aqui se inyectan las tareas del estado 'pendiente' desde read.phtml -->
-                <!-- Cada tarjeta debe ser draggable y clickeable para ver detalles -->
+            <div class="flex-1 bg-[#ebecf0] p-3 rounded-lg min-h-[180px] max-h-[340px] shadow-[0_1px_2px_rgba(0,0,0,0.1)] text-[0.8rem] flex flex-col"
+                id="pendiente" ondrop="dropUpdate(event, 'pendiente')" ondragover="allowDrop(event)">
+                <h2 class="mt-0 text-[1.1rem] sticky top-0 z-10 bg-[#ebecf0] pb-2">Pendiente</h2>
+                <div class="flex-1 overflow-y-auto">
+                    <?php $estadoColumna = 'pendiente';
+                    include __DIR__ . '/../scripts/task/main.phtml'; ?>
+                </div>
             </div>
 
-            <!-- Columna: En Proceso -->
-            <div id="en_proceso" ondrop="dropUpdate(event, 'en_proceso')" ondragover="allowDrop(event)">
-                <h2>En Proceso</h2>
-                <!-- Aqui se inyectan las tareas del estado 'en_proceso' -->
-                <!-- Cada tarjeta debe ser draggable y clickeable para ver detalles -->
+            <div class="flex-1 bg-[#ebecf0] p-3 rounded-lg min-h-[180px] max-h-[340px] shadow-[0_1px_2px_rgba(0,0,0,0.1)] text-[0.8rem] flex flex-col"
+                id="en_proceso" ondrop="dropUpdate(event, 'en_proceso')" ondragover="allowDrop(event)">
+                <h2 class="mt-0 text-[1.1rem] sticky top-0 z-10 bg-[#ebecf0] pb-2">En Proceso</h2>
+                <div class="flex-1 overflow-y-auto">
+                    <?php $estadoColumna = 'en_proceso';
+                    include __DIR__ . '/../scripts/task/main.phtml'; ?>
+                </div>
             </div>
 
-            <!-- Columna: Completado -->
-            <div id="hecho" ondrop="dropUpdate(event, 'hecho')" ondragover="allowDrop(event)">
-                <h2>Completado</h2>
-                <!-- Aqui se inyectan las tareas del estado 'hecho' -->
-                <!-- Cada tarjeta debe ser draggable y clickeable para ver detalles -->
+            <div class="flex-1 bg-[#ebecf0] p-3 rounded-lg min-h-[180px] max-h-[340px] shadow-[0_1px_2px_rgba(0,0,0,0.1)] text-[0.8rem] flex flex-col"
+                id="hecho" ondrop="dropUpdate(event, 'hecho')" ondragover="allowDrop(event)">
+                <h2 class="mt-0 text-[1.1rem] sticky top-0 z-10 bg-[#ebecf0] pb-2">Completado</h2>
+                <div class="flex-1 overflow-y-auto">
+                    <?php $estadoColumna = 'completado';
+                    include __DIR__ . '/../scripts/task/main.phtml'; ?>
+                </div>
             </div>
-
         </div>
 
-        <!-- Aquí se inserta el contenido generado por read.phtml -->
+        <div class="flex justify-end mt-12">
+            <div id="trash" class="
+                border-2 border-[#b04632] text-[#b04632] 
+                text-center bg-white rounded-lg cursor-pointer transition-colors duration-200
+                flex items-center justify-center w-20 h-20 text-4xl shadow-lg
+                " ondrop="dropDelete(event, 'delete')" ondragover="allowDrop(event)"
+                ondragenter="this.classList.add('bg-red-500','text-white','border-red-700')"
+                ondragleave="this.classList.remove('bg-red-500','text-white','border-red-700')">
+                🗑
+            </div>
+        </div>
+        
         <?php echo $this->content(); ?>
     </div>
-
-
 <script>
     window.BASE_URL = '<?= BASE_URL ?>';
 </script>
-<script src="/web/javascripts/buildUrl.js"></script>
-<script src="/web/javascripts/task_organize.js"></script>
-<script src="/web/javascripts/drag_drop.js"></script>
-<script src="/web/javascripts/flash.js"></script>
+<script src="<?= Environment::asset('javascripts/buildUrl.js') ?>"></script>
+<script src="<?= Environment::asset('javascripts/task_organize.js') ?>"></script>
+<script src="<?= Environment::asset('javascripts/drag_drop.js') ?>"></script>
+<script src="<?= Environment::asset('javascripts/flash.js') ?>"></script>
 </body>
 </html>

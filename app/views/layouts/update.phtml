@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,15 +10,15 @@
         <h1>Por favor, introduce los nuevos campos a actualizar</h1>
         
     </div>
-    <form method="post" action="<?= url('task/update') ?>">
-        <label for="titulo"><?= htmlspecialchars($task['titulo'])?></label>
+    <form method="post" action="<?= /* url('task/update') */ ?>">
+        <label for="titulo"><?= /* htmlspecialchars($task['titulo']) */?></label>
         <input type="text" id="titulo" name="titulo" placeholder="Título..." maxlength="50" required>
         <br>
         <label for="descripcion">Descripción de la tarea</label>
         <textarea name="descripcion" id="descripcion" placeholder="Añade una descripción..." maxlength="500"><?= htmlspecialchars($task['descripcion'])?></textarea>
         <br>
         <select name="estado" id="estado" required>Estado
-            <option value=""><?= htmlspecialchars($task['estado'])?></option>
+            <option value=""><?= /* htmlspecialchars($task['estado']) */?></option>
             <option value="pendiente" class="pendiente">Pendiente</option>
             <option value="en_proceso" class="en_proceso">En Proceso</option>
             <option value="hecho" class="hecho">Completado</option>
@@ -27,8 +27,9 @@
         <button type="submit">UPDATE</button>
         <input type="hidden" name="action" value="updateTask">
         <button type="reset" >CANCEL</button>
-        <input type="reset" name="cancel" value="readTask" onclick="window.location.href='<?= url('task/read') ?>'">
+        <input type="reset" name="cancel" value="readTask" onclick="window.location.href='<?= /* url('task/read') */ ?>'">
     </form> 
 </body>
 </html>
 
+ -->

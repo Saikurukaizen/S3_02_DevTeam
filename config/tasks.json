@@ -2,7 +2,97 @@
     {
         "id": 1,
         "titulo": "Empezar el CRUD",
-        "descripcion" : "Primera tarea de prueba sobre empezar el CRUD",
-        "estado" : "in_process"
+        "descripcion": "Primera tarea de prueba sobre empezar el CRUD",
+        "estado": "completada",
+        "fecha_creacion": "2025-01-20 10:00:00",
+        "fecha_actualizacion": "2025-01-20 15:30:00"
+    },
+    {
+        "id": 2,
+        "titulo": "Implementar validaciones",
+        "descripcion": "Agregar validaciones robustas en el modelo y controlador",
+        "estado": "completada",
+        "fecha_creacion": "2025-01-20 11:00:00",
+        "fecha_actualizacion": "2025-01-20 16:00:00"
+    },
+    {
+        "id": 3,
+        "titulo": "Terminar el CRUD",
+        "descripcion": "Tercera tarea sobre terminar el CRUD",
+        "estado": "completada",
+        "fecha_creacion": "2025-01-20 12:00:00",
+        "fecha_actualizacion": "2025-01-20 17:00:00"
+    },
+    {
+        "id": 4,
+        "titulo": "Revisar el código",
+        "descripcion": "Cuarta tarea sobre revisar el código",
+        "estado": "completada",
+        "fecha_creacion": "2025-01-20 13:00:00",
+        "fecha_actualizacion": "2025-01-20 18:00:00"
+    },
+    {
+        "id": 5,
+        "titulo": "Refactorizar TaskController",
+        "descripcion": "Mejorar la estructura y organización del controlador de tareas",
+        "estado": "completada",
+        "fecha_creacion": "2025-01-21 09:00:00",
+        "fecha_actualizacion": "2025-01-21 14:00:00"
+    },
+    {
+        "id": 7,
+        "titulo": "Mejorar sistema de rutas",
+        "descripcion": "Organizar y documentar mejor el sistema de routing",
+        "estado": "completada",
+        "fecha_creacion": "2025-01-21 11:00:00",
+        "fecha_actualizacion": "2025-01-21 16:00:00"
+    },
+    {
+        "id": 8,
+        "titulo": "Implementar Environment robusto",
+        "descripcion": "Crear sistema de detección automática de ambiente",
+        "estado": "completada",
+        "fecha_creacion": "2025-01-21 12:00:00",
+        "fecha_actualizacion": "2025-01-21 17:00:00"
+    },
+    {
+        "id": 9,
+        "titulo": "Testing de funcionalidades",
+        "descripcion": "Probar todas las funcionalidades CRUD implementadas",
+        "estado": "en_progreso",
+        "fecha_creacion": "2025-01-22 09:00:00",
+        "fecha_actualizacion": "2025-07-27 17:26:51"
+    },
+    {
+        "id": 11,
+        "titulo": "Implementar sistema de usuarios",
+        "descripcion": "Crear funcionalidades de login y gestión de usuarios",
+        "estado": "pendiente",
+        "fecha_creacion": "2025-01-22 11:00:00",
+        "fecha_actualizacion": "2025-01-22 11:00:00"
+    },
+    {
+        "id": 12,
+        "titulo": "Crear API REST",
+        "descripcion": "Desarrollar endpoints REST para integración con frontend",
+        "estado": "pendiente",
+        "fecha_creacion": "2025-01-22 12:00:00",
+        "fecha_actualizacion": "2025-07-27 22:30:41"
+    },
+    {
+        "id": 13,
+        "titulo": "Documentar proyecto",
+        "descripcion": "Crear documentación completa del sistema",
+        "estado": "pendiente",
+        "fecha_creacion": "2025-01-22 13:00:00",
+        "fecha_actualizacion": "2025-01-22 13:00:00"
+    },
+    {
+        "id": 14,
+        "titulo": "Configurar deploy",
+        "descripcion": "Preparar sistema para deployment en producción",
+        "estado": "en_progreso",
+        "fecha_creacion": "2025-01-22 14:00:00",
+        "fecha_actualizacion": "2025-07-27 22:31:04"
     }
 ]

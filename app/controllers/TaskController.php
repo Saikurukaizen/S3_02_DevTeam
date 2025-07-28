@@ -35,7 +35,7 @@ class TaskController extends ApplicationController
         $this->view->cancelUrl = Environment::url('task');
     }
 
-    private function isAjaxRequest(): bool
+    protected function isAjaxRequest(): bool
     {
         return isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false;
     }
@@ -54,15 +54,6 @@ class TaskController extends ApplicationController
 
         }
         $this->setupCreateView();
-    }
-
-    private function setupCreateView(): void
-    {
-        $this->view->action = Environment::url('task/create');
-        $this->view->readonly = false;
-        $this->view->buttonText = 'Crear Tarea';
-        $this->view->showDelete = false;
-        $this->view->cancelUrl = Environment::url('task');
     }
 
     private function processFormCreateRequest(): void
@@ -299,39 +290,4 @@ class TaskController extends ApplicationController
         }
         return $data ?? [];
     }
-
-    private function processFormDeleteRequest(): void
-    {
-        $id = $this->_getParam('id');
-        if ($id) {
-            $taskModel = new TaskModel();
-            $borrado = $taskModel->deleteTaskById($id);
-            $this->setFlash('success', 'Tarea eliminada correctamente.');
-        } else {
-            $this->setFlash('error', 'ID de tarea inválido.');
-        }
-        header('Location: ' . Environment::url(''));
-        exit;
-    }
-
-    private function processAjaxDeleteRequest(): void
-    {
-        $data = json_decode(file_get_contents('php://input'), true);
-        $id = $data['taskId'] ?? null;
-        header('Content-Type: application/json');
-        if ($id) {
-            $taskModel = new TaskModel();
-            $borrado = $taskModel->deleteTaskById($id);
-            echo json_encode([
-                'success' => $borrado,
-                'message' => $borrado ? 'Tarea eliminada correctamente.' : 'No se pudo eliminar la tarea.'
-            ]);
-        } else {
-            echo json_encode([
-                'success' => false,
-                'message' => 'ID inválido'
-            ]);
-        }
-        exit;
-    }  
 }

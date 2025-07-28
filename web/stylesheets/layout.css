@@ -1,3 +1,6 @@
+/* -----------------------------
+   ESTILOS GLOBAIS Y RESET
+------------------------------ */
 * {
     margin: 0;
     padding: 0;
@@ -37,6 +40,10 @@ body {
     position: relative;
     border-right: none;
 }
+
+/* -----------------------------
+   SIDEBAR IZQUIERDA
+------------------------------ */
 .sidebar-container {
     width: 220px;
     min-height: 100vh;
@@ -49,9 +56,12 @@ body {
     border-right: none;
 }
 
+/* Navegação fixa */
 .sidebar-navigation {
     margin-bottom: 1rem;
 }
+
+/* Botão principal do Kanban (visível no index) */
 .btn-kanban-main {
     display: flex;
     align-items: center;
@@ -72,6 +82,7 @@ body {
     font-size: 1.2rem;
 }
 
+/* Botão de voltar (visível em outras páginas) */
 .btn-back-kanban {
     display: flex;
     align-items: center;
@@ -103,13 +114,15 @@ body {
     font-size: 0.8rem;
 }
 
+/* Header com botão principal */
 .sidebar-header {
     margin-bottom: 1.2rem;
-    transition: margin-top 0.3s ease;
+    transition: margin-top 0.3s ease; /* Adiciona transição suave */
 }
 
+/* Estilo para quando estiver no Kanban Board */
 .sidebar-header.on-kanban-board {
-    margin-top: 4.5rem;
+    margin-top: 4.5rem; /* Ajuste fino para alinhar com o topo do board */
 }
 
 .btn-create-main {
@@ -145,6 +158,7 @@ body {
     font-size: 0.85rem;
 }
 
+/* Panel de estadísticas */
 .stats-panel {
     background: rgba(255, 255, 255, 0.12);
     border-radius: 10px;
@@ -222,6 +236,7 @@ body {
     text-align: left;
 }
 
+/* Área da lixeira */
 .trash-area {
     margin-top: auto;
     padding-top: 1.5rem;
@@ -275,6 +290,7 @@ body {
     75% { transform: translateX(2px); }
 }
 
+/* Animações para contadores */
 .counter-updated {
     animation: counterPulse 0.6s ease-out;
 }
@@ -307,9 +323,12 @@ body {
     100% { transform: scale(1); }
 }
 
+/* -----------------------------
+   TABLERO Y COLUMNAS
+------------------------------ */
 .kanban-header {
     margin-bottom: 1.5rem;
-    padding-top: 3.5rem;
+    padding-top: 3.5rem; /* Adiciona espaço para descer o board */
 }
 
 .board-title {
@@ -403,6 +422,9 @@ body {
     background: #bbb;
 }
 
+/* -----------------------------
+   CARDS DE TAREAS
+------------------------------ */
 .task-card {
     background: white;
     border-radius: 6px;
@@ -499,6 +521,7 @@ body {
     color: #0147a3;
 }
 
+/* Estado vazio */
 .empty-state {
     grid-column: 1 / -1;
     text-align: center;
@@ -808,6 +831,9 @@ body {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+/* -----------------------------
+   NOTIFICAÇÕES FLASH
+------------------------------ */
 .flash-message {
     position: fixed;
     top: 20px;
@@ -890,6 +916,10 @@ body {
     animation: slideOut 0.3s ease-in forwards;
 }
 
+/* -----------------------------
+   PÁGINA DE CRIAÇÃO DE TAREFA (Correção)
+------------------------------ */
 .main-content {
-    padding-top: 0;
+    /* justify-content: center; */ /* Removemos para alinhamento manual */
+    padding-top: 0; /* Removemos o padding antigo */
 }

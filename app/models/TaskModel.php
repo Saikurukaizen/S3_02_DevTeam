@@ -18,7 +18,7 @@ class TaskModel
 
     public function __construct()
     {
-        $this->file = ROOT_PATH . '/config/fakeTasks.json';
+        $this->file = ROOT_PATH . '/config/tasks.json';
         $this->ensureFileExists();
     }
 

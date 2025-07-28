@@ -5,10 +5,8 @@ $tasks = $this->tasks ?? [];
 $this->isIndexPage = true;
 ?>
 
-
 <div class="w-full flex flex-col items-center mb-8">
 </div>
-
 <div class="kanban-board w-full flex gap-4 justify-center items-start max-w-[95vw] mx-auto">
     <div class="bg-white/80 rounded-xl shadow-lg p-4 flex-1 min-w-[280px] max-w-[400px]" ondrop="dropUpdate(event, 'pendiente')" ondragover="allowDrop(event)">
         <div class="flex items-center justify-between mb-4">

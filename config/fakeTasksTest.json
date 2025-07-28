@@ -1,0 +1,57 @@
+[
+    {
+        "id": 1,
+        "titulo": "Tarea de prueba",
+        "descripcion": "Descripción de prueba",
+        "estado": "pendiente"
+    },
+    {
+        "id": 2,
+        "titulo": "Tarea de ejemplo",
+        "descripcion": "Descripción de ejemplo",
+        "estado": "en_progreso"
+    },
+    {
+        "id": 3,
+        "titulo": "Tarea finalizada",
+        "descripcion": "Descripción de tarea finalizada",
+        "estado": "completado"
+    },
+    {
+        "id": 4,
+        "titulo": "Tarea archivada",
+        "descripcion": "Descripción de tarea archivada",
+        "estado": "en_proceso"
+    },
+    {
+        "id": 5,
+        "titulo": "Tarea eliminada",
+        "descripcion": "Descripción de tarea eliminada",
+        "estado": "completado"
+    },
+    {
+        "id": 6,
+        "titulo": "Tarea pendiente",
+        "descripcion": "Descripción de tarea pendiente",
+        "estado": "pendiente"
+    },
+    {
+        "id": 7,
+        "titulo": "Tarea en revisión",
+        "descripcion": "Descripción de tarea en revisión",
+        "estado": "en_proceso"
+    },
+    {
+        "id": 8,
+        "titulo": "Tarea urgente",
+        "descripcion": "Descripción de tarea urgente",
+        "estado": "completado"
+    },
+    {
+        "id": 5,
+        "titulo": "Tarea eliminada",
+        "descripcion": "Descripción de tarea eliminada",
+        "estado": "completado"
+    }
+
+]

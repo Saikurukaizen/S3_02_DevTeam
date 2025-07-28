@@ -4,10 +4,12 @@ declare(strict_types=1);
 class ApplicationController extends Controller 
 {
     protected $model = null;
+
     public $view = null;
 
     public function init(): void
     {
+
         $this->initializeSession();
         $this->view = new View();
         $this->loadAssociatedModel();        
@@ -22,6 +24,7 @@ class ApplicationController extends Controller
 
     private function loadAssociatedModel(): void
     {
+
         $controllerName = strtolower(str_replace('Controller', '', get_class($this)));
         $modelClass = ucfirst($controllerName) . 'Model';
         if (class_exists($modelClass)) {
@@ -121,4 +124,5 @@ class ApplicationController extends Controller
         echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         exit();
     }
+
 }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 class TaskController extends ApplicationController
 {
+
     private const VALID_STATES = ['pendiente', 'en_progreso', 'completada', 'cancelada'];
 
     public function indexAction(): void
@@ -15,17 +16,42 @@ class TaskController extends ApplicationController
             $this->setFlash('error', 'Error al cargar las tareas: ' . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8'));
             $this->view->tasks = [];
         }
+
+    }
+
+    public function mainAction(): void
+    {
+        $taskModel = new TaskModel();
+        $tasks = $taskModel->getAllTasks();
+        $this->view->tasks = $tasks;
+    }
+
+    private function setupCreateView(): void
+    {
+        $this->view->action = Environment::url('task/create');
+        $this->view->readonly = false;
+        $this->view->buttonText = 'Crear Tarea';
+        $this->view->showDelete = false;
+        $this->view->cancelUrl = Environment::url('task');
+    }
+
+    private function isAjaxRequest(): bool
+    {
+        return isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false;
     }
 
     public function createAction(): void
     {
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($this->isJsonRequest()) {
+
                 $this->processAjaxCreateRequest();
             } else {
                 $this->processFormCreateRequest();
             }
             return;
+
         }
         $this->setupCreateView();
     }
@@ -82,6 +108,7 @@ class TaskController extends ApplicationController
             $task = $this->model->getTaskById($id);
             if (!$task) {
                 throw new Exception('Tarea no encontrada.');
+
             }
             $this->view->task = $task;
         } catch (Exception $e) {
@@ -98,6 +125,7 @@ class TaskController extends ApplicationController
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($this->isJsonRequest()) {
+
                 $this->processAjaxUpdateRequest();
             } else {
                 $this->processFormUpdateRequest();
@@ -271,4 +299,39 @@ class TaskController extends ApplicationController
         }
         return $data ?? [];
     }
+
+    private function processFormDeleteRequest(): void
+    {
+        $id = $this->_getParam('id');
+        if ($id) {
+            $taskModel = new TaskModel();
+            $borrado = $taskModel->deleteTaskById($id);
+            $this->setFlash('success', 'Tarea eliminada correctamente.');
+        } else {
+            $this->setFlash('error', 'ID de tarea inválido.');
+        }
+        header('Location: ' . Environment::url(''));
+        exit;
+    }
+
+    private function processAjaxDeleteRequest(): void
+    {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $id = $data['taskId'] ?? null;
+        header('Content-Type: application/json');
+        if ($id) {
+            $taskModel = new TaskModel();
+            $borrado = $taskModel->deleteTaskById($id);
+            echo json_encode([
+                'success' => $borrado,
+                'message' => $borrado ? 'Tarea eliminada correctamente.' : 'No se pudo eliminar la tarea.'
+            ]);
+        } else {
+            echo json_encode([
+                'success' => false,
+                'message' => 'ID inválido'
+            ]);
+        }
+        exit;
+    }  
 }

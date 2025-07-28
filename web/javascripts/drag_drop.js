@@ -53,7 +53,7 @@ function deleteTask(data){
             if (typeof notifyTaskChange === 'function') {
                 notifyTaskChange('delete');
             }
-        } else{
+        } else {
 
         }
     });

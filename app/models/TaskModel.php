@@ -1,40 +1,47 @@
 <?php
 declare(strict_types=1);
 
-class TaskModel{
-    private $file;
+class TaskModel
+{
+    private string $file;
+
+    private const VALID_STATES = ['pendiente', 'en_progreso', 'completada', 'cancelada'];
+
+    private const DEFAULT_TASK_STRUCTURE = [
+        'id' => 0,
+        'titulo' => '',
+        'descripcion' => '',
+        'estado' => 'pendiente',
+        'fecha_creacion' => '',
+        'fecha_actualizacion' => ''
+    ];
 
     public function __construct()
     {
-        $this->file = ROOT_PATH . '/config/fakeTasksTests.json';
+        $this->file = ROOT_PATH . '/config/fakeTasks.json';
+        $this->ensureFileExists();
     }
 
-    public function createTask(array $data): void
+    public function createTask(array $data): array
     {
-        foreach($data as $key => $value){
-            if(empty($value)){
-                throw new Exception("El campo $key no puede estar vacio.");
-            }
-        }
+        $this->validateTaskData($data, false);
         $tasks = $this->getAllTasks();
-        $lastId = 0;
-        if(!empty($tasks)){
-            $ids = array_column($tasks, 'id');
-            $lastId = max($ids);
-        }
-        $data['id'] = $lastId + 1;
-        $tasks[] = $data;
-        $json = json_encode($tasks, JSON_PRETTY_PRINT);
-        if(file_put_contents($this->file, $json) === false){
-            throw new Exception("Hubo un fallo al guardar la tarea.");
-        }
+        $newId = $this->generateNextId($tasks);
+        $newTask = $this->prepareTaskData($data, $newId);
+        $now = date('Y-m-d H:i:s');
+        $newTask['fecha_creacion'] = $now;
+        $newTask['fecha_actualizacion'] = $now;
+        $tasks[] = $newTask;
+        $this->saveTasksToFile($tasks);
+        return $newTask;
     }
 
     public function getTaskById($id): ?array
     {
+        $id = $this->validateId($id);
         $tasks = $this->getAllTasks();
         foreach ($tasks as $task) {
-            if (isset($task['id']) && $task['id'] == $id) {
+            if (isset($task['id']) && (int)$task['id'] === $id) {
                 return $task;
             }
         }
@@ -43,82 +50,186 @@ class TaskModel{
 
     public function getAllTasks(): array
     {
-        $tasks = [];
-        if (file_exists($this->file)) {
-            $content = file_get_contents($this->file);
-            $tasks = json_decode($content, true);
+        if (!file_exists($this->file)) {
+            return [];
         }
-        return $tasks;
+        $content = file_get_contents($this->file);
+        if ($content === false || empty(trim($content))) {
+            return [];
+        }
+        $tasks = json_decode($content, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return [];
+        }
+        return is_array($tasks) ? $tasks : [];
     }
 
-    public function updateTask(int $id, array $data): void
+    public function updateTask(int $id, array $data): array
     {
-         error_log("updateTask llamado con ID: $id y data: " . print_r($data, true));
-
-        if(empty($data['titulo'])){
-            error_log("updateTask error: El título no puede estar vacío.");
-            throw new Exception("El título no puede estar vacío.");
+        $id = $this->validateId($id);
+        $this->validateTaskData($data, true);
+        if (isset($data['id']) && (int)$data['id'] !== $id) {
+            throw new Exception("El ID proporcionado ({$data['id']}) no coincide con el ID de la tarea a actualizar ($id).");
         }
-        if(empty($data['estado'])){
-            error_log("updateTask error: El estado no puede estar vacío.");
-            throw new Exception("El estado no puede estar vacío.");
-        }
-
-        if(!isset($data['id']) || $data['id'] !== $id){
-            error_log("updateTask error: El ID no coincide con el ID de la tarea a actualizar.");
-            throw new Exception("El ID no coincide con el ID de la tarea a actualizar.");
-        } 
-
-        if(file_exists($this->file)){
-            $tasks = json_decode(file_get_contents($this->file), true) ?? [];
-            foreach($tasks as &$task){
-                if($task['id'] == $id){
-                    $task = array_merge($task, $data);
-                    error_log("Tarea actualizada: " . print_r($task, true));
-                }
+        $tasks = $this->getAllTasks();
+        $taskFound = false;
+        $updatedTask = null;
+        foreach ($tasks as &$task) {
+            if (isset($task['id']) && (int)$task['id'] === $id) {
+                $originalCreationDate = $task['fecha_creacion'] ?? date('Y-m-d H:i:s');
+                $task = array_merge($task, $this->prepareTaskData($data, $id));
+                $task['fecha_creacion'] = $originalCreationDate;
+                $task['fecha_actualizacion'] = date('Y-m-d H:i:s');
+                $updatedTask = $task;
+                $taskFound = true;
+                break;
             }
-            $json = json_encode($tasks, JSON_PRETTY_PRINT);
-            if(file_put_contents($this->file, $json) === false){
-                error_log("Fallo al escribir el archivo JSON al actualizar (ID: $id)");
-                throw new Exception("Hubo un fallo al actualizar la tarea.");
-            } else {
-                return;
-            }            
         }
+        if (!$taskFound) {
+            throw new Exception("No se encontró la tarea con ID: $id");
+        }
+        $this->saveTasksToFile($tasks);
+        return $updatedTask;
     }
 
     public function deleteTaskById($id): bool
     {
+        $id = $this->validateId($id);
         $tasks = $this->getAllTasks();
-        $encontro = false;
-
-        foreach ($tasks as $i => $task) {
-            if (isset($task['id']) && $task['id'] == $id) {
-                unset($tasks[$i]);
-                $encontro = true;
-                error_log("Tarea con ID $id eliminada.");
+        $taskFound = false;
+        foreach ($tasks as $index => $task) {
+            if (isset($task['id']) && (int)$task['id'] === $id) {
+                unset($tasks[$index]);
+                $taskFound = true;
                 break;
             }
         }
-        if ($encontro) {
-            $tasks = array_values($tasks);
-            $result =file_put_contents($this->file, json_encode($tasks, JSON_PRETTY_PRINT));
-            if($result === false){
-                error_log("Fallo al escribir el archivo JSON al borrar (ID: $id)");
-                return false;
-            } else{
-                error_log("Archivo JSON actualizado correctamente tras borrar (ID: $id)");
-                return true;
-            }       
-        } else {
-            error_log("No se encontró la tarea con ID: $id para borrar");
+        if (!$taskFound) {
             return false;
+        }
+        $tasks = array_values($tasks);
+        $this->saveTasksToFile($tasks);
+        return true;
+    }
+
+    public function getTasksByState(string $estado): array
+    {
+        if (!in_array($estado, self::VALID_STATES)) {
+            throw new InvalidArgumentException("Estado inválido: $estado");
+        }
+        $tasks = $this->getAllTasks();
+        return array_filter($tasks, function($task) use ($estado) {
+            return isset($task['estado']) && $task['estado'] === $estado;
+        });
+    }
+
+    public function getTotalTasksCount(): int
+    {
+        return count($this->getAllTasks());
+    }
+
+    public function getTaskStatistics(): array
+    {
+        $tasks = $this->getAllTasks();
+        $stats = array_fill_keys(self::VALID_STATES, 0);
+        foreach ($tasks as $task) {
+            $estado = $task['estado'] ?? 'pendiente';
+            if (isset($stats[$estado])) {
+                $stats[$estado]++;
+            }
+        }
+        $stats['total'] = count($tasks);
+        return $stats;
+    }
+
+    private function validateTaskData(array $data, bool $isUpdate): void
+    {
+        if (!isset($data['titulo']) || trim($data['titulo']) === '') {
+            throw new Exception("El título es obligatorio.");
+        }
+        if (strlen(trim($data['titulo'])) > 200) {
+            throw new Exception("El título no puede exceder 200 caracteres.");
+        }
+        if (!isset($data['estado']) || trim($data['estado']) === '') {
+            throw new Exception("El estado es obligatorio.");
+        }
+        if (!in_array($data['estado'], self::VALID_STATES)) {
+            throw new Exception("Estado inválido. Estados válidos: " . implode(', ', self::VALID_STATES));
+        }
+        if (isset($data['descripcion']) && strlen($data['descripcion']) > 1000) {
+            throw new Exception("La descripción no puede exceder 1000 caracteres.");
+        }
+        if ($isUpdate && isset($data['id'])) {
+            $this->validateId($data['id']);
+        }
+    }
+
+    private function validateId($id)
+    {
+        if ($id === null || $id === '') {
+            throw new InvalidArgumentException("ID es requerido.");
+        }
+        if (is_numeric($id)) {
+            $id = (int) $id;
+            if ($id <= 0) {
+                throw new InvalidArgumentException("ID debe ser un número positivo.");
+            }
+            return $id;
+        }
+        $id = trim((string) $id);
+        if (empty($id)) {
+            throw new InvalidArgumentException("ID no puede estar vacío.");
+        }
+        return $id;
+    }
+
+    private function prepareTaskData(array $data, int $id): array
+    {
+        $prepared = self::DEFAULT_TASK_STRUCTURE;
+        $prepared['id'] = $id;
+        $prepared['titulo'] = trim($data['titulo'] ?? '');
+        $prepared['descripcion'] = trim($data['descripcion'] ?? '');
+        $prepared['estado'] = trim($data['estado'] ?? 'pendiente');
+        return $prepared;
+    }
+
+    private function generateNextId(array $tasks): int
+    {
+        if (empty($tasks)) {
+            return 1;
+        }
+        $ids = array_column($tasks, 'id');
+        return max($ids) + 1;
+    }
+
+    private function saveTasksToFile(array $tasks): void
+    {
+        $json = json_encode($tasks, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        if ($json === false) {
+            throw new Exception("Error al codificar datos a JSON: " . json_last_error_msg());
+        }
+        $result = file_put_contents($this->file, $json, LOCK_EX);
+        if ($result === false) {
+            throw new Exception("Error al guardar el archivo de tareas.");
+        }
+    }
+
+    private function ensureFileExists(): void
+    {
+        $directory = dirname($this->file);
+        if (!is_dir($directory)) {
+            if (!mkdir($directory, 0755, true)) {
+                throw new Exception("No se puede crear el directorio: $directory");
+            }
+        }
+        if (!file_exists($this->file)) {
+            if (file_put_contents($this->file, '[]') === false) {
+                throw new Exception("No se puede crear el archivo de tareas: {$this->file}");
+            }
+        }
+        if (!is_readable($this->file) || !is_writable($this->file)) {
+            throw new Exception("El archivo de tareas no tiene permisos correctos: {$this->file}");
         }
     }
 }
-
-    
-
-
-?>        
 

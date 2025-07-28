@@ -34,6 +34,9 @@ class View
 		// starts the output buffer
 		ob_start();
 		
+		// extract view data to local variables for the view script
+		extract($this->_data);
+		
 		// includes the view script
 		include(ROOT_PATH . '/app/views/scripts/' . $viewScript);
 		

@@ -2,93 +2,118 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Task Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Tareas</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#8551af',
+              secondary: '#6d3bbd',
+              accent: '#4a6bb5',
+              kanbanBlue: '#1976d2',
+              kanbanLight: '#64b5f6',
+            },
+            fontFamily: {
+              'sans': ['Segoe UI', 'system-ui', 'sans-serif'],
+            },
+          },
+        },
+      }
+    </script>
 </head>
-<body class="
-    font-sans m-0 p-0 min-h-screen w-full flex overflow-y-auto bg-gradient-to-r from-primary via-secondary to-accent
-    ">
-
-    <div class="w-[200px] bg-[slategrey] p-6 border-r border-[#ccc] min-h-full box-border flex flex-col items-center">
-        <a href="<?= Environment::url('task/create') ?>" id="btn-add" class="
-            block mb-8 bg-[#5aac44] text-white border-none rounded-lg cursor-pointer
-            font-bold hover:bg-[#519839] flex items-center justify-center
-            w-20 h-20 text-2xl shadow transition-all duration-200">
-            +
-        </a>
-    </div>
-
-    <div class="f-1 p-[1rem, 2rem] w-[100%] p-6 transition-colors duration-200" 
-        style="background: linear-gradient(135deg, #3a56a1ff 0%, #8551afff 100%);">
-
-        <?php if (isset($_SESSION['flash']['success'])): ?>
-            <div id="flash-message" class="flash-message success bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
-                <span class="block sm:inline"><?= htmlspecialchars($_SESSION['flash']['success']) ?></span>
-                <button class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.style.display='none';">&times;</button>
-            </div>
-            <?php unset($_SESSION['flash']['success']); ?>
-        <?php endif; ?>
-
-        <?php if (isset($_SESSION['flash']['error'])): ?>
-            <div id="flash-message" class="flash-message error bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-                <span class="block sm:inline"><?= htmlspecialchars($_SESSION['flash']['error']) ?></span>
-                <button class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.style.display='none';">&times;</button>
-            </div>
-            <?php unset($_SESSION['flash']['error']); ?>
-        <?php endif; ?>
-
-        <h1 class="text-[white] font-bold">Tus tareas</h1>
-
-        <div class="display flex gap-6 mt-4 board">
-
-            <div class="flex-1 bg-[#ebecf0] p-3 rounded-lg min-h-[180px] max-h-[340px] shadow-[0_1px_2px_rgba(0,0,0,0.1)] text-[0.8rem] flex flex-col"
-                id="pendiente" ondrop="dropUpdate(event, 'pendiente')" ondragover="allowDrop(event)">
-                <h2 class="mt-0 text-[1.1rem] sticky top-0 z-10 bg-[#ebecf0] pb-2">Pendiente</h2>
-                <div class="flex-1 overflow-y-auto">
-                    <?php $estadoColumna = 'pendiente';
-                    include __DIR__ . '/../scripts/task/main.phtml'; ?>
+<body class="font-sans m-0 p-0 min-h-screen w-full flex overflow-y-auto bg-gradient-to-r from-primary via-secondary to-accent">
+    <div class="flex w-full min-h-screen">
+        <div class="sticky top-0 self-start flex flex-col min-w-[240px] h-screen bg-gradient-to-r from-accent via-secondary to-primary p-6">
+            <div class="w-full flex flex-col gap-4 mt-2 mb-8">
+                <div class="h-[3.7rem]"></div>
+                <div class="mb-0">
+                    <?php 
+                    $isHomePage = (isset($this->isIndexPage) && $this->isIndexPage) || 
+                                  (isset($_SERVER['REQUEST_URI']) && 
+                                   (strpos($_SERVER['REQUEST_URI'], '/task/') === false || 
+                                    $_SERVER['REQUEST_URI'] === '/' || 
+                                    strpos($_SERVER['REQUEST_URI'], '/index') !== false));
+                    if (!$isHomePage): 
+                    ?>
+                        <a href="<?= Environment::url('/') ?>" class="w-full flex items-center justify-center py-3 rounded-lg font-semibold text-white text-base shadow-lg transition bg-gradient-to-r from-pink-500 to-pink-400 hover:from-pink-600 hover:to-pink-400 mb-3">
+                            <span class="text-2xl mr-2">←</span>
+                            <span class="text-base font-semibold">Volver</span>
+                        </a>
+                    <?php else: ?>
+                        <div class="w-full flex items-center justify-center py-3 rounded-lg font-semibold text-white text-base shadow-lg transition bg-gradient-to-r from-pink-500 to-pink-400 hover:from-pink-600 hover:to-pink-400 mb-3">
+                            <span class="text-2xl mr-2">🏠</span>
+                            <span class="text-base font-semibold">Página Inicial</span>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <div class="mb-3">
+                    <a href="<?= Environment::url('task/create') ?>" class="w-full flex items-center justify-center py-3 rounded-lg font-semibold text-white text-base shadow-lg transition bg-gradient-to-r from-green-500 to-green-400 hover:from-green-600 hover:to-green-400">
+                        <span class="mr-2 text-lg font-bold">+</span>
+                        <span> Nueva Tarea</span>
+                    </a>
                 </div>
             </div>
-
-            <div class="flex-1 bg-[#ebecf0] p-3 rounded-lg min-h-[180px] max-h-[340px] shadow-[0_1px_2px_rgba(0,0,0,0.1)] text-[0.8rem] flex flex-col"
-                id="en_proceso" ondrop="dropUpdate(event, 'en_proceso')" ondragover="allowDrop(event)">
-                <h2 class="mt-0 text-[1.1rem] sticky top-0 z-10 bg-[#ebecf0] pb-2">En Proceso</h2>
-                <div class="flex-1 overflow-y-auto">
-                    <?php $estadoColumna = 'en_proceso';
-                    include __DIR__ . '/../scripts/task/main.phtml'; ?>
+            <div class="bg-white/10 rounded-lg p-4 mb-6 w-full">
+                <h3 class="font-bold text-white text-lg mb-4 flex items-center gap-2"><span>📊</span> Estadísticas</h3>
+                <div class="flex flex-col gap-2">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">📋</span>
+                        <div>
+                            <span class="font-bold text-white text-lg" id="pending-count">0</span>
+                            <span class="text-white/80 text-sm">Pendientes</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">🔄</span>
+                        <div>
+                            <span class="font-bold text-white text-lg" id="progress-count">0</span>
+                            <span class="text-white/80 text-sm">En Progreso</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">✅</span>
+                        <div>
+                            <span class="font-bold text-white text-lg" id="completed-count">0</span>
+                            <span class="text-white/80 text-sm">Completadas</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">📈</span>
+                        <div>
+                            <span class="font-bold text-white text-lg" id="total-count">0</span>
+                            <span class="text-white/80 text-sm">Total</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <div class="flex-1 bg-[#ebecf0] p-3 rounded-lg min-h-[180px] max-h-[340px] shadow-[0_1px_2px_rgba(0,0,0,0.1)] text-[0.8rem] flex flex-col"
-                id="hecho" ondrop="dropUpdate(event, 'hecho')" ondragover="allowDrop(event)">
-                <h2 class="mt-0 text-[1.1rem] sticky top-0 z-10 bg-[#ebecf0] pb-2">Completado</h2>
-                <div class="flex-1 overflow-y-auto">
-                    <?php $estadoColumna = 'completado';
-                    include __DIR__ . '/../scripts/task/main.phtml'; ?>
+            <div class="mt-auto w-full">
+                <div class="flex flex-col items-center justify-center bg-white/10 rounded-lg py-3">
+                    <div class="text-2xl" id="closeLitter">🗑️</div>
+                    <div class="text-2xl" id="openLitter" style="display: none;">🗑️</div>
+                    <span class="text-white/80 text-sm">Arrastra aquí para eliminar</span>
                 </div>
             </div>
         </div>
-
-        <div class="flex justify-end mt-12">
-            <div id="trash" class="
-                border-2 border-[#b04632] text-[#b04632] 
-                text-center bg-white rounded-lg cursor-pointer transition-colors duration-200
-                flex items-center justify-center w-20 h-20 text-4xl shadow-lg
-                " ondrop="dropDelete(event, 'delete')" ondragover="allowDrop(event)"
-                ondragenter="this.classList.add('bg-red-500','text-white','border-red-700')"
-                ondragleave="this.classList.remove('bg-red-500','text-white','border-red-700')">
-                🗑
+        <div class="flex-1 p-8 flex flex-col items-center">
+            <div class="w-full flex flex-col items-center mb-8">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg tracking-tight text-center">
+                    <span class="inline-block align-middle mr-2 text-kanbanBlue">🚀</span> Gestión de Tareas <span class="font-black">Kanban Board</span>
+                </h1>
+                <div class="mt-2 text-lg text-white font-medium text-center">Organiza, sigue y completa tus tareas con estilo!</div>
+            </div>
+            <div class="w-full max-w-[90vw] xl:max-w-[1400px]">
+                <?php echo $this->content(); ?>
             </div>
         </div>
-        
-        <?php echo $this->content(); ?>
     </div>
 <script>
-    window.BASE_URL = '<?= BASE_URL ?>';
+    window.BASE_URL = '<?= Environment::url('') ?>';
 </script>
-<script src="<?= Environment::asset('javascripts/buildUrl.js') ?>"></script>
-<script src="<?= Environment::asset('javascripts/task_organize.js') ?>"></script>
-<script src="<?= Environment::asset('javascripts/drag_drop.js') ?>"></script>
-<script src="<?= Environment::asset('javascripts/flash.js') ?>"></script>
+<script src="<?= Environment::url('javascripts/buildUrl.js') ?>"></script>
+<script src="<?= Environment::url('javascripts/drag_drop.js') ?>"></script>
+<script src="<?= Environment::url('javascripts/stats.js') ?>"></script>
 </body>
 </html>

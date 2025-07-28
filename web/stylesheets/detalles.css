@@ -27,7 +27,7 @@ body {
     font-family: 'Segoe UI', sans-serif;
 }
 
-/* Botón volver */
+/* Boton volver */
 .btn-volver {
     display: inline-block;
     padding: 0.75rem 1.5rem;
@@ -52,7 +52,7 @@ body {
     gap: 1.5rem;
 }
 
-/* Título de la tarea */
+/* Titulo de la tarea */
 .task-title {
     font-size: 1.5rem;
     font-weight: 600;
@@ -93,7 +93,7 @@ body {
     border: 1px solid #c3e6cb;
 }
 
-/* Descripción */
+/* Descripcion */
 .task-description h3 {
     font-size: 0.9rem;
     font-weight: 600;
@@ -112,7 +112,7 @@ body {
     margin: 0;
 }
 
-/* Botones de acción - usando los mismos estilos de create */
+/* Botones de accion - usando los mismos estilos de create */
 .form-actions {
     display: flex;
     gap: 1rem;

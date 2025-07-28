@@ -1,26 +1,99 @@
 <?php
 declare(strict_types=1);
+
+$tasks = $this->tasks ?? [];
+$this->isIndexPage = true;
 ?>
-<h1>Listado de tareas</h1>
-<div class="task-actions" style="margin-bottom: 1em;">
-    <a href="<?=  url('task/create') ?>">
-        <button class="btn btn-primary" type="button">ADD TASK</button>
-    </a>        
+
+<div class="w-full flex flex-col items-center mb-8">
+</div>
+<div class="kanban-board w-full flex gap-4 justify-center items-start max-w-[95vw] mx-auto">
+    <div class="bg-white/80 rounded-xl shadow-lg p-4 flex-1 min-w-[280px] max-w-[400px]" ondrop="dropUpdate(event, 'pendiente')" ondragover="allowDrop(event)">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-bold text-primary flex items-center gap-2">📋 Pendientes</h2>
+            <span class="bg-primary text-white rounded-full px-3 py-1 text-sm font-semibold" id="pending-badge">0</span>
+        </div>
+        <div class="flex flex-col gap-4" id="pending-tasks">
+            <?php
+            foreach ($tasks as $task):
+                if (isset($task['estado']) && $task['estado'] === 'pendiente'):
+            ?>
+                <div id="task-<?= $task['id'] ?>" data-task-id="<?= $task['id'] ?>" draggable="true" ondragstart="drag(event)" class="task-card bg-white rounded-lg shadow p-4 flex flex-col gap-2 border-l-4 border-kanbanBlue">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-lg text-primary"><?= htmlspecialchars($task['titulo']) ?></h3>
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                    </div>
+                    <p class="text-gray-700 text-sm"><?= htmlspecialchars($task['descripcion']) ?></p>
+                    <div class="flex justify-end">
+                        <a href="<?= Environment::url('task/read?id=' . $task['id']) ?>" class="text-kanbanBlue font-semibold hover:underline">Ver detalles</a>
+                    </div>
+                </div>
+            <?php 
+                endif;
+            endforeach; 
+            ?>
+        </div>
+    </div>
+    <div class="bg-white/80 rounded-xl shadow-lg p-4 flex-1 min-w-[280px] max-w-[400px]" ondrop="dropUpdate(event, 'en_progreso')" ondragover="allowDrop(event)">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-bold text-yellow-700 flex items-center gap-2">⏳ En Progreso</h2>
+            <span class="bg-yellow-700 text-white rounded-full px-3 py-1 text-sm font-semibold" id="progress-badge">0</span>
+        </div>
+        <div class="flex flex-col gap-4" id="progress-tasks">
+            <?php
+            foreach ($tasks as $task):
+                if (isset($task['estado']) && $task['estado'] === 'en_progreso'):
+            ?>
+                <div id="task-<?= $task['id'] ?>" data-task-id="<?= $task['id'] ?>" draggable="true" ondragstart="drag(event)" class="task-card bg-white rounded-lg shadow p-4 flex flex-col gap-2 border-l-4 border-yellow-500">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-lg text-yellow-700"><?= htmlspecialchars($task['titulo']) ?></h3>
+                        <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                    </div>
+                    <p class="text-gray-700 text-sm"><?= htmlspecialchars($task['descripcion']) ?></p>
+                    <div class="flex justify-end">
+                        <a href="<?= Environment::url('task/read?id=' . $task['id']) ?>" class="text-yellow-700 font-semibold hover:underline">Ver detalles</a>
+                    </div>
+                </div>
+            <?php 
+                endif;
+            endforeach; 
+            ?>
+        </div>
+    </div>
+    <div class="bg-white/80 rounded-xl shadow-lg p-4 flex-1 min-w-[280px] max-w-[400px]" ondrop="dropUpdate(event, 'completada')" ondragover="allowDrop(event)">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-bold text-green-700 flex items-center gap-2">✅ Completadas</h2>
+            <span class="bg-green-700 text-white rounded-full px-3 py-1 text-sm font-semibold" id="completed-badge">0</span>
+        </div>
+        <div class="flex flex-col gap-4" id="completed-tasks">
+            <?php
+            foreach ($tasks as $task):
+                if (isset($task['estado']) && $task['estado'] === 'completada'):
+            ?>
+                <div id="task-<?= $task['id'] ?>" data-task-id="<?= $task['id'] ?>" draggable="true" ondragstart="drag(event)" class="task-card bg-white rounded-lg shadow p-4 flex flex-col gap-2 border-l-4 border-green-500">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-lg text-green-700"><?= htmlspecialchars($task['titulo']) ?></h3>
+                        <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                    </div>
+                    <p class="text-gray-700 text-sm"><?= htmlspecialchars($task['descripcion']) ?></p>
+                    <div class="flex justify-end">
+                        <a href="<?= Environment::url('task/read?id=' . $task['id']) ?>" class="text-green-700 font-semibold hover:underline">Ver detalles</a>
+                    </div>
+                </div>
+            <?php 
+                endif;
+            endforeach; 
+            ?>
+        </div>
+    </div>
 </div>
 
-<?php if (!empty($this->tasks)): ?>
-    <ul>
-    <?php foreach ($this->tasks as $task): ?>
-        <li>
-            <strong><?= htmlspecialchars($task['titulo']) ?></strong>
-            <br>
-            <?= htmlspecialchars($task['descripcion']) ?>
-            <br>
-            <?= htmlspecialchars($task['estado']) ?>
-        </li>
-    <?php endforeach; ?>
-    </ul>
-<?php else: ?>
-    <p>No existen tareas</p>
+<?php if (empty($tasks)): ?>
+    <div class="flex flex-col items-center justify-center mt-12 p-8 bg-white/80 rounded-xl shadow-lg">
+        <div class="text-4xl mb-2">📝</div>
+        <h3 class="text-xl font-bold text-primary mb-2">No hay tareas creadas</h3>
+        <p class="text-gray-700 mb-4">Comienza creando tu primera tarea para organizar tu trabajo</p>
+        <a href="<?= Environment::url('task/create') ?>" class="bg-kanbanBlue text-white px-6 py-2 rounded-lg font-semibold shadow hover:bg-kanbanLight transition">➕ Crear Primera Tarea</a>
+    </div>
 <?php endif; ?>
 

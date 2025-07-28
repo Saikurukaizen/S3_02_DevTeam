@@ -5,7 +5,7 @@ $action = url('task/delete') . '?id=' . htmlspecialchars($task['id']);
 $readonly = true;
 $buttonText = 'Eliminar Tarea';
 $showDelete = false;
-$cancelUrl = url('task/main');
+$cancelUrl = url('task');
 
 include dirname(__DIR__, 2) . '/layouts/form.phtml';
 

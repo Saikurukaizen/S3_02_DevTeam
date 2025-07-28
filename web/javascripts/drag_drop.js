@@ -50,8 +50,10 @@ function deleteTask(data){
     .then(response => response.json())
     .then(data => {
         if(data.success === true){
-
-        } else{
+            if (typeof notifyTaskChange === 'function') {
+                notifyTaskChange('delete');
+            }
+        } else {
 
         }
     });
@@ -60,7 +62,7 @@ function deleteTask(data){
 function dropUpdate(ev, newStatus) {
     ev.preventDefault();
     var data = ev.dataTransfer.getData("text");
-    console.log('Intentando buscar elemento con id:', data);
+
     var taskDiv = document.getElementById(data);
     if (!taskDiv) {
         console.error('No se encontró el elemento de la tarea con id:', data);
@@ -104,9 +106,10 @@ function updateTask(id, newStatus){
     })
     .then(response => response.json())
     .then(data => {
-         console.log(data)
         if(data.success === true){
-
+            if (typeof notifyTaskChange === 'function') {
+                notifyTaskChange('move');
+            }
         } else {
 
         }

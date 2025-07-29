@@ -74,6 +74,7 @@ dev                 # Main Developer Branch
 ├── feature/db      # database persistence
 ├── feature/styles  # Styles and UI / UX
 └── feature/bugfix  # Fixing bugs in the final process
+
 ```
 
 ### Folder Structure
@@ -145,7 +146,7 @@ phpInitialDemo-main/
 │       ├── detalles.css                  
 │       └── layout.css                  
 
-```text
+```
 
 The idea is the availabilty to drag a task to a droppable status task list to update it directly, using an AJAX request. Every task list prints dinamically with all the Drop properties, as the same for draggable tasks, when you're rendering the view.
 

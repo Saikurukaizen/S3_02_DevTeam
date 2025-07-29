@@ -1,11 +1,11 @@
-drag(ev)               // empieza drag
+<!-- drag(ev)               // empieza drag
 dropUpdate(ev, status) // drop para cambiar estado
 dropDelete(ev)         // drop para borrar
-updateTask(id, status) // AJAX para actualizar
+updateTask(id, status) // AJAX para actualizar -->
 
-# Documentación Técnica - Gestor de Tareas Kanban PHP
+<!-- # Documentación Técnica - Gestor de Tareas Kanban PHP
 
-El sistema implementa una aplicación web para gestión de tareas utilizando el patrón MVC en PHP. La persistencia de datos se realiza mediante archivos JSON. La interfaz es responsiva y compatible con entornos XAMPP y PHP Server.
+El sistema implementa una aplicación web para gestión de tareas utilizando el patrón MVC en PHP. La persistencia de datos se realiza mediante archivos JSON. La interfaz es responsiva y compatible con entornos XAMPP y PHP Server. -->
 
 
 ## Arquitectura y Estructura

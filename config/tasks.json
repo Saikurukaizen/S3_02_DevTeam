@@ -94,5 +94,13 @@
         "estado": "en_progreso",
         "fecha_creacion": "2025-01-22 14:00:00",
         "fecha_actualizacion": "2025-07-27 22:31:04"
+    },
+    {
+        "id": 15,
+        "titulo": "X",
+        "descripcion": "Y",
+        "estado": "en_progreso",
+        "fecha_creacion": "2025-07-29 13:17:00",
+        "fecha_actualizacion": "2025-07-29 13:17:00"
     }
 ]

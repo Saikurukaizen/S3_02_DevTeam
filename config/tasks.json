@@ -102,5 +102,13 @@
         "estado": "en_progreso",
         "fecha_creacion": "2025-07-29 13:17:00",
         "fecha_actualizacion": "2025-07-29 13:17:00"
+    },
+    {
+        "id": 16,
+        "titulo": "Crear tarea nueva",
+        "descripcion": "",
+        "estado": "en_progreso",
+        "fecha_creacion": "2025-07-31 17:53:02",
+        "fecha_actualizacion": "2025-07-31 17:53:02"
     }
 ]

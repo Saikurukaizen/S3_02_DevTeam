@@ -121,20 +121,20 @@ phpInitialDemo-main/
 │   ├── settings.ini                      # General Setting
 │   ├── tasks.json                  
 │   └── users.json                
-├── lib/                                  # Librerías y framework base
-│   ├── README                            # Descripción de la librería
+├── lib/                                  # Base framework lib
+│   ├── README                          
 │   └── base/
-│       ├── Controller.php                # Clase base de controladores
-│       ├── Model.php                     # Clase base de modelos
-│       ├── Request.php                   # Manejo de peticiones
-│       ├── Router.php                    # Enrutador principal
-│       └── View.php                      # Motor de vistas
-├── web/                                  # Recursos públicos y entrada
-│   ├── .htaccess                         # Reglas de Apache
+│       ├── Controller.php
+│       ├── Model.php                 
+│       ├── Request.php                   # Request Management
+│       ├── Router.php                   
+│       └── View.php                    
+├── web/                                  # Web Resources
+│   ├── .htaccess                         # Apache rules
 │   ├── images/
-│   │   └── README                        # Carpeta de imágenes
-│   ├── index.php                         # Front controller (entrada app)
-│   ├── javascripts/                      # Scripts JS
+│   │   └── README                      
+│   ├── index.php                         # Front controller 
+│   ├── javascripts/                   
 │   │   ├── buildUrl.js                   # Dynamic URL's helpers
 │   │   ├── confirmar_delete.js           # Delete Confirmation Modal
 │   │   ├── drag_drop.js                  # Task's Drag & Drop
